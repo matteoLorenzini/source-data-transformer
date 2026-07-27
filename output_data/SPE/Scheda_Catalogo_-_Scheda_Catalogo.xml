@@ -2,174 +2,164 @@
 <scheda>
     <row index="2">
         <Unique_ID>50232</Unique_ID>
-        <ID_IMT>SPE_233</ID_IMT>
-        <NR._INV>N/A</NR._INV>
-        <CLASSIFICAZIONE>Frammento di capigliatura</CLASSIFICAZIONE>
-        <MATERIALE>Marmo</MATERIALE>
-        <TRACCE_DI_LAVORAZIONE>N/A</TRACCE_DI_LAVORAZIONE>
-        <DISCRIMINANTE_TECNICA>
-            <item_1>Lavorazione</item_1>
-            <item_2>Policromia</item_2>
-            <item_3>Perni</item_3>
-            <item_4>Riporti</item_4>
-        </DISCRIMINANTE_TECNICA>
-        <ALTEZZA>16</ALTEZZA>
-        <LUNGHEZZA>14</LUNGHEZZA>
-        <PROFONDIT>3</PROFONDIT>
-        <DIAMETRO />
-        <STATO_DI_CONSERVAZIONE>Buone</STATO_DI_CONSERVAZIONE>
-        <PROVENIENZA>N/A</PROVENIENZA>
-        <DATA_DI_RINVENIMENTO>N/A</DATA_DI_RINVENIMENTO>
-        <COLLOCAZIONE_ATTUALE_SCAFFALE>Scaffalatura centrale</COLLOCAZIONE_ATTUALE_SCAFFALE>
-        <COLLOCAZIONE_ATTUALE_CASSETTA>22.n561.-1.0.1 “Frammenti non ricomponibili – Polifemo?”</COLLOCAZIONE_ATTUALE_CASSETTA>
-        <CRONOLOGIA>N/A</CRONOLOGIA>
-        <BIBLIOGRAFIA />
-        <DESCRIZIONE>Si conservano buone tracce policromia (blu scuro) a separare le ciocche. Grandi ciocche, probabilmente pertinenti Polifemo</DESCRIZIONE>
-        <NOTAZIONI_STILISTICHE />
-        <ATTACCA_A />
-        <SOMIGLIA_A />
-        <STATO>Non Integro</STATO>
-        <ANALISI_ARCHEOMETRICHE>No</ANALISI_ARCHEOMETRICHE>
-        <FOTOGRAMMETRIA>Yes</FOTOGRAMMETRIA>
+        <IMT_ID>SPE_233</IMT_ID>
+        <Inventory_ID>N/A</Inventory_ID>
+        <Classification>Frammento di capigliatura</Classification>
+        <Material>Marmo</Material>
+        <Manifacturing_marks>N/A</Manifacturing_marks>
+        <Technical_diagnostic_features>Lavorazione, Policromia, Perni, Riporti</Technical_diagnostic_features>
+        <Height>16</Height>
+        <Lenght>14</Lenght>
+        <Depth>3</Depth>
+        <Diameter />
+        <State_of_preservation>Buone</State_of_preservation>
+        <Provenance>N/A</Provenance>
+        <Date_of_discovery>N/A</Date_of_discovery>
+        <Current_shelf_location>Scaffalatura centrale</Current_shelf_location>
+        <Current_box_location>22.n561.-1.0.1 “Frammenti non ricomponibili – Polifemo?”</Current_box_location>
+        <Chronology>N/A</Chronology>
+        <Bibliography />
+        <Description>Si conservano buone tracce policromia (blu scuro) a separare le ciocche. Grandi ciocche, probabilmente pertinenti Polifemo</Description>
+        <Stylistic_notes />
+        <Attaches_to />
+        <Similar_to />
+        <Status>Non Integro</Status>
+        <Archaemetric_analyses>No</Archaemetric_analyses>
+        <Photogrammetry>Yes</Photogrammetry>
     </row>
     <row index="3">
         <Unique_ID>50233</Unique_ID>
-        <ID_IMT>SPE_234</ID_IMT>
-        <NR._INV>N/A</NR._INV>
-        <CLASSIFICAZIONE>Frammento di panneggio</CLASSIFICAZIONE>
-        <MATERIALE>Marmo</MATERIALE>
-        <TRACCE_DI_LAVORAZIONE>N/A</TRACCE_DI_LAVORAZIONE>
-        <DISCRIMINANTE_TECNICA>
-            <item_1>Policromia</item_1>
-            <item_2>Riporti</item_2>
-        </DISCRIMINANTE_TECNICA>
-        <ALTEZZA>11</ALTEZZA>
-        <LUNGHEZZA>4,5</LUNGHEZZA>
-        <PROFONDIT>1,8</PROFONDIT>
-        <DIAMETRO />
-        <STATO_DI_CONSERVAZIONE>Buone</STATO_DI_CONSERVAZIONE>
-        <PROVENIENZA>N/A</PROVENIENZA>
-        <DATA_DI_RINVENIMENTO>N/A</DATA_DI_RINVENIMENTO>
-        <COLLOCAZIONE_ATTUALE_SCAFFALE>Scaffalatura centrale</COLLOCAZIONE_ATTUALE_SCAFFALE>
-        <COLLOCAZIONE_ATTUALE_CASSETTA>22.n561.-1.0.1 “Frammenti non ricomponibili – Polifemo?”</COLLOCAZIONE_ATTUALE_CASSETTA>
-        <CRONOLOGIA>N/A</CRONOLOGIA>
-        <BIBLIOGRAFIA />
-        <DESCRIZIONE>Panneggio alquanto piatto, possibilmente ravvivato da policromia oggi perduta</DESCRIZIONE>
-        <NOTAZIONI_STILISTICHE />
-        <ATTACCA_A />
-        <SOMIGLIA_A>SPE_237</SOMIGLIA_A>
-        <STATO>Non Integro</STATO>
-        <ANALISI_ARCHEOMETRICHE>No</ANALISI_ARCHEOMETRICHE>
-        <FOTOGRAMMETRIA>Yes</FOTOGRAMMETRIA>
+        <IMT_ID>SPE_234</IMT_ID>
+        <Inventory_ID>N/A</Inventory_ID>
+        <Classification>Frammento di panneggio</Classification>
+        <Material>Marmo</Material>
+        <Manifacturing_marks>N/A</Manifacturing_marks>
+        <Technical_diagnostic_features>Policromia, Riporti</Technical_diagnostic_features>
+        <Height>11</Height>
+        <Lenght>4,5</Lenght>
+        <Depth>1,8</Depth>
+        <Diameter />
+        <State_of_preservation>Buone</State_of_preservation>
+        <Provenance>N/A</Provenance>
+        <Date_of_discovery>N/A</Date_of_discovery>
+        <Current_shelf_location>Scaffalatura centrale</Current_shelf_location>
+        <Current_box_location>22.n561.-1.0.1 “Frammenti non ricomponibili – Polifemo?”</Current_box_location>
+        <Chronology>N/A</Chronology>
+        <Bibliography />
+        <Description>Panneggio alquanto piatto, possibilmente ravvivato da policromia oggi perduta</Description>
+        <Stylistic_notes />
+        <Attaches_to />
+        <Similar_to>SPE_237</Similar_to>
+        <Status>Non Integro</Status>
+        <Archaemetric_analyses>No</Archaemetric_analyses>
+        <Photogrammetry>Yes</Photogrammetry>
     </row>
     <row index="4">
         <Unique_ID>50234</Unique_ID>
-        <ID_IMT>SPE_235</ID_IMT>
-        <NR._INV>N/A</NR._INV>
-        <CLASSIFICAZIONE>Frammento di panneggio</CLASSIFICAZIONE>
-        <MATERIALE>Marmo</MATERIALE>
-        <TRACCE_DI_LAVORAZIONE>N/A</TRACCE_DI_LAVORAZIONE>
-        <DISCRIMINANTE_TECNICA />
-        <ALTEZZA>11,7</ALTEZZA>
-        <LUNGHEZZA>4,6</LUNGHEZZA>
-        <PROFONDIT>3,5</PROFONDIT>
-        <DIAMETRO />
-        <STATO_DI_CONSERVAZIONE>Buone</STATO_DI_CONSERVAZIONE>
-        <PROVENIENZA>N/A</PROVENIENZA>
-        <DATA_DI_RINVENIMENTO>N/A</DATA_DI_RINVENIMENTO>
-        <COLLOCAZIONE_ATTUALE_SCAFFALE>Scaffalatura centrale</COLLOCAZIONE_ATTUALE_SCAFFALE>
-        <COLLOCAZIONE_ATTUALE_CASSETTA>22.n561.-1.0.1 “Frammenti non ricomponibili – Polifemo?”</COLLOCAZIONE_ATTUALE_CASSETTA>
-        <CRONOLOGIA>N/A</CRONOLOGIA>
-        <BIBLIOGRAFIA />
-        <DESCRIZIONE>Panneggio per pieghe sovrapposte (Odisseo?)</DESCRIZIONE>
-        <NOTAZIONI_STILISTICHE />
-        <ATTACCA_A>SPE_236</ATTACCA_A>
-        <SOMIGLIA_A />
-        <STATO>Non Integro</STATO>
-        <ANALISI_ARCHEOMETRICHE>No</ANALISI_ARCHEOMETRICHE>
-        <FOTOGRAMMETRIA>Yes</FOTOGRAMMETRIA>
+        <IMT_ID>SPE_235</IMT_ID>
+        <Inventory_ID>N/A</Inventory_ID>
+        <Classification>Frammento di panneggio</Classification>
+        <Material>Marmo</Material>
+        <Manifacturing_marks>N/A</Manifacturing_marks>
+        <Technical_diagnostic_features />
+        <Height>11,7</Height>
+        <Lenght>4,6</Lenght>
+        <Depth>3,5</Depth>
+        <Diameter />
+        <State_of_preservation>Buone</State_of_preservation>
+        <Provenance>N/A</Provenance>
+        <Date_of_discovery>N/A</Date_of_discovery>
+        <Current_shelf_location>Scaffalatura centrale</Current_shelf_location>
+        <Current_box_location>22.n561.-1.0.1 “Frammenti non ricomponibili – Polifemo?”</Current_box_location>
+        <Chronology>N/A</Chronology>
+        <Bibliography />
+        <Description>Panneggio per pieghe sovrapposte (Odisseo?)</Description>
+        <Stylistic_notes />
+        <Attaches_to>SPE_236</Attaches_to>
+        <Similar_to />
+        <Status>Non Integro</Status>
+        <Archaemetric_analyses>No</Archaemetric_analyses>
+        <Photogrammetry>Yes</Photogrammetry>
     </row>
     <row index="5">
         <Unique_ID>50235</Unique_ID>
-        <ID_IMT>SPE_236</ID_IMT>
-        <NR._INV>N/A</NR._INV>
-        <CLASSIFICAZIONE>Frammento di panneggio</CLASSIFICAZIONE>
-        <MATERIALE>Marmo</MATERIALE>
-        <TRACCE_DI_LAVORAZIONE>N/A</TRACCE_DI_LAVORAZIONE>
-        <DISCRIMINANTE_TECNICA />
-        <ALTEZZA>10</ALTEZZA>
-        <LUNGHEZZA>6</LUNGHEZZA>
-        <PROFONDIT>1,7</PROFONDIT>
-        <DIAMETRO />
-        <STATO_DI_CONSERVAZIONE>Buone</STATO_DI_CONSERVAZIONE>
-        <PROVENIENZA>N/A</PROVENIENZA>
-        <DATA_DI_RINVENIMENTO>N/A</DATA_DI_RINVENIMENTO>
-        <COLLOCAZIONE_ATTUALE_SCAFFALE>Scaffalatura centrale</COLLOCAZIONE_ATTUALE_SCAFFALE>
-        <COLLOCAZIONE_ATTUALE_CASSETTA>22.n561.-1.0.1 “Frammenti non ricomponibili – Polifemo?”</COLLOCAZIONE_ATTUALE_CASSETTA>
-        <CRONOLOGIA>N/A</CRONOLOGIA>
-        <BIBLIOGRAFIA />
-        <DESCRIZIONE>Panneggio per pieghe sovrapposte (Odisseo?)</DESCRIZIONE>
-        <NOTAZIONI_STILISTICHE />
-        <ATTACCA_A>SPE_235</ATTACCA_A>
-        <SOMIGLIA_A />
-        <STATO>Non Integro</STATO>
-        <ANALISI_ARCHEOMETRICHE>No</ANALISI_ARCHEOMETRICHE>
-        <FOTOGRAMMETRIA>Yes</FOTOGRAMMETRIA>
+        <IMT_ID>SPE_236</IMT_ID>
+        <Inventory_ID>N/A</Inventory_ID>
+        <Classification>Frammento di panneggio</Classification>
+        <Material>Marmo</Material>
+        <Manifacturing_marks>N/A</Manifacturing_marks>
+        <Technical_diagnostic_features />
+        <Height>10</Height>
+        <Lenght>6</Lenght>
+        <Depth>1,7</Depth>
+        <Diameter />
+        <State_of_preservation>Buone</State_of_preservation>
+        <Provenance>N/A</Provenance>
+        <Date_of_discovery>N/A</Date_of_discovery>
+        <Current_shelf_location>Scaffalatura centrale</Current_shelf_location>
+        <Current_box_location>22.n561.-1.0.1 “Frammenti non ricomponibili – Polifemo?”</Current_box_location>
+        <Chronology>N/A</Chronology>
+        <Bibliography />
+        <Description>Panneggio per pieghe sovrapposte (Odisseo?)</Description>
+        <Stylistic_notes />
+        <Attaches_to>SPE_235</Attaches_to>
+        <Similar_to />
+        <Status>Non Integro</Status>
+        <Archaemetric_analyses>No</Archaemetric_analyses>
+        <Photogrammetry>Yes</Photogrammetry>
     </row>
     <row index="6">
         <Unique_ID>50236</Unique_ID>
-        <ID_IMT>SPE_237</ID_IMT>
-        <NR._INV>N/A</NR._INV>
-        <CLASSIFICAZIONE>Frammento di panneggio</CLASSIFICAZIONE>
-        <MATERIALE>Marmo</MATERIALE>
-        <TRACCE_DI_LAVORAZIONE>N/A</TRACCE_DI_LAVORAZIONE>
-        <DISCRIMINANTE_TECNICA>
-            <item_1>Policromia</item_1>
-        </DISCRIMINANTE_TECNICA>
-        <ALTEZZA>11,7</ALTEZZA>
-        <LUNGHEZZA>4,2</LUNGHEZZA>
-        <PROFONDIT>1,8</PROFONDIT>
-        <DIAMETRO />
-        <STATO_DI_CONSERVAZIONE>Buone</STATO_DI_CONSERVAZIONE>
-        <PROVENIENZA>N/A</PROVENIENZA>
-        <DATA_DI_RINVENIMENTO>N/A</DATA_DI_RINVENIMENTO>
-        <COLLOCAZIONE_ATTUALE_SCAFFALE>Scaffalatura centrale</COLLOCAZIONE_ATTUALE_SCAFFALE>
-        <COLLOCAZIONE_ATTUALE_CASSETTA>22.n561.-1.0.1 “Frammenti non ricomponibili – Polifemo?”</COLLOCAZIONE_ATTUALE_CASSETTA>
-        <CRONOLOGIA>N/A</CRONOLOGIA>
-        <BIBLIOGRAFIA />
-        <DESCRIZIONE>Policromia ben conservata su gran parte del panneggio (rosa e arancione). Panneggio alquanto piatto, ravvivato da policromia. Si legge un vecchio inv. n. 1686 lungo la parte anteriore del fr., quasi completamente sbiadito</DESCRIZIONE>
-        <NOTAZIONI_STILISTICHE />
-        <ATTACCA_A />
-        <SOMIGLIA_A>SPE_234</SOMIGLIA_A>
-        <STATO>Non Integro</STATO>
-        <ANALISI_ARCHEOMETRICHE>No</ANALISI_ARCHEOMETRICHE>
-        <FOTOGRAMMETRIA>Yes</FOTOGRAMMETRIA>
+        <IMT_ID>SPE_237</IMT_ID>
+        <Inventory_ID>N/A</Inventory_ID>
+        <Classification>Frammento di panneggio</Classification>
+        <Material>Marmo</Material>
+        <Manifacturing_marks>N/A</Manifacturing_marks>
+        <Technical_diagnostic_features>Policromia</Technical_diagnostic_features>
+        <Height>11,7</Height>
+        <Lenght>4,2</Lenght>
+        <Depth>1,8</Depth>
+        <Diameter />
+        <State_of_preservation>Buone</State_of_preservation>
+        <Provenance>N/A</Provenance>
+        <Date_of_discovery>N/A</Date_of_discovery>
+        <Current_shelf_location>Scaffalatura centrale</Current_shelf_location>
+        <Current_box_location>22.n561.-1.0.1 “Frammenti non ricomponibili – Polifemo?”</Current_box_location>
+        <Chronology>N/A</Chronology>
+        <Bibliography />
+        <Description>Policromia ben conservata su gran parte del panneggio (rosa e arancione). Panneggio alquanto piatto, ravvivato da policromia. Si legge un vecchio inv. n. 1686 lungo la parte anteriore del fr., quasi completamente sbiadito</Description>
+        <Stylistic_notes />
+        <Attaches_to />
+        <Similar_to>SPE_234</Similar_to>
+        <Status>Non Integro</Status>
+        <Archaemetric_analyses>No</Archaemetric_analyses>
+        <Photogrammetry>Yes</Photogrammetry>
     </row>
     <row index="7">
         <Unique_ID>50237</Unique_ID>
-        <ID_IMT>SPE_238</ID_IMT>
-        <NR._INV>N/A</NR._INV>
-        <CLASSIFICAZIONE>Frammento di panneggio</CLASSIFICAZIONE>
-        <MATERIALE>Marmo</MATERIALE>
-        <TRACCE_DI_LAVORAZIONE>N/A</TRACCE_DI_LAVORAZIONE>
-        <DISCRIMINANTE_TECNICA />
-        <ALTEZZA>17,7</ALTEZZA>
-        <LUNGHEZZA>9,3</LUNGHEZZA>
-        <PROFONDIT>0,5</PROFONDIT>
-        <DIAMETRO />
-        <STATO_DI_CONSERVAZIONE>Molto rovinato</STATO_DI_CONSERVAZIONE>
-        <PROVENIENZA>N/A</PROVENIENZA>
-        <DATA_DI_RINVENIMENTO>N/A</DATA_DI_RINVENIMENTO>
-        <COLLOCAZIONE_ATTUALE_SCAFFALE>Scaffalatura centrale</COLLOCAZIONE_ATTUALE_SCAFFALE>
-        <COLLOCAZIONE_ATTUALE_CASSETTA>22.n561.-1.0.1 “Frammenti non ricomponibili – Polifemo?”</COLLOCAZIONE_ATTUALE_CASSETTA>
-        <CRONOLOGIA />
-        <BIBLIOGRAFIA />
-        <DESCRIZIONE />
-        <NOTAZIONI_STILISTICHE />
-        <ATTACCA_A />
-        <SOMIGLIA_A />
-        <STATO>Non Integro</STATO>
-        <ANALISI_ARCHEOMETRICHE>No</ANALISI_ARCHEOMETRICHE>
-        <FOTOGRAMMETRIA>Yes</FOTOGRAMMETRIA>
+        <IMT_ID>SPE_238</IMT_ID>
+        <Inventory_ID>N/A</Inventory_ID>
+        <Classification>Frammento di panneggio</Classification>
+        <Material>Marmo</Material>
+        <Manifacturing_marks>N/A</Manifacturing_marks>
+        <Technical_diagnostic_features />
+        <Height>17,7</Height>
+        <Lenght>9,3</Lenght>
+        <Depth>0,5</Depth>
+        <Diameter />
+        <State_of_preservation>Molto rovinato</State_of_preservation>
+        <Provenance>N/A</Provenance>
+        <Date_of_discovery>N/A</Date_of_discovery>
+        <Current_shelf_location>Scaffalatura centrale</Current_shelf_location>
+        <Current_box_location>22.n561.-1.0.1 “Frammenti non ricomponibili – Polifemo?”</Current_box_location>
+        <Chronology />
+        <Bibliography />
+        <Description />
+        <Stylistic_notes />
+        <Attaches_to />
+        <Similar_to />
+        <Status>Non Integro</Status>
+        <Archaemetric_analyses>No</Archaemetric_analyses>
+        <Photogrammetry>Yes</Photogrammetry>
     </row>
 </scheda>
