@@ -2,12 +2,17 @@
 <scheda>
     <row index="2">
         <Unique_ID>50232</Unique_ID>
-        <IMT_ID>SPE_233</IMT_ID>
+        <Project_ID>SPE_233</Project_ID>
         <Inventory_ID>N/A</Inventory_ID>
         <Classification>Frammento di capigliatura</Classification>
         <Material>Marmo</Material>
         <Manifacturing_marks>N/A</Manifacturing_marks>
-        <Technical_diagnostic_features>Lavorazione, Policromia, Perni, Riporti</Technical_diagnostic_features>
+        <Technical_diagnostic_features>
+            <value>Lavorazione</value>
+            <value>Policromia</value>
+            <value>Perni</value>
+            <value>Riporti</value>
+        </Technical_diagnostic_features>
         <Height>16</Height>
         <Lenght>14</Lenght>
         <Depth>3</Depth>
@@ -22,19 +27,24 @@
         <Description>Si conservano buone tracce policromia (blu scuro) a separare le ciocche. Grandi ciocche, probabilmente pertinenti Polifemo</Description>
         <Stylistic_notes />
         <Attaches_to />
+        <Attaches_to_unique_id />
         <Similar_to />
+        <Similar_to_unique_id />
         <Status>Non Integro</Status>
         <Archaemetric_analyses>No</Archaemetric_analyses>
         <Photogrammetry>Yes</Photogrammetry>
     </row>
     <row index="3">
         <Unique_ID>50233</Unique_ID>
-        <IMT_ID>SPE_234</IMT_ID>
+        <Project_ID>SPE_234</Project_ID>
         <Inventory_ID>N/A</Inventory_ID>
         <Classification>Frammento di panneggio</Classification>
         <Material>Marmo</Material>
         <Manifacturing_marks>N/A</Manifacturing_marks>
-        <Technical_diagnostic_features>Policromia, Riporti</Technical_diagnostic_features>
+        <Technical_diagnostic_features>
+            <value>Policromia</value>
+            <value>Riporti</value>
+        </Technical_diagnostic_features>
         <Height>11</Height>
         <Lenght>4,5</Lenght>
         <Depth>1,8</Depth>
@@ -49,14 +59,16 @@
         <Description>Panneggio alquanto piatto, possibilmente ravvivato da policromia oggi perduta</Description>
         <Stylistic_notes />
         <Attaches_to />
+        <Attaches_to_unique_id />
         <Similar_to>SPE_237</Similar_to>
+        <Similar_to_unique_id>50236</Similar_to_unique_id>
         <Status>Non Integro</Status>
         <Archaemetric_analyses>No</Archaemetric_analyses>
         <Photogrammetry>Yes</Photogrammetry>
     </row>
     <row index="4">
         <Unique_ID>50234</Unique_ID>
-        <IMT_ID>SPE_235</IMT_ID>
+        <Project_ID>SPE_235</Project_ID>
         <Inventory_ID>N/A</Inventory_ID>
         <Classification>Frammento di panneggio</Classification>
         <Material>Marmo</Material>
@@ -76,14 +88,16 @@
         <Description>Panneggio per pieghe sovrapposte (Odisseo?)</Description>
         <Stylistic_notes />
         <Attaches_to>SPE_236</Attaches_to>
+        <Attaches_to_unique_id>50235</Attaches_to_unique_id>
         <Similar_to />
+        <Similar_to_unique_id />
         <Status>Non Integro</Status>
         <Archaemetric_analyses>No</Archaemetric_analyses>
         <Photogrammetry>Yes</Photogrammetry>
     </row>
     <row index="5">
         <Unique_ID>50235</Unique_ID>
-        <IMT_ID>SPE_236</IMT_ID>
+        <Project_ID>SPE_236</Project_ID>
         <Inventory_ID>N/A</Inventory_ID>
         <Classification>Frammento di panneggio</Classification>
         <Material>Marmo</Material>
@@ -103,19 +117,23 @@
         <Description>Panneggio per pieghe sovrapposte (Odisseo?)</Description>
         <Stylistic_notes />
         <Attaches_to>SPE_235</Attaches_to>
+        <Attaches_to_unique_id>50234</Attaches_to_unique_id>
         <Similar_to />
+        <Similar_to_unique_id />
         <Status>Non Integro</Status>
         <Archaemetric_analyses>No</Archaemetric_analyses>
         <Photogrammetry>Yes</Photogrammetry>
     </row>
     <row index="6">
         <Unique_ID>50236</Unique_ID>
-        <IMT_ID>SPE_237</IMT_ID>
+        <Project_ID>SPE_237</Project_ID>
         <Inventory_ID>N/A</Inventory_ID>
         <Classification>Frammento di panneggio</Classification>
         <Material>Marmo</Material>
         <Manifacturing_marks>N/A</Manifacturing_marks>
-        <Technical_diagnostic_features>Policromia</Technical_diagnostic_features>
+        <Technical_diagnostic_features>
+            <value>Policromia</value>
+        </Technical_diagnostic_features>
         <Height>11,7</Height>
         <Lenght>4,2</Lenght>
         <Depth>1,8</Depth>
@@ -130,14 +148,16 @@
         <Description>Policromia ben conservata su gran parte del panneggio (rosa e arancione). Panneggio alquanto piatto, ravvivato da policromia. Si legge un vecchio inv. n. 1686 lungo la parte anteriore del fr., quasi completamente sbiadito</Description>
         <Stylistic_notes />
         <Attaches_to />
+        <Attaches_to_unique_id />
         <Similar_to>SPE_234</Similar_to>
+        <Similar_to_unique_id>50233</Similar_to_unique_id>
         <Status>Non Integro</Status>
         <Archaemetric_analyses>No</Archaemetric_analyses>
         <Photogrammetry>Yes</Photogrammetry>
     </row>
     <row index="7">
         <Unique_ID>50237</Unique_ID>
-        <IMT_ID>SPE_238</IMT_ID>
+        <Project_ID>SPE_238</Project_ID>
         <Inventory_ID>N/A</Inventory_ID>
         <Classification>Frammento di panneggio</Classification>
         <Material>Marmo</Material>
@@ -157,7 +177,9 @@
         <Description />
         <Stylistic_notes />
         <Attaches_to />
+        <Attaches_to_unique_id />
         <Similar_to />
+        <Similar_to_unique_id />
         <Status>Non Integro</Status>
         <Archaemetric_analyses>No</Archaemetric_analyses>
         <Photogrammetry>Yes</Photogrammetry>

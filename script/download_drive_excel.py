@@ -17,14 +17,16 @@ import re
 from pathlib import Path
 from typing import Iterable
 from urllib.parse import unquote
-from xml.etree.ElementTree import Element, ElementTree, SubElement
+from xml.etree.ElementTree import Element, ElementTree, SubElement, indent
 
 import requests
 from openpyxl import load_workbook
 from openpyxl.utils import get_column_letter
 
 MULTI_VALUE_DELIMITER = "; "
-MULTI_LABEL_COLUMNS = {"DISCRIMINANTE_TECNICA"}
+MULTI_LABEL_COLUMNS = {"DISCRIMINANTE_TECNICA", "TECHNICAL_DIAGNOSTIC_FEATURES"}
+MULTI_LABEL_ITEM_TAG = "value"
+RELATION_COLUMNS = {"ATTACHES_TO", "SIMILAR_TO"}
 SCRIPT_DIR = Path(__file__).resolve().parent
 DEFAULT_OUTPUT_DIR = SCRIPT_DIR / "output_data"
 
@@ -153,6 +155,82 @@ def split_multi_label_values(value) -> list[str]:
     return parts
 
 
+def split_relation_values(value) -> list[str]:
+    """Split relation references (Project_ID values) from a cell."""
+
+    normalized = normalize_cell_value(value)
+    if not normalized:
+        return []
+
+    return [part.strip() for part in re.split(r"[,;\n]+", normalized) if part.strip()]
+
+
+def find_column_index(header_row: list[str], target_header_key: str) -> int | None:
+    """Find a column index by canonical header key."""
+
+    for column_index, header_value in enumerate(header_row):
+        if canonical_header_key(header_value) == target_header_key:
+            return column_index
+    return None
+
+
+def build_project_unique_id_map(
+    data_rows: list[list[str]],
+    project_id_index: int,
+    unique_id_index: int,
+) -> dict[str, str]:
+    """Map Project_ID values to their corresponding Unique_ID values."""
+
+    mapping: dict[str, str] = {}
+    for row in data_rows:
+        if project_id_index >= len(row) or unique_id_index >= len(row):
+            continue
+
+        project_id = normalize_cell_value(row[project_id_index]).strip()
+        unique_id = normalize_cell_value(row[unique_id_index]).strip()
+        if project_id and unique_id and project_id not in mapping:
+            mapping[project_id] = unique_id
+
+    return mapping
+
+
+def relation_unique_ids_text(value, project_unique_id_map: dict[str, str]) -> str:
+    """Resolve relation references into corresponding Unique_ID values."""
+
+    relation_values = split_relation_values(value)
+    if not relation_values:
+        return ""
+
+    unique_ids: list[str] = []
+    for relation_value in relation_values:
+        mapped_unique_id = project_unique_id_map.get(relation_value)
+        if mapped_unique_id:
+            unique_ids.append(mapped_unique_id)
+
+    return MULTI_VALUE_DELIMITER.join(unique_ids)
+
+
+def add_relation_unique_id_cells(
+    row_element: Element,
+    tag_name: str,
+    header_key: str,
+    value,
+    project_unique_id_map: dict[str, str],
+    generated_relation_unique_id_headers: set[str],
+) -> None:
+    """Add sibling relation unique ID elements for relation columns."""
+
+    if header_key not in RELATION_COLUMNS:
+        return
+
+    relation_unique_id_header = f"{header_key}_UNIQUE_ID"
+    if relation_unique_id_header not in generated_relation_unique_id_headers:
+        return
+
+    unique_id_element = SubElement(row_element, f"{tag_name}_unique_id")
+    unique_id_element.text = relation_unique_ids_text(value, project_unique_id_map)
+
+
 def append_xml_cell(parent: Element, tag_name: str, value, is_multi_label: bool) -> None:
     """Append one XML cell, optionally expanding multi-label values into children."""
 
@@ -163,8 +241,8 @@ def append_xml_cell(parent: Element, tag_name: str, value, is_multi_label: bool)
 
     container = SubElement(parent, tag_name)
     labels = split_multi_label_values(value)
-    for index, label in enumerate(labels, start=1):
-        item = SubElement(container, f"item_{index}")
+    for label in labels:
+        item = SubElement(container, MULTI_LABEL_ITEM_TAG)
         item.text = label
 
 
@@ -199,6 +277,20 @@ def build_column_specs(header_row: list[str], max_columns: int) -> list[tuple[st
         specs.append((tag_name, header_key in MULTI_LABEL_COLUMNS))
 
     return specs
+
+
+def build_relation_unique_id_headers(header_row: list[str]) -> set[str]:
+    """Determine which relation unique ID headers should be generated."""
+
+    header_keys = {canonical_header_key(header_value) for header_value in header_row}
+    generated: set[str] = set()
+
+    for relation_header in RELATION_COLUMNS:
+        relation_unique_id_header = f"{relation_header}_UNIQUE_ID"
+        if relation_header in header_keys and relation_unique_id_header not in header_keys:
+            generated.add(relation_unique_id_header)
+
+    return generated
 
 
 def build_http_session() -> requests.Session:
@@ -329,14 +421,39 @@ def worksheet_to_xml(worksheet) -> Element:
         )
     ]
     column_specs = build_column_specs(header_row, max_columns)
+    project_id_index = find_column_index(header_row, "PROJECT_ID")
+    unique_id_index = find_column_index(header_row, "UNIQUE_ID")
 
-    for row_index, row in enumerate(
-        worksheet.iter_rows(min_row=2, max_row=worksheet.max_row, max_col=max_columns, values_only=True),
-        start=2,
-    ):
+    data_rows = [
+        [normalize_cell_value(value) for value in row]
+        for row in worksheet.iter_rows(
+            min_row=2,
+            max_row=worksheet.max_row,
+            max_col=max_columns,
+            values_only=True,
+        )
+    ]
+
+    project_unique_id_map: dict[str, str] = {}
+    if project_id_index is not None and unique_id_index is not None:
+        project_unique_id_map = build_project_unique_id_map(data_rows, project_id_index, unique_id_index)
+
+    generated_relation_unique_id_headers = build_relation_unique_id_headers(header_row)
+
+    for row_index, row in enumerate(data_rows, start=2):
         row_element = SubElement(sheet_element, "row", index=str(row_index))
-        for (tag_name, is_multi_label), value in zip(column_specs, row):
+        for column_index, ((tag_name, is_multi_label), value) in enumerate(zip(column_specs, row), start=1):
+            header_value = header_row[column_index - 1] if column_index - 1 < len(header_row) else ""
+            header_key = canonical_header_key(header_value)
             append_xml_cell(row_element, tag_name, value, is_multi_label)
+            add_relation_unique_id_cells(
+                row_element,
+                tag_name,
+                header_key,
+                value,
+                project_unique_id_map,
+                generated_relation_unique_id_headers,
+            )
 
     return sheet_element
 
@@ -351,15 +468,36 @@ def rows_to_xml(rows: list[list[str]]) -> Element:
     header_row = [normalize_cell_value(value) for value in rows[0]]
     max_columns = max(len(header_row), max((len(row) for row in rows), default=0))
     column_specs = build_column_specs(header_row, max_columns)
+    project_id_index = find_column_index(header_row, "PROJECT_ID")
+    unique_id_index = find_column_index(header_row, "UNIQUE_ID")
+    normalized_data_rows: list[list[str]] = []
 
-    for row_index, row in enumerate(rows[1:], start=2):
-        row_element = SubElement(sheet_element, "row", index=str(row_index))
+    for row in rows[1:]:
         normalized_row = [normalize_cell_value(value) for value in row]
         if len(normalized_row) < max_columns:
             normalized_row.extend([""] * (max_columns - len(normalized_row)))
+        normalized_data_rows.append(normalized_row)
 
-        for (tag_name, is_multi_label), value in zip(column_specs, normalized_row):
+    project_unique_id_map: dict[str, str] = {}
+    if project_id_index is not None and unique_id_index is not None:
+        project_unique_id_map = build_project_unique_id_map(normalized_data_rows, project_id_index, unique_id_index)
+
+    generated_relation_unique_id_headers = build_relation_unique_id_headers(header_row)
+
+    for row_index, normalized_row in enumerate(normalized_data_rows, start=2):
+        row_element = SubElement(sheet_element, "row", index=str(row_index))
+        for column_index, ((tag_name, is_multi_label), value) in enumerate(zip(column_specs, normalized_row), start=1):
+            header_value = header_row[column_index - 1] if column_index - 1 < len(header_row) else ""
+            header_key = canonical_header_key(header_value)
             append_xml_cell(row_element, tag_name, value, is_multi_label)
+            add_relation_unique_id_cells(
+                row_element,
+                tag_name,
+                header_key,
+                value,
+                project_unique_id_map,
+                generated_relation_unique_id_headers,
+            )
 
     return sheet_element
 
@@ -380,6 +518,7 @@ def write_csv_and_xml(worksheet, csv_path: Path, xml_path: Path) -> None:
             writer.writerow([normalize_cell_value(value) for value in row])
 
     root = worksheet_to_xml(worksheet)
+    indent(root, space="    ")
     tree = ElementTree(root)
     xml_path.parent.mkdir(parents=True, exist_ok=True)
     tree.write(xml_path, encoding="utf-8", xml_declaration=True)
@@ -396,6 +535,7 @@ def write_rows_csv_and_xml(rows: list[list[str]], csv_path: Path, xml_path: Path
             writer.writerow([normalize_cell_value(value) for value in row])
 
     root = rows_to_xml(rows)
+    indent(root, space="    ")
     tree = ElementTree(root)
     xml_path.parent.mkdir(parents=True, exist_ok=True)
     tree.write(xml_path, encoding="utf-8", xml_declaration=True)
