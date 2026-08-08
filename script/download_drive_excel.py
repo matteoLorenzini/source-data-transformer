@@ -27,6 +27,7 @@ MULTI_VALUE_DELIMITER = "; "
 MULTI_LABEL_COLUMNS = {"DISCRIMINANTE_TECNICA", "TECHNICAL_DIAGNOSTIC_FEATURES"}
 MULTI_LABEL_ITEM_TAG = "value"
 RELATION_COLUMNS = {"ATTACHES_TO", "SIMILAR_TO"}
+RESOURCE_URI_PREFIX = "http://www.lynx.com/resource/cultural-heritage-object/"
 SCRIPT_DIR = Path(__file__).resolve().parent
 DEFAULT_OUTPUT_DIR = SCRIPT_DIR / "output_data"
 
@@ -205,7 +206,7 @@ def relation_unique_ids_text(value, project_unique_id_map: dict[str, str]) -> st
     for relation_value in relation_values:
         mapped_unique_id = project_unique_id_map.get(relation_value)
         if mapped_unique_id:
-            unique_ids.append(mapped_unique_id)
+            unique_ids.append(f"{RESOURCE_URI_PREFIX}{mapped_unique_id}")
 
     return MULTI_VALUE_DELIMITER.join(unique_ids)
 
