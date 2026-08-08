@@ -212,14 +212,14 @@ def relation_unique_ids_text(value, project_unique_id_map: dict[str, str]) -> st
 
 
 def add_relation_unique_id_cells(
-    row_element: Element,
+    parent_element: Element,
     tag_name: str,
     header_key: str,
     value,
     project_unique_id_map: dict[str, str],
     generated_relation_unique_id_headers: set[str],
 ) -> None:
-    """Add sibling relation unique ID elements for relation columns."""
+    """Add relation unique ID elements for relation columns."""
 
     if header_key not in RELATION_COLUMNS:
         return
@@ -228,7 +228,7 @@ def add_relation_unique_id_cells(
     if relation_unique_id_header not in generated_relation_unique_id_headers:
         return
 
-    unique_id_element = SubElement(row_element, f"{tag_name}_unique_id")
+    unique_id_element = SubElement(parent_element, f"{tag_name}_unique_id")
     unique_id_element.text = relation_unique_ids_text(value, project_unique_id_map)
 
 
@@ -443,18 +443,26 @@ def worksheet_to_xml(worksheet) -> Element:
 
     for row_index, row in enumerate(data_rows, start=2):
         row_element = SubElement(sheet_element, "row", index=str(row_index))
+        relation_element: Element | None = None
         for column_index, ((tag_name, is_multi_label), value) in enumerate(zip(column_specs, row), start=1):
             header_value = header_row[column_index - 1] if column_index - 1 < len(header_row) else ""
             header_key = canonical_header_key(header_value)
+
+            if header_key in RELATION_COLUMNS:
+                if relation_element is None:
+                    relation_element = SubElement(row_element, "relation")
+                append_xml_cell(relation_element, tag_name, value, False)
+                add_relation_unique_id_cells(
+                    relation_element,
+                    tag_name,
+                    header_key,
+                    value,
+                    project_unique_id_map,
+                    generated_relation_unique_id_headers,
+                )
+                continue
+
             append_xml_cell(row_element, tag_name, value, is_multi_label)
-            add_relation_unique_id_cells(
-                row_element,
-                tag_name,
-                header_key,
-                value,
-                project_unique_id_map,
-                generated_relation_unique_id_headers,
-            )
 
     return sheet_element
 
@@ -487,18 +495,26 @@ def rows_to_xml(rows: list[list[str]]) -> Element:
 
     for row_index, normalized_row in enumerate(normalized_data_rows, start=2):
         row_element = SubElement(sheet_element, "row", index=str(row_index))
+        relation_element: Element | None = None
         for column_index, ((tag_name, is_multi_label), value) in enumerate(zip(column_specs, normalized_row), start=1):
             header_value = header_row[column_index - 1] if column_index - 1 < len(header_row) else ""
             header_key = canonical_header_key(header_value)
+
+            if header_key in RELATION_COLUMNS:
+                if relation_element is None:
+                    relation_element = SubElement(row_element, "relation")
+                append_xml_cell(relation_element, tag_name, value, False)
+                add_relation_unique_id_cells(
+                    relation_element,
+                    tag_name,
+                    header_key,
+                    value,
+                    project_unique_id_map,
+                    generated_relation_unique_id_headers,
+                )
+                continue
+
             append_xml_cell(row_element, tag_name, value, is_multi_label)
-            add_relation_unique_id_cells(
-                row_element,
-                tag_name,
-                header_key,
-                value,
-                project_unique_id_map,
-                generated_relation_unique_id_headers,
-            )
 
     return sheet_element
 
