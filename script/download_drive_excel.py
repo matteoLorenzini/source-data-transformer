@@ -27,6 +27,13 @@ MULTI_VALUE_DELIMITER = "; "
 MULTI_LABEL_COLUMNS = {"DISCRIMINANTE_TECNICA", "TECHNICAL_DIAGNOSTIC_FEATURES"}
 MULTI_LABEL_ITEM_TAG = "value"
 RELATION_COLUMNS = {"ATTACHES_TO", "SIMILAR_TO"}
+RELATION_ONLY_COLUMNS = {
+    "ATTACHES_TO",
+    "ATTACHES_TO_UNIQUE_ID",
+    "SIMILAR_TO",
+    "SIMILAR_TO_UNIQUE_ID",
+}
+DEDUPLICATE_INVERSE_RELATIONS = True
 RESOURCE_URI_PREFIX = "http://www.lynx.com/resource/cultural-heritage-object/"
 SCRIPT_DIR = Path(__file__).resolve().parent
 DEFAULT_OUTPUT_DIR = SCRIPT_DIR / "output_data"
@@ -211,15 +218,71 @@ def relation_unique_ids_text(value, project_unique_id_map: dict[str, str]) -> st
     return MULTI_VALUE_DELIMITER.join(unique_ids)
 
 
+def should_keep_canonical_relation(source_unique_id: str, target_unique_id: str) -> bool:
+    """Keep only one direction of an inverse relation pair."""
+
+    if not source_unique_id or not target_unique_id:
+        return True
+
+    if source_unique_id == target_unique_id:
+        return False
+
+    if source_unique_id.isdigit() and target_unique_id.isdigit():
+        return int(source_unique_id) < int(target_unique_id)
+
+    return source_unique_id < target_unique_id
+
+
+def relation_texts_for_row(
+    source_unique_id: str,
+    relation_value,
+    project_unique_id_map: dict[str, str],
+) -> tuple[str, str]:
+    """Return relation label text and unique-id text for one row relation field."""
+
+    relation_values = split_relation_values(relation_value)
+    if not relation_values:
+        return "", ""
+
+    kept_relation_values: list[str] = []
+    kept_unique_ids: list[str] = []
+
+    for relation_reference in relation_values:
+        target_unique_id = project_unique_id_map.get(relation_reference)
+
+        if target_unique_id and DEDUPLICATE_INVERSE_RELATIONS:
+            if not should_keep_canonical_relation(source_unique_id, target_unique_id):
+                continue
+
+        kept_relation_values.append(relation_reference)
+        if target_unique_id:
+            kept_unique_ids.append(f"{RESOURCE_URI_PREFIX}{target_unique_id}")
+
+    return MULTI_VALUE_DELIMITER.join(kept_relation_values), MULTI_VALUE_DELIMITER.join(kept_unique_ids)
+
+
+def prefixed_unique_id_text(value) -> str:
+    """Return Unique_ID value with URI prefix when non-empty."""
+
+    normalized = normalize_cell_value(value).strip()
+    if not normalized:
+        return ""
+
+    if normalized.startswith(RESOURCE_URI_PREFIX):
+        return normalized
+
+    return f"{RESOURCE_URI_PREFIX}{normalized}"
+
+
 def add_relation_unique_id_cells(
-    parent_element: Element,
+    row_element: Element,
     tag_name: str,
     header_key: str,
     value,
     project_unique_id_map: dict[str, str],
     generated_relation_unique_id_headers: set[str],
 ) -> None:
-    """Add relation unique ID elements for relation columns."""
+    """Add sibling relation unique ID elements for relation columns."""
 
     if header_key not in RELATION_COLUMNS:
         return
@@ -228,7 +291,7 @@ def add_relation_unique_id_cells(
     if relation_unique_id_header not in generated_relation_unique_id_headers:
         return
 
-    unique_id_element = SubElement(parent_element, f"{tag_name}_unique_id")
+    unique_id_element = SubElement(row_element, f"{tag_name}_unique_id")
     unique_id_element.text = relation_unique_ids_text(value, project_unique_id_map)
 
 
@@ -292,6 +355,91 @@ def build_relation_unique_id_headers(header_row: list[str]) -> set[str]:
             generated.add(relation_unique_id_header)
 
     return generated
+
+
+def find_column_indices_by_header_key(header_row: list[str], target_header_key: str) -> list[int]:
+    """Find all column indices matching a canonical header key."""
+
+    return [
+        column_index
+        for column_index, header_value in enumerate(header_row)
+        if canonical_header_key(header_value) == target_header_key
+    ]
+
+
+def build_relation_column_lookup(
+    header_row: list[str],
+    max_columns: int,
+) -> dict[str, tuple[int, str]]:
+    """Build a lookup of relation header keys to (column index, XML tag name)."""
+
+    tags = build_column_tags(header_row, max_columns)
+    lookup: dict[str, tuple[int, str]] = {}
+
+    for column_index, header_value in enumerate(header_row):
+        header_key = canonical_header_key(header_value)
+        if header_key in {"ATTACHES_TO", "SIMILAR_TO"}:
+            lookup[header_key] = (column_index, tags[column_index])
+
+    return lookup
+
+
+def build_relations_xml(
+    header_row: list[str],
+    max_columns: int,
+    data_rows: list[list[str]],
+    project_unique_id_map: dict[str, str],
+) -> Element:
+    """Build a relations-only XML document per row."""
+
+    root = Element("scheda")
+    unique_id_index = find_column_index(header_row, "UNIQUE_ID")
+    relation_lookup = build_relation_column_lookup(header_row, max_columns)
+
+    for row_index, row in enumerate(data_rows, start=2):
+        unique_id_value = row[unique_id_index] if unique_id_index is not None and unique_id_index < len(row) else ""
+        source_unique_id = normalize_cell_value(unique_id_value).strip()
+
+        attaches_to_value = ""
+        attaches_to_unique_ids_text = ""
+        attaches_to_tag = "Attaches_to"
+        if "ATTACHES_TO" in relation_lookup:
+            attaches_to_index, attaches_to_tag = relation_lookup["ATTACHES_TO"]
+            raw_attaches_to_value = row[attaches_to_index] if attaches_to_index < len(row) else ""
+            attaches_to_value, attaches_to_unique_ids_text = relation_texts_for_row(
+                source_unique_id,
+                raw_attaches_to_value,
+                project_unique_id_map,
+            )
+
+        similar_to_value = ""
+        similar_to_unique_ids_text = ""
+        similar_to_tag = "Similar_to"
+        if "SIMILAR_TO" in relation_lookup:
+            similar_to_index, similar_to_tag = relation_lookup["SIMILAR_TO"]
+            raw_similar_to_value = row[similar_to_index] if similar_to_index < len(row) else ""
+            similar_to_value, similar_to_unique_ids_text = relation_texts_for_row(
+                source_unique_id,
+                raw_similar_to_value,
+                project_unique_id_map,
+            )
+
+        if not attaches_to_value and not similar_to_value:
+            continue
+
+        row_element = SubElement(root, "row", index=str(row_index))
+        unique_id_element = SubElement(row_element, "Unique_ID")
+        unique_id_element.text = prefixed_unique_id_text(unique_id_value)
+
+        append_xml_cell(row_element, attaches_to_tag, attaches_to_value, False)
+        attaches_to_unique_id = SubElement(row_element, f"{attaches_to_tag}_unique_id")
+        attaches_to_unique_id.text = attaches_to_unique_ids_text
+
+        append_xml_cell(row_element, similar_to_tag, similar_to_value, False)
+        similar_to_unique_id = SubElement(row_element, f"{similar_to_tag}_unique_id")
+        similar_to_unique_id.text = similar_to_unique_ids_text
+
+    return root
 
 
 def build_http_session() -> requests.Session:
@@ -443,28 +591,49 @@ def worksheet_to_xml(worksheet) -> Element:
 
     for row_index, row in enumerate(data_rows, start=2):
         row_element = SubElement(sheet_element, "row", index=str(row_index))
-        relation_element: Element | None = None
         for column_index, ((tag_name, is_multi_label), value) in enumerate(zip(column_specs, row), start=1):
             header_value = header_row[column_index - 1] if column_index - 1 < len(header_row) else ""
             header_key = canonical_header_key(header_value)
-
-            if header_key in RELATION_COLUMNS:
-                if relation_element is None:
-                    relation_element = SubElement(row_element, "relation")
-                append_xml_cell(relation_element, tag_name, value, False)
-                add_relation_unique_id_cells(
-                    relation_element,
-                    tag_name,
-                    header_key,
-                    value,
-                    project_unique_id_map,
-                    generated_relation_unique_id_headers,
-                )
+            if header_key in RELATION_ONLY_COLUMNS:
                 continue
 
             append_xml_cell(row_element, tag_name, value, is_multi_label)
 
     return sheet_element
+
+
+def worksheet_relations_to_xml(worksheet) -> Element:
+    """Convert a worksheet into a relations-only XML document."""
+
+    max_columns = worksheet.max_column
+    if worksheet.max_row < 1 or max_columns < 1:
+        return Element("scheda")
+
+    header_row = [
+        normalize_cell_value(value)
+        for value in next(
+            worksheet.iter_rows(min_row=1, max_row=1, max_col=max_columns, values_only=True),
+            (),
+        )
+    ]
+
+    data_rows = [
+        [normalize_cell_value(value) for value in row]
+        for row in worksheet.iter_rows(
+            min_row=2,
+            max_row=worksheet.max_row,
+            max_col=max_columns,
+            values_only=True,
+        )
+    ]
+
+    project_id_index = find_column_index(header_row, "PROJECT_ID")
+    unique_id_index = find_column_index(header_row, "UNIQUE_ID")
+    project_unique_id_map: dict[str, str] = {}
+    if project_id_index is not None and unique_id_index is not None:
+        project_unique_id_map = build_project_unique_id_map(data_rows, project_id_index, unique_id_index)
+
+    return build_relations_xml(header_row, max_columns, data_rows, project_unique_id_map)
 
 
 def rows_to_xml(rows: list[list[str]]) -> Element:
@@ -491,32 +660,43 @@ def rows_to_xml(rows: list[list[str]]) -> Element:
     if project_id_index is not None and unique_id_index is not None:
         project_unique_id_map = build_project_unique_id_map(normalized_data_rows, project_id_index, unique_id_index)
 
-    generated_relation_unique_id_headers = build_relation_unique_id_headers(header_row)
-
     for row_index, normalized_row in enumerate(normalized_data_rows, start=2):
         row_element = SubElement(sheet_element, "row", index=str(row_index))
-        relation_element: Element | None = None
         for column_index, ((tag_name, is_multi_label), value) in enumerate(zip(column_specs, normalized_row), start=1):
             header_value = header_row[column_index - 1] if column_index - 1 < len(header_row) else ""
             header_key = canonical_header_key(header_value)
-
-            if header_key in RELATION_COLUMNS:
-                if relation_element is None:
-                    relation_element = SubElement(row_element, "relation")
-                append_xml_cell(relation_element, tag_name, value, False)
-                add_relation_unique_id_cells(
-                    relation_element,
-                    tag_name,
-                    header_key,
-                    value,
-                    project_unique_id_map,
-                    generated_relation_unique_id_headers,
-                )
+            if header_key in RELATION_ONLY_COLUMNS:
                 continue
 
             append_xml_cell(row_element, tag_name, value, is_multi_label)
 
     return sheet_element
+
+
+def rows_to_relations_xml(rows: list[list[str]]) -> Element:
+    """Convert CSV-style rows into a relations-only XML document."""
+
+    root = Element("scheda")
+    if not rows:
+        return root
+
+    header_row = [normalize_cell_value(value) for value in rows[0]]
+    max_columns = max(len(header_row), max((len(row) for row in rows), default=0))
+
+    normalized_data_rows: list[list[str]] = []
+    for row in rows[1:]:
+        normalized_row = [normalize_cell_value(value) for value in row]
+        if len(normalized_row) < max_columns:
+            normalized_row.extend([""] * (max_columns - len(normalized_row)))
+        normalized_data_rows.append(normalized_row)
+
+    project_id_index = find_column_index(header_row, "PROJECT_ID")
+    unique_id_index = find_column_index(header_row, "UNIQUE_ID")
+    project_unique_id_map: dict[str, str] = {}
+    if project_id_index is not None and unique_id_index is not None:
+        project_unique_id_map = build_project_unique_id_map(normalized_data_rows, project_id_index, unique_id_index)
+
+    return build_relations_xml(header_row, max_columns, normalized_data_rows, project_unique_id_map)
 
 
 def write_csv_and_xml(worksheet, csv_path: Path, xml_path: Path) -> None:
@@ -540,6 +720,12 @@ def write_csv_and_xml(worksheet, csv_path: Path, xml_path: Path) -> None:
     xml_path.parent.mkdir(parents=True, exist_ok=True)
     tree.write(xml_path, encoding="utf-8", xml_declaration=True)
 
+    relation_xml_path = xml_path.with_name(f"{xml_path.stem}_relations{xml_path.suffix}")
+    relation_root = worksheet_relations_to_xml(worksheet)
+    indent(relation_root, space="    ")
+    relation_tree = ElementTree(relation_root)
+    relation_tree.write(relation_xml_path, encoding="utf-8", xml_declaration=True)
+
 
 def write_rows_csv_and_xml(rows: list[list[str]], csv_path: Path, xml_path: Path, sheet_name: str) -> None:
     """Write CSV-style rows to matching CSV and XML files."""
@@ -556,6 +742,12 @@ def write_rows_csv_and_xml(rows: list[list[str]], csv_path: Path, xml_path: Path
     tree = ElementTree(root)
     xml_path.parent.mkdir(parents=True, exist_ok=True)
     tree.write(xml_path, encoding="utf-8", xml_declaration=True)
+
+    relation_xml_path = xml_path.with_name(f"{xml_path.stem}_relations{xml_path.suffix}")
+    relation_root = rows_to_relations_xml(rows)
+    indent(relation_root, space="    ")
+    relation_tree = ElementTree(relation_root)
+    relation_tree.write(relation_xml_path, encoding="utf-8", xml_declaration=True)
 
 
 def build_parser() -> argparse.ArgumentParser:

@@ -26,12 +26,6 @@
         <Bibliography />
         <Description>Si conservano buone tracce policromia (blu scuro) a separare le ciocche. Grandi ciocche, probabilmente pertinenti Polifemo</Description>
         <Stylistic_notes />
-        <relation>
-            <Attaches_to />
-            <Attaches_to_unique_id />
-            <Similar_to />
-            <Similar_to_unique_id />
-        </relation>
         <Status>Non Integro</Status>
         <Archaemetric_analyses>No</Archaemetric_analyses>
         <Photogrammetry>Yes</Photogrammetry>
@@ -60,12 +54,6 @@
         <Bibliography />
         <Description>Panneggio alquanto piatto, possibilmente ravvivato da policromia oggi perduta</Description>
         <Stylistic_notes />
-        <relation>
-            <Attaches_to />
-            <Attaches_to_unique_id />
-            <Similar_to>SPE_237</Similar_to>
-            <Similar_to_unique_id>http://www.lynx.com/resource/cultural-heritage-object/50236</Similar_to_unique_id>
-        </relation>
         <Status>Non Integro</Status>
         <Archaemetric_analyses>No</Archaemetric_analyses>
         <Photogrammetry>Yes</Photogrammetry>
@@ -91,12 +79,6 @@
         <Bibliography />
         <Description>Panneggio per pieghe sovrapposte (Odisseo?)</Description>
         <Stylistic_notes />
-        <relation>
-            <Attaches_to>SPE_236</Attaches_to>
-            <Attaches_to_unique_id>http://www.lynx.com/resource/cultural-heritage-object/50235</Attaches_to_unique_id>
-            <Similar_to />
-            <Similar_to_unique_id />
-        </relation>
         <Status>Non Integro</Status>
         <Archaemetric_analyses>No</Archaemetric_analyses>
         <Photogrammetry>Yes</Photogrammetry>
@@ -122,12 +104,6 @@
         <Bibliography />
         <Description>Panneggio per pieghe sovrapposte (Odisseo?)</Description>
         <Stylistic_notes />
-        <relation>
-            <Attaches_to>SPE_235</Attaches_to>
-            <Attaches_to_unique_id>http://www.lynx.com/resource/cultural-heritage-object/50234</Attaches_to_unique_id>
-            <Similar_to />
-            <Similar_to_unique_id />
-        </relation>
         <Status>Non Integro</Status>
         <Archaemetric_analyses>No</Archaemetric_analyses>
         <Photogrammetry>Yes</Photogrammetry>
@@ -155,12 +131,6 @@
         <Bibliography />
         <Description>Policromia ben conservata su gran parte del panneggio (rosa e arancione). Panneggio alquanto piatto, ravvivato da policromia. Si legge un vecchio inv. n. 1686 lungo la parte anteriore del fr., quasi completamente sbiadito</Description>
         <Stylistic_notes />
-        <relation>
-            <Attaches_to />
-            <Attaches_to_unique_id />
-            <Similar_to>SPE_234</Similar_to>
-            <Similar_to_unique_id>http://www.lynx.com/resource/cultural-heritage-object/50233</Similar_to_unique_id>
-        </relation>
         <Status>Non Integro</Status>
         <Archaemetric_analyses>No</Archaemetric_analyses>
         <Photogrammetry>Yes</Photogrammetry>
@@ -186,12 +156,6 @@
         <Bibliography />
         <Description />
         <Stylistic_notes />
-        <relation>
-            <Attaches_to />
-            <Attaches_to_unique_id />
-            <Similar_to />
-            <Similar_to_unique_id />
-        </relation>
         <Status>Non Integro</Status>
         <Archaemetric_analyses>No</Archaemetric_analyses>
         <Photogrammetry>Yes</Photogrammetry>
