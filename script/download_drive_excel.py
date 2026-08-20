@@ -26,6 +26,16 @@ from openpyxl.utils import get_column_letter
 MULTI_VALUE_DELIMITER = "; "
 MULTI_LABEL_COLUMNS = {"DISCRIMINANTE_TECNICA", "TECHNICAL_DIAGNOSTIC_FEATURES"}
 MULTI_LABEL_ITEM_TAG = "value"
+VALUE_REPLACEMENTS = {
+    "PLACE_OF_DISCOVERY": {
+        "Sperlonga": "1",
+        "Sabaudia": "2",
+    },
+    "SITE_OF_DISCOVERY": {
+        "Villa di Tiberio": "1",
+        "Villa di Domiziano": "2",
+    },
+}
 RELATION_COLUMNS = {"ATTACHES_TO", "SIMILAR_TO"}
 RELATION_ONLY_COLUMNS = {
     "ATTACHES_TO",
@@ -150,6 +160,14 @@ def canonical_header_key(value: str) -> str:
     """Normalize a header name for matching behavior rules."""
 
     return sanitize_xml_tag(value, "col").upper()
+
+
+def normalize_export_value(header_value: str, value) -> str:
+    """Normalize a cell value and apply configured header-specific mappings."""
+
+    normalized_value = normalize_cell_value(value)
+    replacements = VALUE_REPLACEMENTS.get(canonical_header_key(header_value), {})
+    return replacements.get(normalized_value, normalized_value)
 
 
 def split_multi_label_values(value) -> list[str]:
@@ -574,7 +592,13 @@ def worksheet_to_xml(worksheet) -> Element:
     unique_id_index = find_column_index(header_row, "UNIQUE_ID")
 
     data_rows = [
-        [normalize_cell_value(value) for value in row]
+        [
+            normalize_export_value(
+                header_row[column_index] if column_index < len(header_row) else "",
+                value,
+            )
+            for column_index, value in enumerate(row)
+        ]
         for row in worksheet.iter_rows(
             min_row=2,
             max_row=worksheet.max_row,
@@ -618,7 +642,13 @@ def worksheet_relations_to_xml(worksheet) -> Element:
     ]
 
     data_rows = [
-        [normalize_cell_value(value) for value in row]
+        [
+            normalize_export_value(
+                header_row[column_index] if column_index < len(header_row) else "",
+                value,
+            )
+            for column_index, value in enumerate(row)
+        ]
         for row in worksheet.iter_rows(
             min_row=2,
             max_row=worksheet.max_row,
@@ -651,7 +681,13 @@ def rows_to_xml(rows: list[list[str]]) -> Element:
     normalized_data_rows: list[list[str]] = []
 
     for row in rows[1:]:
-        normalized_row = [normalize_cell_value(value) for value in row]
+        normalized_row = [
+            normalize_export_value(
+                header_row[column_index] if column_index < len(header_row) else "",
+                value,
+            )
+            for column_index, value in enumerate(row)
+        ]
         if len(normalized_row) < max_columns:
             normalized_row.extend([""] * (max_columns - len(normalized_row)))
         normalized_data_rows.append(normalized_row)
@@ -685,7 +721,13 @@ def rows_to_relations_xml(rows: list[list[str]]) -> Element:
 
     normalized_data_rows: list[list[str]] = []
     for row in rows[1:]:
-        normalized_row = [normalize_cell_value(value) for value in row]
+        normalized_row = [
+            normalize_export_value(
+                header_row[column_index] if column_index < len(header_row) else "",
+                value,
+            )
+            for column_index, value in enumerate(row)
+        ]
         if len(normalized_row) < max_columns:
             normalized_row.extend([""] * (max_columns - len(normalized_row)))
         normalized_data_rows.append(normalized_row)
@@ -706,13 +748,28 @@ def write_csv_and_xml(worksheet, csv_path: Path, xml_path: Path) -> None:
 
     with csv_path.open("w", newline="", encoding="utf-8") as csv_file:
         writer = csv.writer(csv_file)
-        for row in worksheet.iter_rows(
+        header_row = [
+            normalize_cell_value(value)
+            for value in next(
+                worksheet.iter_rows(min_row=1, max_row=1, max_col=worksheet.max_column, values_only=True),
+                (),
+            )
+        ]
+        for row_index, row in enumerate(worksheet.iter_rows(
             min_row=1,
             max_row=worksheet.max_row,
             max_col=worksheet.max_column,
             values_only=True,
-        ):
-            writer.writerow([normalize_cell_value(value) for value in row])
+        ), start=1):
+            writer.writerow([
+                normalize_cell_value(value)
+                if row_index == 1
+                else normalize_export_value(
+                    header_row[column_index] if column_index < len(header_row) else "",
+                    value,
+                )
+                for column_index, value in enumerate(row)
+            ])
 
     root = worksheet_to_xml(worksheet)
     indent(root, space="    ")
@@ -734,8 +791,17 @@ def write_rows_csv_and_xml(rows: list[list[str]], csv_path: Path, xml_path: Path
 
     with csv_path.open("w", newline="", encoding="utf-8") as csv_file:
         writer = csv.writer(csv_file)
-        for row in rows:
-            writer.writerow([normalize_cell_value(value) for value in row])
+        header_row = [normalize_cell_value(value) for value in rows[0]] if rows else []
+        for row_index, row in enumerate(rows):
+            writer.writerow([
+                normalize_cell_value(value)
+                if row_index == 0
+                else normalize_export_value(
+                    header_row[column_index] if column_index < len(header_row) else "",
+                    value,
+                )
+                for column_index, value in enumerate(row)
+            ])
 
     root = rows_to_xml(rows)
     indent(root, space="    ")
