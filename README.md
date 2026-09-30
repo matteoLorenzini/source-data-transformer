@@ -57,11 +57,46 @@ You can also pass a file id directly:
 python download_drive_excel.py --file-id <GOOGLE_DRIVE_FILE_ID>
 ```
 
+From the `script` directory, process a downloaded `.xlsx` workbook without Google credentials or a network request:
+
+```bash
+python .\download_drive_excel.py --file ..\US_Digitale_Rilevamento.xlsx --sheet-name US_data_SAS1 --output-dir ..\..\lynx_dataset\raw_data\SPE\ --base-name Schede-Catalogo --stylesheet-map .\xslt\schede_us.xsl
+```
+
+Omit `--sheet-name` to export every worksheet in the workbook.
+
 Show all options:
 
 ```bash
 python download_drive_excel.py --help
 ```
+
+## XSLT transformations
+
+For this US workbook, pass its stylesheet directly. From the repository root:
+
+```bash
+python script/download_drive_excel.py --url <US_GOOGLE_SHEETS_SHARE_URL> --stylesheet-map script/xslt/schede_us.xsl
+```
+
+When running the script from the `script` directory, use paths relative to that directory:
+
+```bash
+python .\download_drive_excel.py --url <US_GOOGLE_SHEETS_SHARE_URL> --output-dir ..\..\lynx_dataset\raw_data\SPE\ --base-name Schede-Catalogo --stylesheet-map .\xslt\schede_us.xsl
+```
+
+For automatic stylesheet selection by Google Drive file ID, save a JSON mapping such as `script/stylesheet-map.json`:
+
+```json
+{
+	"CATALOG_FILE_ID": "xslt/default.xsl",
+	"US_FILE_ID": "xslt/schede_us.xsl"
+}
+```
+
+Paths in the JSON file are relative to the mapping file. The US stylesheet requires a `Unique_ID` column and resolves relation references against `US_ID`. Main XML keeps the bare `Unique_ID` value; relation XML uses `http://www.lynx.com/resource/stratigraphic-unit/<id>` URIs. It removes trailing `.0` from integer-valued fields such as `Anno`, groups the category flags under `Tipologia`, splits the four multi-value fields, and processes relation columns by header name. Without `--stylesheet-map`, the script uses [script/xslt/default.xsl](script/xslt/default.xsl).
+
+The stylesheet input is raw source XML. A custom stylesheet accepts `output_mode` values `csv`, `main`, and `relations` to produce the corresponding exports. Install `lxml` with the other dependencies to enable XSLT processing.
 
 ## Dependencies
 

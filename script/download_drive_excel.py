@@ -1,50 +1,31 @@
-"""Download a Google Sheet as Excel and export every worksheet to CSV and XML.
+"""Download Google Sheets and transform worksheet data with external XSLT.
 
 Usage:
+    download_drive_excel.py --file <LOCAL_XLSX_PATH>
     download_drive_excel.py --file-id <GOOGLE_DRIVE_FILE_ID>
     download_drive_excel.py --url <GOOGLE_SHEETS_SHARE_URL>
+    download_drive_excel.py --url <GOOGLE_SHEETS_SHARE_URL> --stylesheet-map <JSON_MAP>
 
-The script downloads the spreadsheet as .xlsx, then writes one CSV and one XML
-file per worksheet while preserving the grid layout of each sheet.
+The script serializes raw worksheet data, then applies the default stylesheet
+or one selected by spreadsheet file ID to produce CSV, XML, and relation XML.
 """
 
 from __future__ import annotations
 
 import argparse
 import csv
+import json
 import os
 import re
 from pathlib import Path
 from typing import Iterable
 from urllib.parse import unquote
-from xml.etree.ElementTree import Element, ElementTree, SubElement, indent
+from xml.etree.ElementTree import Element, SubElement, tostring
 
 import requests
 from openpyxl import load_workbook
 from openpyxl.utils import get_column_letter
 
-MULTI_VALUE_DELIMITER = "; "
-MULTI_LABEL_COLUMNS = {"DISCRIMINANTE_TECNICA", "TECHNICAL_DIAGNOSTIC_FEATURES"}
-MULTI_LABEL_ITEM_TAG = "value"
-VALUE_REPLACEMENTS = {
-    "PLACE_OF_DISCOVERY": {
-        "Sperlonga": "1",
-        "Sabaudia": "2",
-    },
-    "SITE_OF_DISCOVERY": {
-        "Villa di Tiberio": "1",
-        "Villa di Domiziano": "2",
-    },
-}
-RELATION_COLUMNS = {"ATTACHES_TO", "SIMILAR_TO"}
-RELATION_ONLY_COLUMNS = {
-    "ATTACHES_TO",
-    "ATTACHES_TO_UNIQUE_ID",
-    "SIMILAR_TO",
-    "SIMILAR_TO_UNIQUE_ID",
-}
-DEDUPLICATE_INVERSE_RELATIONS = True
-RESOURCE_URI_PREFIX = "http://www.lynx.com/resource/cultural-heritage-object/"
 SCRIPT_DIR = Path(__file__).resolve().parent
 DEFAULT_OUTPUT_DIR = SCRIPT_DIR / "output_data"
 
@@ -98,6 +79,77 @@ def sanitize_filename(value: str) -> str:
     return safe_value.strip("._") or "sheet"
 
 
+def load_stylesheet_mapping(mapping_path: Path) -> dict[str, Path]:
+    """Load Google Drive file-id to XSLT path mappings from JSON."""
+
+    try:
+        configuration = json.loads(mapping_path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as exc:
+        raise ValueError(f"Invalid stylesheet mapping JSON in {mapping_path}: {exc}") from exc
+
+    if not isinstance(configuration, dict):
+        raise ValueError("The stylesheet mapping must be a JSON object of file IDs to stylesheet paths.")
+
+    mapping: dict[str, Path] = {}
+    for file_id, stylesheet in configuration.items():
+        if not isinstance(file_id, str) or not isinstance(stylesheet, str) or not stylesheet.strip():
+            raise ValueError("Every stylesheet mapping must have a file ID and a non-empty path.")
+
+        stylesheet_path = Path(stylesheet)
+        if not stylesheet_path.is_absolute():
+            stylesheet_path = mapping_path.parent / stylesheet_path
+        mapping[file_id] = stylesheet_path.resolve()
+
+    return mapping
+
+
+def load_stylesheet(stylesheet_path: Path):
+    """Compile an external XSLT stylesheet."""
+
+    from lxml import etree
+
+    parser = etree.XMLParser(resolve_entities=False, no_network=True)
+    try:
+        stylesheet_tree = etree.parse(str(stylesheet_path), parser)
+        return etree.XSLT(
+            stylesheet_tree,
+            access_control=etree.XSLTAccessControl.DENY_ALL,
+        )
+    except (etree.XMLSyntaxError, etree.XSLTParseError) as exc:
+        raise ValueError(f"Could not load XSLT stylesheet {stylesheet_path}: {exc}") from exc
+
+
+def apply_stylesheet(source_root: Element, stylesheet, output_mode: str):
+    """Transform neutral source XML using the selected output mode."""
+
+    from lxml import etree
+
+    source_tree = etree.fromstring(tostring(source_root, encoding="utf-8"))
+    try:
+        return stylesheet(source_tree, output_mode=etree.XSLT.strparam(output_mode))
+    except etree.XSLTApplyError as exc:
+        raise ValueError(f"XSLT transformation failed: {exc}") from exc
+
+
+def write_xslt_xml(result, destination_path: Path) -> None:
+    """Write an XSLT XML result, defaulting an unspecified encoding to UTF-8."""
+
+    try:
+        result.write_output(str(destination_path))
+    except LookupError as exc:
+        if str(exc) != "unknown encoding: ''":
+            raise
+        from lxml import etree
+
+        destination_path.write_bytes(etree.tostring(result, encoding="utf-8", xml_declaration=True))
+
+
+def source_cell_text(value) -> str:
+    """Convert a spreadsheet value to source text without applying field rules."""
+
+    return "" if value is None else str(value)
+
+
 def extract_sheet_name_from_content_disposition(
     content_disposition: str | None,
     fallback: str,
@@ -122,28 +174,10 @@ def extract_sheet_name_from_content_disposition(
     return value.strip() or fallback
 
 
-def normalize_cell_value(value) -> str:
-    """Convert worksheet cell values into a single-line string."""
-
-    if value is None:
-        return ""
-
-    if isinstance(value, (list, tuple, set)):
-        parts = [str(part).strip() for part in value if str(part).strip()]
-        return MULTI_VALUE_DELIMITER.join(parts)
-
-    text = str(value).replace("\r\n", "\n").replace("\r", "\n")
-    if "\n" in text:
-        parts = [part.strip() for part in text.split("\n") if part.strip()]
-        return MULTI_VALUE_DELIMITER.join(parts)
-
-    return text
-
-
 def sanitize_xml_tag(value: str, fallback: str) -> str:
     """Convert a header value into a safe XML element name."""
 
-    normalized = normalize_cell_value(value).strip()
+    normalized = source_cell_text(value).strip()
     tag = re.sub(r"[^A-Za-z0-9_.-]+", "_", normalized)
     tag = re.sub(r"_+", "_", tag).strip("_.-")
 
@@ -157,175 +191,9 @@ def sanitize_xml_tag(value: str, fallback: str) -> str:
 
 
 def canonical_header_key(value: str) -> str:
-    """Normalize a header name for matching behavior rules."""
+    """Normalize a header name for stylesheet rule matching."""
 
     return sanitize_xml_tag(value, "col").upper()
-
-
-def normalize_export_value(header_value: str, value) -> str:
-    """Normalize a cell value and apply configured header-specific mappings."""
-
-    normalized_value = normalize_cell_value(value)
-    replacements = VALUE_REPLACEMENTS.get(canonical_header_key(header_value), {})
-    return replacements.get(normalized_value, normalized_value)
-
-
-def split_multi_label_values(value) -> list[str]:
-    """Split multi-select cell values into individual labels."""
-
-    normalized = normalize_cell_value(value)
-    if not normalized:
-        return []
-
-    parts = [part.strip() for part in re.split(r"[,;\n]+", normalized) if part.strip()]
-    return parts
-
-
-def split_relation_values(value) -> list[str]:
-    """Split relation references (Project_ID values) from a cell."""
-
-    normalized = normalize_cell_value(value)
-    if not normalized:
-        return []
-
-    return [part.strip() for part in re.split(r"[,;\n]+", normalized) if part.strip()]
-
-
-def find_column_index(header_row: list[str], target_header_key: str) -> int | None:
-    """Find a column index by canonical header key."""
-
-    for column_index, header_value in enumerate(header_row):
-        if canonical_header_key(header_value) == target_header_key:
-            return column_index
-    return None
-
-
-def build_project_unique_id_map(
-    data_rows: list[list[str]],
-    project_id_index: int,
-    unique_id_index: int,
-) -> dict[str, str]:
-    """Map Project_ID values to their corresponding Unique_ID values."""
-
-    mapping: dict[str, str] = {}
-    for row in data_rows:
-        if project_id_index >= len(row) or unique_id_index >= len(row):
-            continue
-
-        project_id = normalize_cell_value(row[project_id_index]).strip()
-        unique_id = normalize_cell_value(row[unique_id_index]).strip()
-        if project_id and unique_id and project_id not in mapping:
-            mapping[project_id] = unique_id
-
-    return mapping
-
-
-def relation_unique_ids_text(value, project_unique_id_map: dict[str, str]) -> str:
-    """Resolve relation references into corresponding Unique_ID values."""
-
-    relation_values = split_relation_values(value)
-    if not relation_values:
-        return ""
-
-    unique_ids: list[str] = []
-    for relation_value in relation_values:
-        mapped_unique_id = project_unique_id_map.get(relation_value)
-        if mapped_unique_id:
-            unique_ids.append(f"{RESOURCE_URI_PREFIX}{mapped_unique_id}")
-
-    return MULTI_VALUE_DELIMITER.join(unique_ids)
-
-
-def should_keep_canonical_relation(source_unique_id: str, target_unique_id: str) -> bool:
-    """Keep only one direction of an inverse relation pair."""
-
-    if not source_unique_id or not target_unique_id:
-        return True
-
-    if source_unique_id == target_unique_id:
-        return False
-
-    if source_unique_id.isdigit() and target_unique_id.isdigit():
-        return int(source_unique_id) < int(target_unique_id)
-
-    return source_unique_id < target_unique_id
-
-
-def relation_texts_for_row(
-    source_unique_id: str,
-    relation_value,
-    project_unique_id_map: dict[str, str],
-) -> tuple[str, str]:
-    """Return relation label text and unique-id text for one row relation field."""
-
-    relation_values = split_relation_values(relation_value)
-    if not relation_values:
-        return "", ""
-
-    kept_relation_values: list[str] = []
-    kept_unique_ids: list[str] = []
-
-    for relation_reference in relation_values:
-        target_unique_id = project_unique_id_map.get(relation_reference)
-
-        if target_unique_id and DEDUPLICATE_INVERSE_RELATIONS:
-            if not should_keep_canonical_relation(source_unique_id, target_unique_id):
-                continue
-
-        kept_relation_values.append(relation_reference)
-        if target_unique_id:
-            kept_unique_ids.append(f"{RESOURCE_URI_PREFIX}{target_unique_id}")
-
-    return MULTI_VALUE_DELIMITER.join(kept_relation_values), MULTI_VALUE_DELIMITER.join(kept_unique_ids)
-
-
-def prefixed_unique_id_text(value) -> str:
-    """Return Unique_ID value with URI prefix when non-empty."""
-
-    normalized = normalize_cell_value(value).strip()
-    if not normalized:
-        return ""
-
-    if normalized.startswith(RESOURCE_URI_PREFIX):
-        return normalized
-
-    return f"{RESOURCE_URI_PREFIX}{normalized}"
-
-
-def add_relation_unique_id_cells(
-    row_element: Element,
-    tag_name: str,
-    header_key: str,
-    value,
-    project_unique_id_map: dict[str, str],
-    generated_relation_unique_id_headers: set[str],
-) -> None:
-    """Add sibling relation unique ID elements for relation columns."""
-
-    if header_key not in RELATION_COLUMNS:
-        return
-
-    relation_unique_id_header = f"{header_key}_UNIQUE_ID"
-    if relation_unique_id_header not in generated_relation_unique_id_headers:
-        return
-
-    unique_id_element = SubElement(row_element, f"{tag_name}_unique_id")
-    unique_id_element.text = relation_unique_ids_text(value, project_unique_id_map)
-
-
-def append_xml_cell(parent: Element, tag_name: str, value, is_multi_label: bool) -> None:
-    """Append one XML cell, optionally expanding multi-label values into children."""
-
-    if not is_multi_label:
-        cell = SubElement(parent, tag_name)
-        cell.text = normalize_cell_value(value)
-        return
-
-    container = SubElement(parent, tag_name)
-    labels = split_multi_label_values(value)
-    for label in labels:
-        item = SubElement(container, MULTI_LABEL_ITEM_TAG)
-        item.text = label
 
 
 def build_column_tags(header_row: list[str], max_columns: int) -> list[str]:
@@ -345,119 +213,6 @@ def build_column_tags(header_row: list[str], max_columns: int) -> list[str]:
         tags.append(tag_name)
 
     return tags
-
-
-def build_column_specs(header_row: list[str], max_columns: int) -> list[tuple[str, bool]]:
-    """Build XML tag and behavior metadata for each column."""
-
-    tags = build_column_tags(header_row, max_columns)
-    specs: list[tuple[str, bool]] = []
-
-    for column_index, tag_name in enumerate(tags, start=1):
-        header_value = header_row[column_index - 1] if column_index - 1 < len(header_row) else ""
-        header_key = canonical_header_key(header_value)
-        specs.append((tag_name, header_key in MULTI_LABEL_COLUMNS))
-
-    return specs
-
-
-def build_relation_unique_id_headers(header_row: list[str]) -> set[str]:
-    """Determine which relation unique ID headers should be generated."""
-
-    header_keys = {canonical_header_key(header_value) for header_value in header_row}
-    generated: set[str] = set()
-
-    for relation_header in RELATION_COLUMNS:
-        relation_unique_id_header = f"{relation_header}_UNIQUE_ID"
-        if relation_header in header_keys and relation_unique_id_header not in header_keys:
-            generated.add(relation_unique_id_header)
-
-    return generated
-
-
-def find_column_indices_by_header_key(header_row: list[str], target_header_key: str) -> list[int]:
-    """Find all column indices matching a canonical header key."""
-
-    return [
-        column_index
-        for column_index, header_value in enumerate(header_row)
-        if canonical_header_key(header_value) == target_header_key
-    ]
-
-
-def build_relation_column_lookup(
-    header_row: list[str],
-    max_columns: int,
-) -> dict[str, tuple[int, str]]:
-    """Build a lookup of relation header keys to (column index, XML tag name)."""
-
-    tags = build_column_tags(header_row, max_columns)
-    lookup: dict[str, tuple[int, str]] = {}
-
-    for column_index, header_value in enumerate(header_row):
-        header_key = canonical_header_key(header_value)
-        if header_key in {"ATTACHES_TO", "SIMILAR_TO"}:
-            lookup[header_key] = (column_index, tags[column_index])
-
-    return lookup
-
-
-def build_relations_xml(
-    header_row: list[str],
-    max_columns: int,
-    data_rows: list[list[str]],
-    project_unique_id_map: dict[str, str],
-) -> Element:
-    """Build a relations-only XML document per row."""
-
-    root = Element("scheda")
-    unique_id_index = find_column_index(header_row, "UNIQUE_ID")
-    relation_lookup = build_relation_column_lookup(header_row, max_columns)
-
-    for row_index, row in enumerate(data_rows, start=2):
-        unique_id_value = row[unique_id_index] if unique_id_index is not None and unique_id_index < len(row) else ""
-        source_unique_id = normalize_cell_value(unique_id_value).strip()
-
-        attaches_to_value = ""
-        attaches_to_unique_ids_text = ""
-        attaches_to_tag = "Attaches_to"
-        if "ATTACHES_TO" in relation_lookup:
-            attaches_to_index, attaches_to_tag = relation_lookup["ATTACHES_TO"]
-            raw_attaches_to_value = row[attaches_to_index] if attaches_to_index < len(row) else ""
-            attaches_to_value, attaches_to_unique_ids_text = relation_texts_for_row(
-                source_unique_id,
-                raw_attaches_to_value,
-                project_unique_id_map,
-            )
-
-        similar_to_value = ""
-        similar_to_unique_ids_text = ""
-        similar_to_tag = "Similar_to"
-        if "SIMILAR_TO" in relation_lookup:
-            similar_to_index, similar_to_tag = relation_lookup["SIMILAR_TO"]
-            raw_similar_to_value = row[similar_to_index] if similar_to_index < len(row) else ""
-            similar_to_value, similar_to_unique_ids_text = relation_texts_for_row(
-                source_unique_id,
-                raw_similar_to_value,
-                project_unique_id_map,
-            )
-
-        if not attaches_to_value and not similar_to_value:
-            continue
-
-        row_element = SubElement(root, "row", index=str(row_index))
-        unique_id_element = SubElement(row_element, "Unique_ID")
-        unique_id_element.text = prefixed_unique_id_text(unique_id_value)
-
-        append_xml_cell(row_element, attaches_to_tag, attaches_to_value, False)
-        attaches_to_unique_id = SubElement(row_element, f"{attaches_to_tag}_unique_id")
-        attaches_to_unique_id.text = attaches_to_unique_ids_text
-
-        append_xml_cell(row_element, similar_to_tag, similar_to_value, False)
-        similar_to_unique_id = SubElement(row_element, f"{similar_to_tag}_unique_id")
-        similar_to_unique_id.text = similar_to_unique_ids_text
-
-    return root
 
 
 def build_http_session() -> requests.Session:
@@ -572,248 +327,76 @@ def download_google_sheet_as_csv(
     return destination, sheet_name
 
 
-def worksheet_to_xml(worksheet) -> Element:
-    """Convert a worksheet into XML using the header row as element names."""
+def rows_to_source_xml(rows: list[list]) -> Element:
+    """Serialize raw tabular values and header metadata for XSLT processing."""
 
-    sheet_element = Element("scheda")
-    max_columns = worksheet.max_column
-    if worksheet.max_row < 1 or max_columns < 1:
-        return sheet_element
-
-    header_row = [
-        normalize_cell_value(value)
-        for value in next(
-            worksheet.iter_rows(min_row=1, max_row=1, max_col=max_columns, values_only=True),
-            (),
-        )
-    ]
-    column_specs = build_column_specs(header_row, max_columns)
-    project_id_index = find_column_index(header_row, "PROJECT_ID")
-    unique_id_index = find_column_index(header_row, "UNIQUE_ID")
-
-    data_rows = [
-        [
-            normalize_export_value(
-                header_row[column_index] if column_index < len(header_row) else "",
-                value,
-            )
-            for column_index, value in enumerate(row)
-        ]
-        for row in worksheet.iter_rows(
-            min_row=2,
-            max_row=worksheet.max_row,
-            max_col=max_columns,
-            values_only=True,
-        )
-    ]
-
-    project_unique_id_map: dict[str, str] = {}
-    if project_id_index is not None and unique_id_index is not None:
-        project_unique_id_map = build_project_unique_id_map(data_rows, project_id_index, unique_id_index)
-
-    generated_relation_unique_id_headers = build_relation_unique_id_headers(header_row)
-
-    for row_index, row in enumerate(data_rows, start=2):
-        row_element = SubElement(sheet_element, "row", index=str(row_index))
-        for column_index, ((tag_name, is_multi_label), value) in enumerate(zip(column_specs, row), start=1):
-            header_value = header_row[column_index - 1] if column_index - 1 < len(header_row) else ""
-            header_key = canonical_header_key(header_value)
-            if header_key in RELATION_ONLY_COLUMNS:
-                continue
-
-            append_xml_cell(row_element, tag_name, value, is_multi_label)
-
-    return sheet_element
-
-
-def worksheet_relations_to_xml(worksheet) -> Element:
-    """Convert a worksheet into a relations-only XML document."""
-
-    max_columns = worksheet.max_column
-    if worksheet.max_row < 1 or max_columns < 1:
-        return Element("scheda")
-
-    header_row = [
-        normalize_cell_value(value)
-        for value in next(
-            worksheet.iter_rows(min_row=1, max_row=1, max_col=max_columns, values_only=True),
-            (),
-        )
-    ]
-
-    data_rows = [
-        [
-            normalize_export_value(
-                header_row[column_index] if column_index < len(header_row) else "",
-                value,
-            )
-            for column_index, value in enumerate(row)
-        ]
-        for row in worksheet.iter_rows(
-            min_row=2,
-            max_row=worksheet.max_row,
-            max_col=max_columns,
-            values_only=True,
-        )
-    ]
-
-    project_id_index = find_column_index(header_row, "PROJECT_ID")
-    unique_id_index = find_column_index(header_row, "UNIQUE_ID")
-    project_unique_id_map: dict[str, str] = {}
-    if project_id_index is not None and unique_id_index is not None:
-        project_unique_id_map = build_project_unique_id_map(data_rows, project_id_index, unique_id_index)
-
-    return build_relations_xml(header_row, max_columns, data_rows, project_unique_id_map)
-
-
-def rows_to_xml(rows: list[list[str]]) -> Element:
-    """Convert CSV-style rows into XML using header names as element names."""
-
-    sheet_element = Element("scheda")
-    if not rows:
-        return sheet_element
-
-    header_row = [normalize_cell_value(value) for value in rows[0]]
+    header_row = [source_cell_text(value) for value in rows[0]] if rows else []
     max_columns = max(len(header_row), max((len(row) for row in rows), default=0))
-    column_specs = build_column_specs(header_row, max_columns)
-    project_id_index = find_column_index(header_row, "PROJECT_ID")
-    unique_id_index = find_column_index(header_row, "UNIQUE_ID")
-    normalized_data_rows: list[list[str]] = []
+    column_tags = build_column_tags(header_row, max_columns)
 
-    for row in rows[1:]:
-        normalized_row = [
-            normalize_export_value(
-                header_row[column_index] if column_index < len(header_row) else "",
-                value,
+    source_root = Element("source")
+    columns_element = SubElement(source_root, "columns")
+    for column_index, tag_name in enumerate(column_tags):
+        header_value = header_row[column_index] if column_index < len(header_row) else ""
+        column_element = SubElement(
+            columns_element,
+            "column",
+            index=str(column_index),
+            key=canonical_header_key(header_value),
+            tag=tag_name,
+        )
+        column_element.text = header_value
+
+    rows_element = SubElement(source_root, "rows")
+    for row_index, row in enumerate(rows[1:], start=2):
+        row_element = SubElement(rows_element, "row", index=str(row_index))
+        for column_index, tag_name in enumerate(column_tags):
+            value = row[column_index] if column_index < len(row) else ""
+            cell_element = SubElement(
+                row_element,
+                "cell",
+                index=str(column_index),
+                key=canonical_header_key(header_row[column_index] if column_index < len(header_row) else ""),
+                tag=tag_name,
             )
-            for column_index, value in enumerate(row)
-        ]
-        if len(normalized_row) < max_columns:
-            normalized_row.extend([""] * (max_columns - len(normalized_row)))
-        normalized_data_rows.append(normalized_row)
+            cell_element.text = source_cell_text(value)
 
-    project_unique_id_map: dict[str, str] = {}
-    if project_id_index is not None and unique_id_index is not None:
-        project_unique_id_map = build_project_unique_id_map(normalized_data_rows, project_id_index, unique_id_index)
-
-    for row_index, normalized_row in enumerate(normalized_data_rows, start=2):
-        row_element = SubElement(sheet_element, "row", index=str(row_index))
-        for column_index, ((tag_name, is_multi_label), value) in enumerate(zip(column_specs, normalized_row), start=1):
-            header_value = header_row[column_index - 1] if column_index - 1 < len(header_row) else ""
-            header_key = canonical_header_key(header_value)
-            if header_key in RELATION_ONLY_COLUMNS:
-                continue
-
-            append_xml_cell(row_element, tag_name, value, is_multi_label)
-
-    return sheet_element
+    return source_root
 
 
-def rows_to_relations_xml(rows: list[list[str]]) -> Element:
-    """Convert CSV-style rows into a relations-only XML document."""
-
-    root = Element("scheda")
-    if not rows:
-        return root
-
-    header_row = [normalize_cell_value(value) for value in rows[0]]
-    max_columns = max(len(header_row), max((len(row) for row in rows), default=0))
-
-    normalized_data_rows: list[list[str]] = []
-    for row in rows[1:]:
-        normalized_row = [
-            normalize_export_value(
-                header_row[column_index] if column_index < len(header_row) else "",
-                value,
-            )
-            for column_index, value in enumerate(row)
-        ]
-        if len(normalized_row) < max_columns:
-            normalized_row.extend([""] * (max_columns - len(normalized_row)))
-        normalized_data_rows.append(normalized_row)
-
-    project_id_index = find_column_index(header_row, "PROJECT_ID")
-    unique_id_index = find_column_index(header_row, "UNIQUE_ID")
-    project_unique_id_map: dict[str, str] = {}
-    if project_id_index is not None and unique_id_index is not None:
-        project_unique_id_map = build_project_unique_id_map(normalized_data_rows, project_id_index, unique_id_index)
-
-    return build_relations_xml(header_row, max_columns, normalized_data_rows, project_unique_id_map)
+def worksheet_to_source_xml(worksheet) -> Element:
+    rows = [list(row) for row in worksheet.iter_rows(values_only=True)]
+    while rows and not any(value is not None for value in rows[-1]):
+        rows.pop()
+    return rows_to_source_xml(rows)
 
 
-def write_csv_and_xml(worksheet, csv_path: Path, xml_path: Path) -> None:
-    """Write one worksheet to CSV and XML using the same cell grid."""
+def write_source_exports(
+    source_root: Element,
+    csv_path: Path,
+    xml_path: Path,
+    stylesheet,
+) -> None:
+    """Generate all exported formats through the selected external stylesheet."""
 
     csv_path.parent.mkdir(parents=True, exist_ok=True)
+    xml_path.parent.mkdir(parents=True, exist_ok=True)
 
+    csv_result = apply_stylesheet(source_root, stylesheet, "csv")
     with csv_path.open("w", newline="", encoding="utf-8") as csv_file:
         writer = csv.writer(csv_file)
-        header_row = [
-            normalize_cell_value(value)
-            for value in next(
-                worksheet.iter_rows(min_row=1, max_row=1, max_col=worksheet.max_column, values_only=True),
-                (),
-            )
-        ]
-        for row_index, row in enumerate(worksheet.iter_rows(
-            min_row=1,
-            max_row=worksheet.max_row,
-            max_col=worksheet.max_column,
-            values_only=True,
-        ), start=1):
+        for row_element in csv_result.getroot().findall("row"):
             writer.writerow([
-                normalize_cell_value(value)
-                if row_index == 1
-                else normalize_export_value(
-                    header_row[column_index] if column_index < len(header_row) else "",
-                    value,
-                )
-                for column_index, value in enumerate(row)
+                cell_element.text or ""
+                for cell_element in row_element.findall("cell")
             ])
 
-    root = worksheet_to_xml(worksheet)
-    indent(root, space="    ")
-    tree = ElementTree(root)
-    xml_path.parent.mkdir(parents=True, exist_ok=True)
-    tree.write(xml_path, encoding="utf-8", xml_declaration=True)
+    main_result = apply_stylesheet(source_root, stylesheet, "main")
+    write_xslt_xml(main_result, xml_path)
 
     relation_xml_path = xml_path.with_name(f"{xml_path.stem}_relations{xml_path.suffix}")
-    relation_root = worksheet_relations_to_xml(worksheet)
-    indent(relation_root, space="    ")
-    relation_tree = ElementTree(relation_root)
-    relation_tree.write(relation_xml_path, encoding="utf-8", xml_declaration=True)
-
-
-def write_rows_csv_and_xml(rows: list[list[str]], csv_path: Path, xml_path: Path, sheet_name: str) -> None:
-    """Write CSV-style rows to matching CSV and XML files."""
-
-    csv_path.parent.mkdir(parents=True, exist_ok=True)
-
-    with csv_path.open("w", newline="", encoding="utf-8") as csv_file:
-        writer = csv.writer(csv_file)
-        header_row = [normalize_cell_value(value) for value in rows[0]] if rows else []
-        for row_index, row in enumerate(rows):
-            writer.writerow([
-                normalize_cell_value(value)
-                if row_index == 0
-                else normalize_export_value(
-                    header_row[column_index] if column_index < len(header_row) else "",
-                    value,
-                )
-                for column_index, value in enumerate(row)
-            ])
-
-    root = rows_to_xml(rows)
-    indent(root, space="    ")
-    tree = ElementTree(root)
-    xml_path.parent.mkdir(parents=True, exist_ok=True)
-    tree.write(xml_path, encoding="utf-8", xml_declaration=True)
-
-    relation_xml_path = xml_path.with_name(f"{xml_path.stem}_relations{xml_path.suffix}")
-    relation_root = rows_to_relations_xml(rows)
-    indent(relation_root, space="    ")
-    relation_tree = ElementTree(relation_root)
-    relation_tree.write(relation_xml_path, encoding="utf-8", xml_declaration=True)
+    relation_result = apply_stylesheet(source_root, stylesheet, "relations")
+    write_xslt_xml(relation_result, relation_xml_path)
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -822,6 +405,11 @@ def build_parser() -> argparse.ArgumentParser:
         "--credentials-help",
         action="store_true",
         help="Print authentication setup instructions for private Google Sheets and exit.",
+    )
+    parser.add_argument(
+        "--file",
+        type=Path,
+        help="Local .xlsx workbook to process without downloading from Google.",
     )
     parser.add_argument(
         "--url",
@@ -834,6 +422,10 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--gid",
         help="Google Sheets gid. If omitted, the script uses gid from the URL when present.",
+    )
+    parser.add_argument(
+        "--sheet-name",
+        help="Export only this worksheet from a workbook; by default all worksheets are exported.",
     )
     parser.add_argument(
         "--access-token",
@@ -853,6 +445,11 @@ def build_parser() -> argparse.ArgumentParser:
         default="google_sheet_export",
         help="Base folder name used for the downloaded Excel file and worksheet exports.",
     )
+    parser.add_argument(
+        "--stylesheet-map",
+        type=Path,
+        help="XSLT file to use directly, or JSON mapping of Google Drive file IDs to XSLT paths.",
+    )
     return parser
 
 
@@ -864,20 +461,62 @@ def main(argv: Iterable[str] | None = None) -> int:
         print_credentials_help()
         return 0
 
-    if not args.url and not args.file_id:
-        parser.error("provide either --url or --file-id")
+    source_count = sum(bool(value) for value in (args.file, args.url, args.file_id))
+    if source_count != 1:
+        parser.error("provide exactly one of --file, --url, or --file-id")
 
-    raw_id = args.file_id or args.url
-    assert raw_id is not None
-    file_id = extract_file_id(raw_id)
-    gid = args.gid or extract_sheet_gid(raw_id)
-    access_token = resolve_access_token(args.access_token, args.service_account_json)
+    local_file_path = args.file.resolve() if args.file else None
+    if local_file_path is not None:
+        if not local_file_path.is_file():
+            parser.error(f"Local workbook does not exist: {local_file_path}")
+        if local_file_path.suffix.lower() != ".xlsx":
+            parser.error("--file currently supports .xlsx workbooks")
+        if args.gid:
+            parser.error("--gid can only be used with --url or --file-id")
+        stylesheet_key = local_file_path.stem
+        file_id = None
+        gid = None
+        access_token = None
+    else:
+        raw_id = args.file_id or args.url
+        assert raw_id is not None
+        file_id = extract_file_id(raw_id)
+        stylesheet_key = file_id
+        gid = args.gid or extract_sheet_gid(raw_id)
+        access_token = resolve_access_token(args.access_token, args.service_account_json)
+
+    if gid is not None and args.sheet_name:
+        parser.error("--sheet-name cannot be used with --gid, which already selects a single worksheet")
+
+    stylesheet_path = SCRIPT_DIR / "xslt" / "default.xsl"
+    if args.stylesheet_map:
+        if args.stylesheet_map.suffix.lower() in {".xsl", ".xslt"}:
+            stylesheet_path = args.stylesheet_map.resolve()
+        else:
+            try:
+                stylesheet_mapping = load_stylesheet_mapping(args.stylesheet_map)
+            except (OSError, ValueError) as exc:
+                parser.error(str(exc))
+
+            stylesheet_path = stylesheet_mapping.get(stylesheet_key)
+            if stylesheet_path is None:
+                parser.error(f"No XSLT stylesheet configured for source {stylesheet_key}.")
+
+    if not stylesheet_path.is_file():
+        parser.error(f"XSLT stylesheet does not exist: {stylesheet_path}")
+    try:
+        stylesheet = load_stylesheet(stylesheet_path)
+    except (OSError, ValueError) as exc:
+        parser.error(str(exc))
 
     output_dir = Path(args.output_dir)
     workbook_dir = output_dir / args.base_name
     excel_path = workbook_dir / f"{args.base_name}.xlsx"
 
-    if gid is not None:
+    if local_file_path is not None:
+        print(f"Reading local workbook from {local_file_path}...")
+        workbook = load_workbook(local_file_path, data_only=True)
+    elif gid is not None:
         print(f"Downloading Google Sheet {file_id} gid {gid} as CSV...")
         csv_path, sheet_name = download_google_sheet_as_csv(
             file_id,
@@ -895,7 +534,11 @@ def main(argv: Iterable[str] | None = None) -> int:
             rows = [row for row in reader]
 
         print(f"Writing XML to {xml_path}...")
-        write_rows_csv_and_xml(rows, csv_path, xml_path, sheet_name)
+        source_root = rows_to_source_xml(rows)
+        try:
+            write_source_exports(source_root, csv_path, xml_path, stylesheet)
+        except ValueError as exc:
+            parser.error(str(exc))
     else:
         print(f"Downloading Google Sheet {file_id} as Excel...")
         download_google_sheet_as_xlsx(file_id, excel_path, access_token=access_token)
@@ -903,14 +546,29 @@ def main(argv: Iterable[str] | None = None) -> int:
         print(f"Reading workbook from {excel_path}...")
         workbook = load_workbook(excel_path, data_only=True)
 
-        for worksheet in workbook.worksheets:
+    if gid is None:
+        if args.sheet_name:
+            if args.sheet_name not in workbook.sheetnames:
+                parser.error(
+                    f"Worksheet {args.sheet_name!r} not found. Available worksheets: "
+                    f"{', '.join(workbook.sheetnames)}"
+                )
+            worksheets = [workbook[args.sheet_name]]
+        else:
+            worksheets = workbook.worksheets
+
+        for worksheet in worksheets:
             sheet_slug = sanitize_filename(worksheet.title)
             csv_path = workbook_dir / f"{sheet_slug}.csv"
             xml_path = workbook_dir / f"{sheet_slug}.xml"
 
             print(f"Writing CSV to {csv_path}...")
             print(f"Writing XML to {xml_path}...")
-            write_csv_and_xml(worksheet, csv_path, xml_path)
+            source_root = worksheet_to_source_xml(worksheet)
+            try:
+                write_source_exports(source_root, csv_path, xml_path, stylesheet)
+            except ValueError as exc:
+                parser.error(str(exc))
 
     print("Done.")
     return 0

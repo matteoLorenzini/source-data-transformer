@@ -1,3 +1,4 @@
 google-auth
+lxml
 openpyxl
 requests
