@@ -13,6 +13,7 @@ or one selected by spreadsheet file ID to produce CSV, XML, and relation XML.
 from __future__ import annotations
 
 import argparse
+import copy
 import csv
 import json
 import os
@@ -371,11 +372,34 @@ def worksheet_to_source_xml(worksheet) -> Element:
     return rows_to_source_xml(rows)
 
 
+def single_row_source(source_root: Element, sample_row: int | None) -> Element | None:
+    """Copy the source tree keeping one row: the given sheet row index, or the first row."""
+
+    rows_element = source_root.find("rows")
+    if rows_element is None:
+        return None
+    rows = rows_element.findall("row")
+    if sample_row is None:
+        selected = rows[0] if rows else None
+    else:
+        selected = next((row for row in rows if row.get("index") == str(sample_row)), None)
+    if selected is None:
+        return None
+
+    sample_root = copy.deepcopy(source_root)
+    sample_rows = sample_root.find("rows")
+    for row in list(sample_rows):
+        if row.get("index") != selected.get("index"):
+            sample_rows.remove(row)
+    return sample_root
+
+
 def write_source_exports(
     source_root: Element,
     csv_path: Path,
     xml_path: Path,
     stylesheet,
+    sample_row: int | None = None,
 ) -> None:
     """Generate all exported formats through the selected external stylesheet."""
 
@@ -397,6 +421,11 @@ def write_source_exports(
     relation_xml_path = xml_path.with_name(f"{xml_path.stem}_relations{xml_path.suffix}")
     relation_result = apply_stylesheet(source_root, stylesheet, "relations")
     write_xslt_xml(relation_result, relation_xml_path)
+
+    sample_root = single_row_source(source_root, sample_row)
+    if sample_root is not None:
+        sample_xml_path = xml_path.with_name(f"{xml_path.stem}_sample{xml_path.suffix}")
+        write_xslt_xml(apply_stylesheet(sample_root, stylesheet, "main"), sample_xml_path)
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -449,6 +478,11 @@ def build_parser() -> argparse.ArgumentParser:
         "--stylesheet-map",
         type=Path,
         help="XSLT file to use directly, or JSON mapping of Google Drive file IDs to XSLT paths.",
+    )
+    parser.add_argument(
+        "--sample-row",
+        type=int,
+        help="Sheet row number for the single-record <name>_sample.xml export; defaults to the first data row.",
     )
     return parser
 
@@ -536,7 +570,7 @@ def main(argv: Iterable[str] | None = None) -> int:
         print(f"Writing XML to {xml_path}...")
         source_root = rows_to_source_xml(rows)
         try:
-            write_source_exports(source_root, csv_path, xml_path, stylesheet)
+            write_source_exports(source_root, csv_path, xml_path, stylesheet, args.sample_row)
         except ValueError as exc:
             parser.error(str(exc))
     else:
@@ -566,7 +600,7 @@ def main(argv: Iterable[str] | None = None) -> int:
             print(f"Writing XML to {xml_path}...")
             source_root = worksheet_to_source_xml(worksheet)
             try:
-                write_source_exports(source_root, csv_path, xml_path, stylesheet)
+                write_source_exports(source_root, csv_path, xml_path, stylesheet, args.sample_row)
             except ValueError as exc:
                 parser.error(str(exc))
 

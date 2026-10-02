@@ -29,7 +29,35 @@
                             </xsl:for-each>
                         </Tipologia>
                     </xsl:if>
-                    <xsl:for-each select="cell[not(@key='NATURALE' or @key='ARTIFICIALE' or @key='POSITIVA' or @key='NEGATIVA') and not(starts-with(@key, 'SEQUENZA_FISICA_') or starts-with(@key, 'SEQUENZA_STRATIGRAFICA_'))]">
+                    <xsl:for-each select="cell[starts-with(@key, 'LOCALIT') and normalize-space(.)]">
+                        <Luogo>
+                            <xsl:variable name="text" select="normalize-space(string(.))" />
+                            <xsl:variable name="place">
+                                <xsl:choose>
+                                    <xsl:when test="contains($text, '-')"><xsl:value-of select="normalize-space(substring-before($text, '-'))" /></xsl:when>
+                                    <xsl:otherwise><xsl:value-of select="$text" /></xsl:otherwise>
+                                </xsl:choose>
+                            </xsl:variable>
+                            <xsl:variable name="site" select="normalize-space(substring-after($text, '-'))" />
+                            <place_name>
+                                <xsl:choose>
+                                    <xsl:when test="$place='Sperlonga'">1</xsl:when>
+                                    <xsl:when test="$place='Sabaudia'">2</xsl:when>
+                                    <xsl:otherwise><xsl:value-of select="$place" /></xsl:otherwise>
+                                </xsl:choose>
+                            </place_name>
+                            <xsl:if test="contains($text, '-')">
+                                <site_name>
+                                    <xsl:choose>
+                                        <xsl:when test="$site='Villa di Tiberio'">1</xsl:when>
+                                        <xsl:when test="$site='Villa di Domiziano'">2</xsl:when>
+                                        <xsl:otherwise><xsl:value-of select="$site" /></xsl:otherwise>
+                                    </xsl:choose>
+                                </site_name>
+                            </xsl:if>
+                        </Luogo>
+                    </xsl:for-each>
+                    <xsl:for-each select="cell[not(starts-with(@key, 'LOCALIT')) and not(@key='NATURALE' or @key='ARTIFICIALE' or @key='POSITIVA' or @key='NEGATIVA') and not(starts-with(@key, 'SEQUENZA_FISICA_') or starts-with(@key, 'SEQUENZA_STRATIGRAFICA_'))]">
                         <xsl:variable name="value">
                             <xsl:call-template name="export-value">
                                 <xsl:with-param name="key" select="@key" />
