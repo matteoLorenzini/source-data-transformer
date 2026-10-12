@@ -82,6 +82,7 @@
         <scheda>
             <xsl:for-each select="/source/rows/row">
                 <xsl:variable name="source_id" select="normalize-space(cell[@key='UNIQUE_ID'][1])" />
+                <xsl:variable name="source_project_id" select="normalize-space(cell[@key='PROJECT_ID'][1])" />
                 <xsl:variable name="attaches_cell" select="cell[@key='ATTACHES_TO'][last()]" />
                 <xsl:variable name="similar_cell" select="cell[@key='SIMILAR_TO'][last()]" />
                 <xsl:variable name="attaches_text">
@@ -100,11 +101,11 @@
                 </xsl:variable>
                 <xsl:if test="string($attaches_text) or string($similar_text)">
                     <row index="{@index}">
-                        <Unique_ID>
+                        <Project_ID>
                             <xsl:call-template name="prefixed-id">
-                                <xsl:with-param name="value" select="$source_id" />
+                                <xsl:with-param name="value" select="$source_project_id" />
                             </xsl:call-template>
-                        </Unique_ID>
+                        </Project_ID>
                         <xsl:variable name="attaches_tag">
                             <xsl:choose>
                                 <xsl:when test="$attaches_cell"><xsl:value-of select="$attaches_cell/@tag" /></xsl:when>
@@ -112,7 +113,7 @@
                             </xsl:choose>
                         </xsl:variable>
                         <xsl:element name="{string($attaches_tag)}"><xsl:value-of select="$attaches_text" /></xsl:element>
-                        <xsl:element name="{concat(string($attaches_tag), '_unique_id')}">
+                        <xsl:element name="{concat(string($attaches_tag), '_Project_ID')}">
                             <xsl:call-template name="relation-values">
                                 <xsl:with-param name="text" select="string($attaches_cell)" />
                                 <xsl:with-param name="source_id" select="$source_id" />
@@ -126,7 +127,7 @@
                             </xsl:choose>
                         </xsl:variable>
                         <xsl:element name="{string($similar_tag)}"><xsl:value-of select="$similar_text" /></xsl:element>
-                        <xsl:element name="{concat(string($similar_tag), '_unique_id')}">
+                        <xsl:element name="{concat(string($similar_tag), '_Project_ID')}">
                             <xsl:call-template name="relation-values">
                                 <xsl:with-param name="text" select="string($similar_cell)" />
                                 <xsl:with-param name="source_id" select="$source_id" />
@@ -238,19 +239,21 @@
                 <xsl:otherwise><xsl:value-of select="normalize-space($list)" /></xsl:otherwise>
             </xsl:choose>
         </xsl:variable>
-        <xsl:variable name="target_id" select="normalize-space(key('project_by_id', string($token))[1]/../cell[@key='UNIQUE_ID'][1])" />
+        <xsl:variable name="target_row" select="key('project_by_id', string($token))[1]/.." />
+        <xsl:variable name="target_unique_id" select="normalize-space($target_row/cell[@key='UNIQUE_ID'][1])" />
+        <xsl:variable name="target_project_id" select="normalize-space($target_row/cell[@key='PROJECT_ID'][1])" />
         <xsl:variable name="keep">
             <xsl:choose>
                 <xsl:when test="not(string($token))">no</xsl:when>
-                <xsl:when test="not(string($target_id))">yes</xsl:when>
+                <xsl:when test="not(string($target_unique_id))">yes</xsl:when>
                 <xsl:when test="not(string($source_id))">yes</xsl:when>
-                <xsl:when test="$source_id = $target_id">no</xsl:when>
-                <xsl:when test="translate($source_id, '0123456789', '')='' and translate($target_id, '0123456789', '')=''">
-                    <xsl:if test="number($source_id) &lt; number($target_id)">yes</xsl:if>
+                <xsl:when test="$source_id = $target_unique_id">no</xsl:when>
+                <xsl:when test="translate($source_id, '0123456789', '')='' and translate($target_unique_id, '0123456789', '')=''">
+                    <xsl:if test="number($source_id) &lt; number($target_unique_id)">yes</xsl:if>
                 </xsl:when>
                 <xsl:otherwise>
                     <xsl:variable name="first_id">
-                        <xsl:for-each select="key('row_by_unique_id', string($source_id)) | key('row_by_unique_id', string($target_id))">
+                        <xsl:for-each select="key('row_by_unique_id', string($source_id)) | key('row_by_unique_id', string($target_unique_id))">
                             <xsl:sort select="string(cell[@key='UNIQUE_ID'][1])" data-type="text" />
                             <xsl:if test="position()=1"><xsl:value-of select="normalize-space(cell[@key='UNIQUE_ID'][1])" /></xsl:if>
                         </xsl:for-each>
@@ -259,12 +262,12 @@
                 </xsl:otherwise>
             </xsl:choose>
         </xsl:variable>
-        <xsl:variable name="emits_value" select="string($keep)='yes' and ($mode='labels' or string($target_id))" />
+        <xsl:variable name="emits_value" select="string($keep)='yes' and ($mode='labels' or string($target_project_id))" />
         <xsl:if test="$emits_value">
             <xsl:if test="$has_value='yes'">; </xsl:if>
             <xsl:choose>
                 <xsl:when test="$mode='labels'"><xsl:value-of select="$token" /></xsl:when>
-                <xsl:otherwise><xsl:value-of select="concat($resource_uri, $target_id)" /></xsl:otherwise>
+                <xsl:otherwise><xsl:value-of select="concat($resource_uri, $target_project_id)" /></xsl:otherwise>
             </xsl:choose>
         </xsl:if>
         <xsl:if test="contains($list, ';')">

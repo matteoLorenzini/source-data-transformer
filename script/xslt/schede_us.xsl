@@ -21,77 +21,141 @@
         <scheda>
             <xsl:for-each select="/source/rows/row">
                 <row index="{@index}">
-                    <xsl:variable name="type_cells" select="cell[(@key='NATURALE' or @key='ARTIFICIALE' or @key='POSITIVA' or @key='NEGATIVA') and normalize-space(.)='X']" />
-                    <xsl:if test="$type_cells">
-                        <Tipologia>
-                            <xsl:for-each select="$type_cells">
-                                <value><xsl:value-of select="@tag" /></value>
-                            </xsl:for-each>
-                        </Tipologia>
-                    </xsl:if>
-                    <xsl:for-each select="cell[starts-with(@key, 'LOCALIT') and normalize-space(.)]">
-                        <Luogo>
-                            <xsl:variable name="text" select="normalize-space(string(.))" />
-                            <xsl:variable name="place">
-                                <xsl:choose>
-                                    <xsl:when test="contains($text, '-')"><xsl:value-of select="normalize-space(substring-before($text, '-'))" /></xsl:when>
-                                    <xsl:otherwise><xsl:value-of select="$text" /></xsl:otherwise>
-                                </xsl:choose>
-                            </xsl:variable>
-                            <xsl:variable name="site" select="normalize-space(substring-after($text, '-'))" />
-                            <place_name>
-                                <xsl:choose>
-                                    <xsl:when test="$place='Sperlonga'">1</xsl:when>
-                                    <xsl:when test="$place='Sabaudia'">2</xsl:when>
-                                    <xsl:otherwise><xsl:value-of select="$place" /></xsl:otherwise>
-                                </xsl:choose>
-                            </place_name>
-                            <xsl:if test="contains($text, '-')">
-                                <site_name>
-                                    <xsl:choose>
-                                        <xsl:when test="$site='Villa di Tiberio'">1</xsl:when>
-                                        <xsl:when test="$site='Villa di Domiziano'">2</xsl:when>
-                                        <xsl:otherwise><xsl:value-of select="$site" /></xsl:otherwise>
-                                    </xsl:choose>
-                                </site_name>
-                            </xsl:if>
-                        </Luogo>
-                    </xsl:for-each>
-                    <xsl:for-each select="cell[not(starts-with(@key, 'LOCALIT')) and not(@key='NATURALE' or @key='ARTIFICIALE' or @key='POSITIVA' or @key='NEGATIVA') and not(starts-with(@key, 'SEQUENZA_FISICA_') or starts-with(@key, 'SEQUENZA_STRATIGRAFICA_'))]">
-                        <xsl:variable name="value">
-                            <xsl:call-template name="export-value">
-                                <xsl:with-param name="key" select="@key" />
-                                <xsl:with-param name="text" select="string(.)" />
-                            </xsl:call-template>
-                        </xsl:variable>
-                        <xsl:element name="{@tag}">
-                            <xsl:choose>
-                                <xsl:when test="@key='UNIQUE_ID'">
-                                    <xsl:call-template name="normalize-id">
-                                        <xsl:with-param name="value" select="string(.)" />
+                    <xsl:for-each select="cell">
+                        <xsl:choose>
+                            <xsl:when test="@key='NATURALE'">
+                                <Tipologia>
+                                    <xsl:for-each select="../cell[@key='NATURALE' or @key='ARTIFICIALE' or @key='POSITIVA' or @key='NEGATIVA']">
+                                        <xsl:if test="normalize-space(.)='X' or not(normalize-space(.))">
+                                            <value>
+                                                <xsl:choose>
+                                                    <xsl:when test="normalize-space(.)='X'"><xsl:value-of select="@tag" /></xsl:when>
+                                                    <xsl:otherwise>TEST</xsl:otherwise>
+                                                </xsl:choose>
+                                            </value>
+                                        </xsl:if>
+                                    </xsl:for-each>
+                                </Tipologia>
+                            </xsl:when>
+                            <xsl:when test="@key='ARTIFICIALE' or @key='POSITIVA' or @key='NEGATIVA' or @key='PERIODO' or @key='FASE' or @key='ATTIVIT' or starts-with(@key, 'SEQUENZA_FISICA_') or starts-with(@key, 'SEQUENZA_STRATIGRAFICA_')" />
+                            <xsl:when test="@key='DATAZIONE'">
+                                <periodizzazione>
+                                    <xsl:call-template name="periodizzazione-field">
+                                        <xsl:with-param name="key" select="'DATAZIONE'" />
+                                        <xsl:with-param name="tag" select="'Datazione'" />
                                     </xsl:call-template>
-                                </xsl:when>
-                                <xsl:when test="@key='US_ID'">
-                                    <xsl:call-template name="normalize-id">
-                                        <xsl:with-param name="value" select="string(.)" />
+                                    <xsl:call-template name="periodizzazione-field">
+                                        <xsl:with-param name="key" select="'PERIODO'" />
+                                        <xsl:with-param name="tag" select="'Periodo'" />
                                     </xsl:call-template>
-                                </xsl:when>
-                                <xsl:when test="@key='CRITERI_DISTINZIONE' or @key='MODO_FORMAZIONE' or @key='COMPONENTI_INORGANICI' or @key='COMPONENTI_ORGANICI'">
-                                    <xsl:call-template name="emit-labels">
-                                        <xsl:with-param name="text" select="string($value)" />
+                                    <xsl:call-template name="periodizzazione-field">
+                                        <xsl:with-param name="key" select="'FASE'" />
+                                        <xsl:with-param name="tag" select="'Fase'" />
                                     </xsl:call-template>
-                                </xsl:when>
-                                <xsl:otherwise>
-                                    <xsl:call-template name="normalize-integer-decimal">
-                                        <xsl:with-param name="value" select="string($value)" />
+                                    <xsl:call-template name="periodizzazione-field">
+                                        <xsl:with-param name="key" select="'ATTIVIT'" />
+                                        <xsl:with-param name="tag" select="'Attivit'" />
                                     </xsl:call-template>
-                                </xsl:otherwise>
-                            </xsl:choose>
-                        </xsl:element>
+                                </periodizzazione>
+                            </xsl:when>
+                            <xsl:when test="(starts-with(@key, 'LOCALIT') or @key='ID._SAGGIO' or @key='AREA_STRUTTURA' or @key='SAGGIO' or @key='AMBIENTE_UNITAFUNZIONALE' or @key='POSIZIONE' or @key='SETTORE' or @key='QUADRATO') and not(preceding-sibling::cell[starts-with(@key, 'LOCALIT') or @key='ID._SAGGIO' or @key='AREA_STRUTTURA' or @key='SAGGIO' or @key='AMBIENTE_UNITAFUNZIONALE' or @key='POSIZIONE' or @key='SETTORE' or @key='QUADRATO'])">
+                                <excavation-event>
+                                    <xsl:for-each select="../cell[starts-with(@key, 'LOCALIT') or @key='ID._SAGGIO' or @key='AREA_STRUTTURA' or @key='SAGGIO' or @key='AMBIENTE_UNITAFUNZIONALE' or @key='POSIZIONE' or @key='SETTORE' or @key='QUADRATO']">
+                                        <xsl:choose>
+                                            <xsl:when test="starts-with(@key, 'LOCALIT')">
+                                                <xsl:variable name="text" select="normalize-space(string(.))" />
+                                                <xsl:variable name="place">
+                                                    <xsl:choose>
+                                                        <xsl:when test="not($text)">TEST</xsl:when>
+                                                        <xsl:when test="contains($text, '-')"><xsl:value-of select="normalize-space(substring-before($text, '-'))" /></xsl:when>
+                                                        <xsl:otherwise><xsl:value-of select="$text" /></xsl:otherwise>
+                                                    </xsl:choose>
+                                                </xsl:variable>
+                                                <xsl:variable name="site" select="normalize-space(substring-after($text, '-'))" />
+                                                <place_name>
+                                                    <xsl:choose>
+                                                        <xsl:when test="$place='Sperlonga'">1</xsl:when>
+                                                        <xsl:when test="$place='Sabaudia'">2</xsl:when>
+                                                        <xsl:otherwise><xsl:value-of select="$place" /></xsl:otherwise>
+                                                    </xsl:choose>
+                                                </place_name>
+                                                <xsl:if test="contains($text, '-')">
+                                                    <site_name>
+                                                        <xsl:choose>
+                                                            <xsl:when test="$site='Villa di Tiberio'">1</xsl:when>
+                                                            <xsl:when test="$site='Villa di Domiziano'">2</xsl:when>
+                                                            <xsl:otherwise><xsl:value-of select="$site" /></xsl:otherwise>
+                                                        </xsl:choose>
+                                                    </site_name>
+                                                </xsl:if>
+                                            </xsl:when>
+                                            <xsl:otherwise>
+                                                <xsl:call-template name="emit-us-field" />
+                                            </xsl:otherwise>
+                                        </xsl:choose>
+                                    </xsl:for-each>
+                                </excavation-event>
+                            </xsl:when>
+                            <xsl:when test="starts-with(@key, 'LOCALIT') or @key='ID._SAGGIO' or @key='AREA_STRUTTURA' or @key='SAGGIO' or @key='AMBIENTE_UNITAFUNZIONALE' or @key='POSIZIONE' or @key='SETTORE' or @key='QUADRATO' or starts-with(@key, 'SEQUENZA_FISICA_') or starts-with(@key, 'SEQUENZA_STRATIGRAFICA_')" />
+                            <xsl:otherwise>
+                                <xsl:call-template name="emit-us-field" />
+                            </xsl:otherwise>
+                        </xsl:choose>
                     </xsl:for-each>
                 </row>
             </xsl:for-each>
         </scheda>
+    </xsl:template>
+
+    <xsl:template name="emit-us-field">
+        <xsl:variable name="value">
+            <xsl:call-template name="export-value">
+                <xsl:with-param name="key" select="@key" />
+                <xsl:with-param name="text" select="string(.)" />
+            </xsl:call-template>
+        </xsl:variable>
+        <xsl:element name="{@tag}">
+            <xsl:choose>
+                <xsl:when test="@key='UNIQUE_ID' or @key='US_ID'">
+                    <xsl:choose>
+                        <xsl:when test="normalize-space(.)">
+                            <xsl:call-template name="normalize-id">
+                                <xsl:with-param name="value" select="string(.)" />
+                            </xsl:call-template>
+                        </xsl:when>
+                        <xsl:otherwise>TEST</xsl:otherwise>
+                    </xsl:choose>
+                </xsl:when>
+                <xsl:when test="@key='CRITERI_DISTINZIONE' or @key='MODO_FORMAZIONE' or @key='COMPONENTI_INORGANICI' or @key='COMPONENTI_ORGANICI'">
+                    <xsl:choose>
+                        <xsl:when test="normalize-space($value)">
+                            <xsl:call-template name="emit-labels">
+                                <xsl:with-param name="text" select="string($value)" />
+                            </xsl:call-template>
+                        </xsl:when>
+                        <xsl:otherwise><value>TEST</value></xsl:otherwise>
+                    </xsl:choose>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:call-template name="normalize-integer-decimal">
+                        <xsl:with-param name="value" select="string($value)" />
+                    </xsl:call-template>
+                </xsl:otherwise>
+            </xsl:choose>
+        </xsl:element>
+    </xsl:template>
+
+    <xsl:template name="periodizzazione-field">
+        <xsl:param name="key" />
+        <xsl:param name="tag" />
+        <xsl:element name="{$tag}">
+            <xsl:choose>
+                <xsl:when test="normalize-space(cell[@key=$key][1])">
+                    <xsl:value-of select="cell[@key=$key][1]" />
+                </xsl:when>
+                <xsl:otherwise>TEST</xsl:otherwise>
+            </xsl:choose>
+        </xsl:element>
     </xsl:template>
 
     <xsl:template name="csv-output">
@@ -108,6 +172,7 @@
                     <xsl:for-each select="cell">
                         <cell>
                             <xsl:choose>
+                                <xsl:when test="not(normalize-space(.))">TEST</xsl:when>
                                 <xsl:when test="(@key='NATURALE' or @key='ARTIFICIALE' or @key='POSITIVA' or @key='NEGATIVA') and normalize-space(.)='X'">
                                     <xsl:value-of select="@tag" />
                                 </xsl:when>
@@ -145,14 +210,13 @@
                         <xsl:with-param name="value" select="string(cell[@key='US_ID'][1])" />
                     </xsl:call-template>
                 </xsl:variable>
-                <xsl:variable name="source_unique_id" select="string(cell[@key='UNIQUE_ID'][1])" />
                 <xsl:if test="cell[(starts-with(@key, 'SEQUENZA_FISICA_') or starts-with(@key, 'SEQUENZA_STRATIGRAFICA_')) and normalize-space(.)]">
                     <row index="{@index}">
-                        <Unique_ID>
+                        <US_ID>
                             <xsl:call-template name="prefixed-us-id">
-                                <xsl:with-param name="value" select="string($source_unique_id)" />
+                                <xsl:with-param name="value" select="string(cell[@key='US_ID'][1])" />
                             </xsl:call-template>
-                        </Unique_ID>
+                        </US_ID>
                         <xsl:for-each select="$relation_columns">
                             <xsl:variable name="column_key" select="@key" />
                             <xsl:variable name="relation_cell" select="$source_row/cell[@key=$column_key][1]" />
@@ -164,7 +228,7 @@
                                     <xsl:with-param name="mode" select="'labels'" />
                                 </xsl:call-template>
                             </xsl:element>
-                            <xsl:element name="{concat($relation_cell/@tag, '_unique_id')}">
+                            <xsl:element name="{concat($relation_cell/@tag, '_US_ID')}">
                                 <xsl:call-template name="relation-values-us">
                                     <xsl:with-param name="text" select="string($relation_cell)" />
                                     <xsl:with-param name="source_row" select="$source_row" />
@@ -235,7 +299,7 @@
                 <xsl:when test="$mode='labels'"><xsl:value-of select="$normalized_token" /></xsl:when>
                 <xsl:otherwise>
                     <xsl:call-template name="prefixed-us-id">
-                        <xsl:with-param name="value" select="string($target_id)" />
+                        <xsl:with-param name="value" select="string($target_us_id)" />
                     </xsl:call-template>
                 </xsl:otherwise>
             </xsl:choose>
@@ -272,6 +336,7 @@
         <xsl:param name="value" />
         <xsl:variable name="normalized" select="normalize-space($value)" />
         <xsl:choose>
+            <xsl:when test="not($normalized)">TEST</xsl:when>
             <xsl:when test="contains($normalized, '.') and substring-after($normalized, '.')='0' and number($normalized)=number($normalized)">
                 <xsl:value-of select="substring($normalized, 1, string-length($normalized) - 2)" />
             </xsl:when>
