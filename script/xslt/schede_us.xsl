@@ -2,8 +2,6 @@
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
     <xsl:import href="default.xsl" />
     <xsl:output method="xml" encoding="UTF-8" indent="yes" />
-    <xsl:variable name="stratigraphic_unit_uri" select="'http://www.lynx.com/resource/stratigraphic-unit/'" />
-
     <xsl:key name="us_by_id" match="source/rows/row/cell[@key='US_ID']" use="format-number(number(normalize-space(.)), '0.################')" />
 
     <xsl:template match="/">
@@ -206,39 +204,34 @@
             <xsl:for-each select="/source/rows/row">
                 <xsl:variable name="source_row" select="." />
                 <xsl:variable name="source_id">
-                    <xsl:call-template name="normalize-id">
+                    <xsl:call-template name="normalized-us-id">
                         <xsl:with-param name="value" select="string(cell[@key='US_ID'][1])" />
                     </xsl:call-template>
                 </xsl:variable>
-                <xsl:if test="cell[(starts-with(@key, 'SEQUENZA_FISICA_') or starts-with(@key, 'SEQUENZA_STRATIGRAFICA_')) and normalize-space(.)]">
-                    <row index="{@index}">
-                        <US_ID>
-                            <xsl:call-template name="prefixed-us-id">
-                                <xsl:with-param name="value" select="string(cell[@key='US_ID'][1])" />
+                <row index="{@index}">
+                    <US_ID>
+                        <xsl:value-of select="$source_id" />
+                    </US_ID>
+                    <xsl:for-each select="$relation_columns">
+                        <xsl:variable name="column_key" select="@key" />
+                        <xsl:variable name="same_key_position" select="count(preceding-sibling::column[@key=$column_key])" />
+                        <xsl:variable name="relation_cell" select="$source_row/cell[@key=$column_key][count(preceding-sibling::cell[@key=$column_key])=$same_key_position]" />
+                        <xsl:element name="{$relation_cell/@tag}">
+                            <xsl:call-template name="relation-values-us">
+                                <xsl:with-param name="text" select="string($relation_cell)" />
+                                <xsl:with-param name="source_row" select="$source_row" />
+                                <xsl:with-param name="source_id" select="$source_id" />
                             </xsl:call-template>
-                        </US_ID>
-                        <xsl:for-each select="$relation_columns">
-                            <xsl:variable name="column_key" select="@key" />
-                            <xsl:variable name="relation_cell" select="$source_row/cell[@key=$column_key][1]" />
-                            <xsl:element name="{$relation_cell/@tag}">
-                                <xsl:call-template name="relation-values-us">
-                                    <xsl:with-param name="text" select="string($relation_cell)" />
-                                    <xsl:with-param name="source_row" select="$source_row" />
-                                    <xsl:with-param name="source_id" select="$source_id" />
-                                    <xsl:with-param name="mode" select="'labels'" />
-                                </xsl:call-template>
-                            </xsl:element>
-                            <xsl:element name="{concat($relation_cell/@tag, '_US_ID')}">
-                                <xsl:call-template name="relation-values-us">
-                                    <xsl:with-param name="text" select="string($relation_cell)" />
-                                    <xsl:with-param name="source_row" select="$source_row" />
-                                    <xsl:with-param name="source_id" select="$source_id" />
-                                    <xsl:with-param name="mode" select="'ids'" />
-                                </xsl:call-template>
-                            </xsl:element>
-                        </xsl:for-each>
-                    </row>
-                </xsl:if>
+                        </xsl:element>
+                        <xsl:element name="{concat($relation_cell/@tag, '_US_ID')}">
+                            <xsl:call-template name="relation-values-us">
+                                <xsl:with-param name="text" select="string($relation_cell)" />
+                                <xsl:with-param name="source_row" select="$source_row" />
+                                <xsl:with-param name="source_id" select="$source_id" />
+                            </xsl:call-template>
+                        </xsl:element>
+                    </xsl:for-each>
+                </row>
             </xsl:for-each>
         </scheda>
     </xsl:template>
@@ -247,8 +240,6 @@
         <xsl:param name="text" />
         <xsl:param name="source_row" />
         <xsl:param name="source_id" />
-        <xsl:param name="mode" />
-        <xsl:param name="has_value" select="'no'" />
         <xsl:variable name="list" select="translate($text, ',&#10;&#13;', ';;;')" />
         <xsl:variable name="token">
             <xsl:choose>
@@ -262,9 +253,8 @@
             </xsl:call-template>
         </xsl:variable>
         <xsl:variable name="target_row" select="key('us_by_id', string($normalized_token))[1]/.." />
-        <xsl:variable name="target_id" select="string($target_row[1]/cell[@key='UNIQUE_ID'][1])" />
         <xsl:variable name="target_us_id">
-            <xsl:call-template name="normalize-id">
+            <xsl:call-template name="normalized-us-id">
                 <xsl:with-param name="value" select="string($target_row[1]/cell[@key='US_ID'][1])" />
             </xsl:call-template>
         </xsl:variable>
@@ -292,31 +282,17 @@
                 </xsl:otherwise>
             </xsl:choose>
         </xsl:variable>
-        <xsl:variable name="emits_value" select="string($keep)='yes' and ($mode='labels' or string($target_id))" />
+        <xsl:variable name="emits_value" select="string($keep)='yes'" />
         <xsl:if test="$emits_value">
-            <xsl:if test="$has_value='yes'">; </xsl:if>
-            <xsl:choose>
-                <xsl:when test="$mode='labels'"><xsl:value-of select="$normalized_token" /></xsl:when>
-                <xsl:otherwise>
-                    <xsl:call-template name="prefixed-us-id">
-                        <xsl:with-param name="value" select="string($target_us_id)" />
-                    </xsl:call-template>
-                </xsl:otherwise>
-            </xsl:choose>
+            <value>
+                <xsl:value-of select="$normalized_token" />
+            </value>
         </xsl:if>
         <xsl:if test="contains($list, ';')">
-            <xsl:variable name="next_has_value">
-                <xsl:choose>
-                    <xsl:when test="$has_value='yes' or $emits_value">yes</xsl:when>
-                    <xsl:otherwise>no</xsl:otherwise>
-                </xsl:choose>
-            </xsl:variable>
             <xsl:call-template name="relation-values-us">
                 <xsl:with-param name="text" select="substring-after($list, ';')" />
                 <xsl:with-param name="source_row" select="$source_row" />
                 <xsl:with-param name="source_id" select="$source_id" />
-                <xsl:with-param name="mode" select="$mode" />
-                <xsl:with-param name="has_value" select="string($next_has_value)" />
             </xsl:call-template>
         </xsl:if>
     </xsl:template>
@@ -344,26 +320,21 @@
         </xsl:choose>
     </xsl:template>
 
-    <xsl:template name="prefixed-us-id">
+    <xsl:template name="normalized-us-id">
         <xsl:param name="value" />
-        <xsl:variable name="normalized">
-            <xsl:call-template name="normalize-id">
-                <xsl:with-param name="value" select="$value" />
-            </xsl:call-template>
-        </xsl:variable>
-        <xsl:if test="string($normalized)">
+        <xsl:variable name="bare_id">
             <xsl:choose>
-                <xsl:when test="starts-with(string($normalized), $stratigraphic_unit_uri)"><xsl:value-of select="$normalized" /></xsl:when>
-                <xsl:when test="starts-with(string($normalized), 'http://www.lynx.com/resource/cultural-heritage-object/')">
-                    <xsl:variable name="legacy_id">
-                        <xsl:call-template name="normalize-id">
-                            <xsl:with-param name="value" select="substring-after(string($normalized), 'http://www.lynx.com/resource/cultural-heritage-object/')" />
-                        </xsl:call-template>
-                    </xsl:variable>
-                    <xsl:value-of select="concat($stratigraphic_unit_uri, string($legacy_id))" />
+                <xsl:when test="starts-with(normalize-space($value), 'http://www.lynx.com/resource/stratigraphic-unit/')">
+                    <xsl:value-of select="substring-after(normalize-space($value), 'http://www.lynx.com/resource/stratigraphic-unit/')" />
                 </xsl:when>
-                <xsl:otherwise><xsl:value-of select="concat($stratigraphic_unit_uri, string($normalized))" /></xsl:otherwise>
+                <xsl:when test="starts-with(normalize-space($value), 'http://www.lynx.com/resource/cultural-heritage-object/')">
+                    <xsl:value-of select="substring-after(normalize-space($value), 'http://www.lynx.com/resource/cultural-heritage-object/')" />
+                </xsl:when>
+                <xsl:otherwise><xsl:value-of select="$value" /></xsl:otherwise>
             </xsl:choose>
-        </xsl:if>
+        </xsl:variable>
+        <xsl:call-template name="normalize-id">
+            <xsl:with-param name="value" select="string($bare_id)" />
+        </xsl:call-template>
     </xsl:template>
 </xsl:stylesheet>

@@ -426,6 +426,24 @@ def write_source_exports(
     if sample_root is not None:
         sample_xml_path = xml_path.with_name(f"{xml_path.stem}_sample{xml_path.suffix}")
         write_xslt_xml(apply_stylesheet(sample_root, stylesheet, "main"), sample_xml_path)
+        sample_relation_xml_path = xml_path.with_name(
+            f"{xml_path.stem}_relations_sample{xml_path.suffix}"
+        )
+        sample_relation_result = apply_stylesheet(sample_root, stylesheet, "relations")
+        fill_missing_sample_relation_values(sample_relation_result)
+        write_xslt_xml(sample_relation_result, sample_relation_xml_path)
+
+
+def fill_missing_sample_relation_values(result) -> None:
+    """Add a zero placeholder to empty relation fields in the sample export."""
+
+    from lxml import etree
+
+    for element in result.getroot().xpath(
+        "/scheda/row/*[starts-with(local-name(), 'Sequenza_')]"
+    ):
+        if not element.findall("value"):
+            etree.SubElement(element, "value").text = "0000"
 
 
 def build_parser() -> argparse.ArgumentParser:
