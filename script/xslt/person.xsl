@@ -3,6 +3,8 @@
     <xsl:output method="xml" encoding="UTF-8" indent="yes" />
     <xsl:param name="output_mode" select="'main'" />
 
+    <xsl:key name="header_by_index" match="/source/columns/column" use="@index" />
+
     <xsl:template match="/">
         <xsl:choose>
             <xsl:when test="$output_mode = 'csv'">
@@ -10,6 +12,9 @@
             </xsl:when>
             <xsl:when test="$output_mode = 'relations'">
                 <scheda />
+            </xsl:when>
+            <xsl:when test="$output_mode = 'entities'">
+                <xsl:call-template name="entities-output" />
             </xsl:when>
             <xsl:otherwise>
                 <xsl:call-template name="main-output" />
@@ -21,7 +26,7 @@
         <scheda>
             <xsl:for-each select="/source/rows/row[normalize-space(cell[@key='NAME_SURNAME'][1])]">
                 <row index="{@index}">
-                    <xsl:for-each select="cell">
+                    <xsl:for-each select="cell[normalize-space(key('header_by_index', @index))]">
                         <xsl:element name="{@tag}">
                             <xsl:call-template name="export-value">
                                 <xsl:with-param name="key" select="@key" />
@@ -29,11 +34,17 @@
                             </xsl:call-template>
                         </xsl:element>
                     </xsl:for-each>
-                    <xsl:if test="entities/entity">
-                        <Entities>
-                            <xsl:apply-templates select="entities/entity" mode="plain" />
-                        </Entities>
-                    </xsl:if>
+                </row>
+            </xsl:for-each>
+        </scheda>
+    </xsl:template>
+
+    <xsl:template name="entities-output">
+        <scheda>
+            <xsl:for-each select="/source/rows/row[entities/entity]">
+                <row index="{@index}">
+                    <Unique_ID><xsl:value-of select="normalize-space(cell[@key='UNIQUE_ID'][1])" /></Unique_ID>
+                    <xsl:apply-templates select="entities/entity" mode="plain" />
                 </row>
             </xsl:for-each>
         </scheda>
@@ -43,14 +54,14 @@
         <csv>
             <xsl:if test="/source/columns/column">
                 <row>
-                    <xsl:for-each select="/source/columns/column">
+                    <xsl:for-each select="/source/columns/column[normalize-space(.)]">
                         <cell><xsl:value-of select="normalize-space(.)" /></cell>
                     </xsl:for-each>
                 </row>
             </xsl:if>
             <xsl:for-each select="/source/rows/row[normalize-space(cell[@key='NAME_SURNAME'][1])]">
                 <row>
-                    <xsl:for-each select="cell">
+                    <xsl:for-each select="cell[normalize-space(key('header_by_index', @index))]">
                         <cell>
                             <xsl:call-template name="export-value">
                                 <xsl:with-param name="key" select="@key" />

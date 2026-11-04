@@ -93,6 +93,7 @@ def write_source_exports(
     xml_path: Path,
     stylesheet,
     sample_row: int | None = None,
+    include_entities: bool = False,
 ) -> None:
     """Generate all exported formats through the selected external stylesheet."""
 
@@ -115,10 +116,17 @@ def write_source_exports(
     relation_result = apply_stylesheet(source_root, stylesheet, "relations")
     write_xslt_xml(relation_result, relation_xml_path)
 
+    entities_xml_path = xml_path.with_name(f"{xml_path.stem}_entities{xml_path.suffix}")
+    if include_entities:
+        write_xslt_xml(apply_stylesheet(source_root, stylesheet, "entities"), entities_xml_path)
+
     sample_root = single_row_source(source_root, sample_row)
     if sample_root is not None:
         sample_xml_path = xml_path.with_name(f"{xml_path.stem}_sample{xml_path.suffix}")
         write_xslt_xml(apply_stylesheet(sample_root, stylesheet, "main"), sample_xml_path)
+        if include_entities:
+            sample_entities_path = xml_path.with_name(f"{xml_path.stem}_entities_sample{xml_path.suffix}")
+            write_xslt_xml(apply_stylesheet(sample_root, stylesheet, "entities"), sample_entities_path)
         sample_relation_xml_path = xml_path.with_name(
             f"{xml_path.stem}_relations_sample{xml_path.suffix}"
         )

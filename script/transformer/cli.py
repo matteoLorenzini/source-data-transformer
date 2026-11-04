@@ -85,7 +85,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--entities",
         type=Path,
-        help="Entity JSON produced by extract_entities.py; its entities are added to the matching rows.",
+        help="Entity JSON produced by extract_entities.py; writes <name>_entities.xml (needs a stylesheet with an 'entities' output mode, such as person.xsl).",
     )
     return parser
 
@@ -190,7 +190,9 @@ def main(argv: Iterable[str] | None = None) -> int:
         print(f"Writing XML to {xml_path}...")
         source_root = prepare_source(rows_to_source_xml(rows))
         try:
-            write_source_exports(source_root, csv_path, xml_path, stylesheet, args.sample_row)
+            write_source_exports(
+                source_root, csv_path, xml_path, stylesheet, args.sample_row, entity_store is not None
+            )
         except ValueError as exc:
             parser.error(str(exc))
     else:
@@ -220,7 +222,9 @@ def main(argv: Iterable[str] | None = None) -> int:
             print(f"Writing XML to {xml_path}...")
             source_root = prepare_source(worksheet_to_source_xml(worksheet))
             try:
-                write_source_exports(source_root, csv_path, xml_path, stylesheet, args.sample_row)
+                write_source_exports(
+                    source_root, csv_path, xml_path, stylesheet, args.sample_row, entity_store is not None
+                )
             except ValueError as exc:
                 parser.error(str(exc))
 
