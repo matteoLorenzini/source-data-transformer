@@ -100,7 +100,7 @@ Paths in the JSON file are relative to the mapping file. The US stylesheet requi
 
 The stylesheet input is raw source XML. A custom stylesheet accepts `output_mode` values `csv`, `main`, and `relations` to produce the corresponding exports. Relation XML uses `*_Project_ID` elements and target `Project_ID` values for catalog relations, and `*_US_ID` elements and target `US_ID` values for US relations. Empty relation identifiers remain empty. Install `lxml` with the other dependencies to enable XSLT processing.
 
-## Entity extraction (CIDOC-CRM)
+## Entity extraction
 
 Free-text columns, such as the `Biography`, `Role`, and `Contribution` columns of `Person.xlsx`, can be turned into typed entities (person, place, organization, date, role, work, event), each stored with the verbatim sentence it came from. This is a two-step process so the extracted data can be reviewed and cached:
 
@@ -112,7 +112,7 @@ python download_drive_excel.py --file ..\Person.xlsx --stylesheet-map xslt\perso
 ```
 
 - `extract_entities.py` writes `output_data/<workbook>_entities.json`. Results are cached per cell text, so re-runs only call the model for new or changed cells. Use `--dry-run` to list the cells that would be sent, `--refresh` to re-extract, and `--base-url` / `--model` (or `LLM_BASE_URL` / `LLM_MODEL` / `LLM_API_KEY`) to use another OpenAI-compatible endpoint. By default it uses a free local [Ollama](https://ollama.com) server and needs no account or API key; set `OLLAMA_CONTEXT_LENGTH=8192` before starting Ollama so long biographies are not truncated. On a machine without a GPU, a smaller model (for example `--model qwen2.5:3b`) is faster. Entities whose context is not found verbatim in the source text are discarded.
-- `person.xsl` renders the entities in a `<CRM_Entities>` block after the original fields, using CIDOC-CRM classes: `E21_Person`, `E53_Place`, `E74_Group`, `E52_Time-Span`, `E73_Information_Object`, `E7_Activity` (roles), and `E5_Event`. Each carries its `source_field` and a `P3_has_note` with the context. The CSV export is unchanged.
+- `person.xsl` renders the entities in an `<Entities>` block after the original fields, as plain tags named after the entity type (`<Person>`, `<Place>`, `<Organization>`, `<Date>`, `<Role>`, `<Work>`, `<Event>`). Each has a `source_field` attribute and `<Value>`, `<Context>`, and, when available, `<From>`, `<To>`, `<Place>`, `<Organization>`, and `<Url>` children. The CSV export is unchanged. CIDOC-CRM / RDF modeling is a later step.
 
 ## Code layout
 
