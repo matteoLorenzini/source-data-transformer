@@ -1,4 +1,4 @@
-google-auth
-lxml
-openpyxl
-requests
+google-auth==2.58.1
+lxml==6.1.3
+openpyxl==3.1.5
+requests==2.34.2
