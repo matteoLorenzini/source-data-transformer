@@ -102,7 +102,7 @@ The stylesheet input is raw source XML. A custom stylesheet accepts `output_mode
 
 ## Entity extraction
 
-Free-text columns, such as the `Biography`, `Role`, and `Contribution` columns of `Person.xlsx`, can be turned into typed entities (person, place, organization, date, role, work, event), each stored with the verbatim sentence it came from. This is a two-step process so the extracted data can be reviewed and cached:
+Free-text columns, such as the `Biography`, `Role`, and `Contribution` columns of `Person.xlsx`, can be turned into typed entities (person, place, organization, role, work, event), each stored with the verbatim sentence it came from. Dates are not entities of their own; they are the `From` / `To` of a role, event, or work. This is a two-step process so the extracted data can be reviewed and cached:
 
 ```powershell
 cd script
@@ -112,11 +112,11 @@ python download_drive_excel.py --file ..\Person.xlsx --stylesheet-map xslt\perso
 ```
 
 - `extract_entities.py` writes `output_data/<workbook>_entities.json`. Results are cached per cell text, so re-runs only call the model for new or changed cells. Use `--dry-run` to list the cells that would be sent, `--refresh` to re-extract, and `--base-url` / `--model` (or `LLM_BASE_URL` / `LLM_MODEL` / `LLM_API_KEY`) to use another OpenAI-compatible endpoint. By default it uses a free local [Ollama](https://ollama.com) server and needs no account or API key; set `OLLAMA_CONTEXT_LENGTH=8192` before starting Ollama so long biographies are not truncated. On a machine without a GPU, a smaller model (for example `--model qwen2.5:3b`) is faster. Entities whose context is not found verbatim in the source text are discarded.
-- With `--entities`, `person.xsl` writes the entities to a separate `<name>_entities.xml` (and `<name>_entities_sample.xml`); `<name>.xml` keeps only the spreadsheet fields. In the entities file, each `<row index="...">` holds the row's `<Unique_ID>` followed by plain tags named after the entity type (`<Person>`, `<Place>`, `<Organization>`, `<Date>`, `<Role>`, `<Work>`, `<Event>`). Each has a `source_field` attribute and `<Value>`, `<Context>`, and, when available, `<From>`, `<To>`, `<Place>`, `<Organization>`, and `<Url>` children. The `index` attribute is the sheet row, which links records when `Unique_ID` is empty. The CSV export is unchanged. CIDOC-CRM / RDF modeling is a later step. The stylesheet used with `--entities` must support the `entities` output mode.
+- With `--entities`, `<name>.xml` keeps only the spreadsheet fields and the entities are written to `<name>_entities.xml`, grouped by spreadsheet row: each `<row index="...">` holds the row's `<Unique_ID>` followed by `<Persons>` (other people mentioned), `<Places>`, `<Organizations>`, `<Roles>`, `<Events>`, and `<Works>`; empty groups are skipped. Records have an `id` such as `place-sperlonga` (the same place gets the same id in every row) or `role-3` (numbered across the file). Places and organizations appear once per row with all their `<Source>` mentions (the verbatim sentence, its `row`, and its `field`) and list the roles and events that refer to them (`<Role ref="role-4">` with its `<Title>`, `<From>`, and `<To>`). Roles and events have a `<Title>` or `<Label>`, optional `<From>` / `<To>`, and `<Organization ref="..."/>` / `<Place ref="..."/>` references. Identical roles found in several columns of a row are merged into one record with several sources. This is the input for the later RDF step. The CSV export is unchanged.
 
 ## Code layout
 
-`script/download_drive_excel.py` is a thin entry point. The implementation is in `script/transformer/`: `google_drive.py` (downloads and authentication), `source_xml.py` (worksheet to source XML), `xslt_runner.py` (stylesheet loading and exports), `entities.py` and `llm_extractor.py` (entity extraction), and `cli.py` (argument parsing and orchestration).
+`script/download_drive_excel.py` is a thin entry point. The implementation is in `script/transformer/`: `google_drive.py` (downloads and authentication), `source_xml.py` (worksheet to source XML), `xslt_runner.py` (stylesheet loading and exports), `entities.py`, `llm_extractor.py` (entity extraction), `entity_tables.py` (per-domain entity files), and `cli.py` (argument parsing and orchestration).
 
 ## Dependencies
 

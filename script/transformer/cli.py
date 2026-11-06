@@ -11,6 +11,7 @@ from xml.etree.ElementTree import Element
 from openpyxl import load_workbook
 
 from .entities import attach_entities, load_store
+from .entity_tables import write_entity_tables
 from .google_drive import (
     download_google_sheet_as_csv,
     download_google_sheet_as_xlsx,
@@ -85,7 +86,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--entities",
         type=Path,
-        help="Entity JSON produced by extract_entities.py; writes <name>_entities.xml (needs a stylesheet with an 'entities' output mode, such as person.xsl).",
+        help="Entity JSON produced by extract_entities.py; writes <name>_entities.xml with the entities of each row.",
     )
     return parser
 
@@ -159,10 +160,14 @@ def main(argv: Iterable[str] | None = None) -> int:
         except (OSError, ValueError) as exc:
             parser.error(str(exc))
 
-    def prepare_source(source_root: Element) -> Element:
-        if entity_store is not None:
-            print(f"Attached {attach_entities(source_root, entity_store)} entities.")
-        return source_root
+    def export(source_root: Element, csv_path: Path, xml_path: Path) -> None:
+        write_source_exports(source_root, csv_path, xml_path, stylesheet, args.sample_row)
+        if entity_store is None:
+            return
+        attach_entities(source_root, entity_store)
+        entities_path = xml_path.with_name(f"{xml_path.stem}_entities{xml_path.suffix}")
+        if write_entity_tables(source_root, entities_path):
+            print(f"Writing entities to {entities_path}...")
 
     output_dir = Path(args.output_dir)
     workbook_dir = output_dir / args.base_name
@@ -188,11 +193,9 @@ def main(argv: Iterable[str] | None = None) -> int:
             rows = [row for row in csv.reader(csv_file)]
 
         print(f"Writing XML to {xml_path}...")
-        source_root = prepare_source(rows_to_source_xml(rows))
+        source_root = rows_to_source_xml(rows)
         try:
-            write_source_exports(
-                source_root, csv_path, xml_path, stylesheet, args.sample_row, entity_store is not None
-            )
+            export(source_root, csv_path, xml_path)
         except ValueError as exc:
             parser.error(str(exc))
     else:
@@ -220,11 +223,9 @@ def main(argv: Iterable[str] | None = None) -> int:
 
             print(f"Writing CSV to {csv_path}...")
             print(f"Writing XML to {xml_path}...")
-            source_root = prepare_source(worksheet_to_source_xml(worksheet))
+            source_root = worksheet_to_source_xml(worksheet)
             try:
-                write_source_exports(
-                    source_root, csv_path, xml_path, stylesheet, args.sample_row, entity_store is not None
-                )
+                export(source_root, csv_path, xml_path)
             except ValueError as exc:
                 parser.error(str(exc))
 

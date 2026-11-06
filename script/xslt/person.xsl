@@ -13,9 +13,6 @@
             <xsl:when test="$output_mode = 'relations'">
                 <scheda />
             </xsl:when>
-            <xsl:when test="$output_mode = 'entities'">
-                <xsl:call-template name="entities-output" />
-            </xsl:when>
             <xsl:otherwise>
                 <xsl:call-template name="main-output" />
             </xsl:otherwise>
@@ -34,17 +31,6 @@
                             </xsl:call-template>
                         </xsl:element>
                     </xsl:for-each>
-                </row>
-            </xsl:for-each>
-        </scheda>
-    </xsl:template>
-
-    <xsl:template name="entities-output">
-        <scheda>
-            <xsl:for-each select="/source/rows/row[entities/entity]">
-                <row index="{@index}">
-                    <Unique_ID><xsl:value-of select="normalize-space(cell[@key='UNIQUE_ID'][1])" /></Unique_ID>
-                    <xsl:apply-templates select="entities/entity" mode="plain" />
                 </row>
             </xsl:for-each>
         </scheda>
@@ -95,17 +81,5 @@
             <xsl:when test="$key='BIOGRAPHY'"><xsl:value-of select="$cleaned" /></xsl:when>
             <xsl:otherwise><xsl:value-of select="$trimmed" /></xsl:otherwise>
         </xsl:choose>
-    </xsl:template>
-
-    <!-- Extracted entity: element named after its type (Person, Place, Date, ...), with its source field and verbatim context -->
-    <xsl:template match="entity" mode="plain">
-        <xsl:element name="{concat(translate(substring(@type, 1, 1), 'abcdefghijklmnopqrstuvwxyz', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'), substring(@type, 2))}">
-            <xsl:attribute name="source_field"><xsl:value-of select="../@field" /></xsl:attribute>
-            <xsl:for-each select="value | from | to | place | organization | url | context">
-                <xsl:element name="{concat(translate(substring(name(), 1, 1), 'abcdefghijklmnopqrstuvwxyz', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'), substring(name(), 2))}">
-                    <xsl:value-of select="." />
-                </xsl:element>
-            </xsl:for-each>
-        </xsl:element>
     </xsl:template>
 </xsl:stylesheet>

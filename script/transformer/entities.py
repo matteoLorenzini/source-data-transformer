@@ -9,9 +9,9 @@ from pathlib import Path
 from xml.etree.ElementTree import Element, SubElement
 
 # Bump when the extraction prompt changes so stale cache entries are not reused.
-PROMPT_VERSION = 1
+PROMPT_VERSION = 3
 
-ENTITY_TYPES = ("person", "place", "organization", "date", "role", "work", "event")
+ENTITY_TYPES = ("person", "place", "organization", "role", "work", "event")
 OPTIONAL_FIELDS = ("from", "to", "place", "organization", "url")
 DATE_PATTERN = re.compile(r"^-?\d{1,4}(-\d{2}(-\d{2})?)?$")
 HTML_COMMENT_PATTERN = re.compile(r"<!--.*?-->", re.DOTALL)

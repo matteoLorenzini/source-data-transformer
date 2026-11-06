@@ -16,7 +16,7 @@ SYSTEM_PROMPT = """You extract named entities from free text about a scholar, fo
 Return only a JSON object: {"entities": [ ... ]}.
 
 Each entity has:
-- "type": one of person, place, organization, date, role, work, event.
+- "type": one of person, place, organization, role, work, event.
 - "value": the entity as written in the text (original language and spelling). For an event, a short neutral label such as "Graduation".
 - "context": the exact fragment of the text, usually one sentence, in which the entity appears. It must be copied character for character.
 - optional "from" / "to": ISO dates (YYYY, YYYY-MM or YYYY-MM-DD) bounding the entity in time. A decade such as "1970s" is 1970 to 1979. "from 1978" has only "from"; "until 1995" has only "to"; a single year sets both.
@@ -25,14 +25,27 @@ Each entity has:
 
 Types:
 - person: other persons named in the text, not the subject.
-- place: geographic places.
-- organization: institutions, universities, institutes, services.
-- date: every explicit date or period; "value" is the date as written.
+- place: cities, regions and sites, even when they follow "at" or "in" ("professor at Bochum" names a place).
+- organization: only named institutions such as universities, institutes and services.
 - role: a job title, position or occupation held by the subject; add organization, place, from and to when the text states them.
 - work: titled publications or works; "value" is the title, "from" the year of publication when given.
 - event: a discrete happening such as a graduation, appointment or excavation campaign.
 
 Rules: extract only what the text states and never add outside knowledge. Emit one entity per mention; do not merge mentions.
+Never emit a date as an entity of its own: dates only appear as "from" / "to" of a role, event or work.
+A text often lists several roles. Emit one separate role entity for each position, never one entity for the whole list:
+- a role shared by several places or periods, such as "professor at A (1950-1960) and B (1961-1970)", is two role entities, one for A and one for B;
+- a date in parentheses belongs to the role right before it; a role with no date has no "from" or "to";
+- "and then", "later" and "until" start a new role;
+- "value" is only the role title; put the place or organization in "place" or "organization", never in "value".
+
+Example text: "Painter and lecturer at Padua (1950-1960) and Siena (1961-1970), then curator of the Uffizi Gallery in Florence (1971-1980)."
+Example roles:
+{"type": "role", "value": "Painter", "context": "Painter and lecturer at Padua (1950-1960) and Siena (1961-1970), then curator of the Uffizi Gallery in Florence (1971-1980)."},
+{"type": "role", "value": "Lecturer", "place": "Padua", "from": "1950", "to": "1960", "context": "Painter and lecturer at Padua (1950-1960)"},
+{"type": "role", "value": "Lecturer", "place": "Siena", "from": "1961", "to": "1970", "context": "Siena (1961-1970)"},
+{"type": "role", "value": "Curator", "organization": "Uffizi Gallery", "place": "Florence", "from": "1971", "to": "1980", "context": "curator of the Uffizi Gallery in Florence (1971-1980)"}
+
 If nothing applies, return {"entities": []}."""
 
 
