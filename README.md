@@ -114,9 +114,31 @@ python download_drive_excel.py --file ..\Person.xlsx --stylesheet-map xslt\perso
 - `extract_entities.py` writes `output_data/<workbook>_entities.json`. Results are cached per cell text, so re-runs only call the model for new or changed cells. Use `--dry-run` to list the cells that would be sent, `--refresh` to re-extract, and `--base-url` / `--model` (or `LLM_BASE_URL` / `LLM_MODEL` / `LLM_API_KEY`) to use another OpenAI-compatible endpoint. By default it uses a free local [Ollama](https://ollama.com) server and needs no account or API key; set `OLLAMA_CONTEXT_LENGTH=8192` before starting Ollama so long biographies are not truncated. On a machine without a GPU, a smaller model (for example `--model qwen2.5:3b`) is faster. Entities whose context is not found verbatim in the source text are discarded.
 - With `--entities`, `<name>.xml` keeps only the spreadsheet fields and the entities are written to `<name>_entities.xml`, grouped by spreadsheet row: each `<row index="...">` holds the row's `<Unique_ID>` followed by `<Persons>` (other people mentioned), `<Places>`, `<Organizations>`, `<Roles>`, `<Events>`, and `<Works>`; empty groups are skipped. Each `<Person>`, `<Place>`, `<Organization>` and `<Work>` has a `<Relation>` (for example `teacher`, `place of study`, `employer`, or `author`) when the text states how it relates to the row's subject. Records have an `id` such as `place-sperlonga` (the same place gets the same id in every row) or `role-3` (numbered across the file). Places and organizations appear once per row with all their `<Source>` mentions (the verbatim sentence, its `row`, and its `field`) and list the roles and events that refer to them (`<Role ref="role-4">` with its `<Title>`, `<From>`, and `<To>`). Roles and events have a `<Title>` or `<Label>`, optional `<From>` / `<To>`, and `<Organization ref="..."/>` / `<Place ref="..."/>` references. Identical roles found in several columns of a row are merged into one record with several sources. This is the input for the later RDF step. The CSV export is unchanged.
 
+## RDF (CIDOC-CRM) mapping
+
+The XML to CIDOC-CRM step runs in Python (`rdflib`) from YAML mapping files, replacing the 3M/X3ML tool and its generator policy. A mapping file bundles the namespaces, the URI generators (the former generator policy), and the rules (the former X3ML). The mappings migrated from 3M are in `script/mappings/`: `e18.yaml` (catalog objects), `e21.yaml` (persons), `e53.yaml` (places and sites), `a8_a2.yaml` (stratigraphic units), and the `*_relations.yaml` files for the relation exports. The key `source` (`main`, `relations`, or `entities`) selects which export a mapping reads. The header of `script/transformer/rdf_mapper.py` documents the format.
+
+Run a mapping as a pipeline step; the RDF is written next to the XML as `<export>_<mapping>.ttl`:
+
+```powershell
+cd script
+python download_drive_excel.py --file ..\Person.xlsx --stylesheet-map xslt\person.xsl --rdf-mapping mappings\e21.yaml
+```
+
+`--rdf-mapping` can be repeated, and `--rdf-format` selects `turtle` (default), `xml`, `nt`, `nquads`, or `trig`. To transform an existing XML file on its own:
+
+```powershell
+python xml_to_rdf.py --mapping mappings\e53.yaml --xml ..\test-mappings\E53\places_and_sites.xml --out places.ttl
+```
+
+- URIs follow the generator patterns; arguments are whitespace-normalized and percent-encoded. `uuid` generators are deterministic (derived from the source file name and node position), so re-running gives the same URIs. `uri_or_uuid` keeps an absolute URI as is and otherwise derives a UUID from the text.
+- An entity (and the link that needs it) is skipped when one of its generator arguments is empty.
+- `script/x3ml_to_yaml.py <mapping.x3ml> <generator-policy.xml> <out.yaml> [--source relations]` migrates further 3M mappings. Review the result: the engine rejects unknown generators and namespace prefixes when loading.
+- Tests: `cd script; python -m unittest discover -s tests`.
+
 ## Code layout
 
-`script/download_drive_excel.py` is a thin entry point. The implementation is in `script/transformer/`: `google_drive.py` (downloads and authentication), `source_xml.py` (worksheet to source XML), `xslt_runner.py` (stylesheet loading and exports), `entities.py`, `llm_extractor.py` (entity extraction), `entity_tables.py` (per-domain entity files), and `cli.py` (argument parsing and orchestration).
+`script/download_drive_excel.py` is a thin entry point. The implementation is in `script/transformer/`: `google_drive.py` (downloads and authentication), `source_xml.py` (worksheet to source XML), `xslt_runner.py` (stylesheet loading and exports), `entities.py`, `llm_extractor.py` (entity extraction), `entity_tables.py` (per-domain entity files), `rdf_mapper.py` (XML to RDF mapping engine), and `cli.py` (argument parsing and orchestration).
 
 ## Dependencies
 

@@ -1,0 +1,601 @@
+name: SPE_E18
+default_prefix: lynx
+namespaces:
+  lynx: http://www.lynx.com/resource/
+  base: http://www.cidoc-crm.org/cidoc-crm/
+  archeo: http://www.ics.forth.gr/isl/CRMarchaeo/
+  dig: http://www.ics.forth.gr/isl/CRMdig/
+  sci: http://www.ics.forth.gr/isl/CRMsci/
+  lrmoo: http://iflastandards.info/ns/lrm/lrmoo/
+generators:
+  ID_lynx:
+    pattern: cultural-heritage-object/{Unique_ID}/identifier/{id}
+    prefix: lynx
+  LynxType:
+    pattern: cultural-heritage-object/{Unique_ID}/type/{type}
+    prefix: lynx
+  URIwithType:
+    pattern: '{type}'
+    prefix: lynx
+  URIwithTypeAndId:
+    pattern: '{type}/{id}'
+    prefix: lynx
+  UUID:
+    kind: uuid
+  inventory_id:
+    pattern: cultural-heritage-object/{Unique_ID}/identifier/{id}
+    prefix: lynx
+  lynx-bibliography:
+    pattern: cultural-heritage-object/{Unique_ID}/bibliography
+    prefix: lynx
+  lynx-chronology:
+    pattern: cultural-heritage-object/{Unique_ID}/chronology/{text}
+    prefix: lynx
+  lynx-description:
+    pattern: cultural-heritage-object/{Unique_ID}/description/{project_id}
+    prefix: lynx
+  lynx-notes:
+    pattern: cultural-heritage-object/{Unique_ID}/stylistic-notes/{project_id}
+    prefix: lynx
+  lynx-production:
+    pattern: cultural-heritage-object/{Unique_ID}/production
+    prefix: lynx
+  lynx-status:
+    pattern: cultural-heritage-object/{Unique_ID}/status/{status}
+    prefix: lynx
+  lynx_box_location:
+    pattern: cultural-heritage-object/{Unique_ID}/box-location/{text}
+    prefix: lynx
+  lynx_dimension_depth:
+    pattern: cultural-heritage-object/{Unique_ID}/dimension/depth/{text}
+    prefix: lynx
+  lynx_dimension_diameter:
+    pattern: cultural-heritage-object/{Unique_ID}/dimension/diameter/{text}
+    prefix: lynx
+  lynx_dimension_height:
+    pattern: cultural-heritage-object/{Unique_ID}/dimension/height/{text}
+    prefix: lynx
+  lynx_dimension_lenght:
+    pattern: cultural-heritage-object/{Unique_ID}/dimension/lenght/{text}
+    prefix: lynx
+  lynx_discovery_activity:
+    pattern: cultural-heritage-object/{Unique_ID}/date-discovery/{text}
+    prefix: lynx
+  lynx_manifacturing_marks:
+    pattern: cultural-heritage-object/{Unique_ID}/manifacturing-marks/{text}
+    prefix: lynx
+  lynx_mterial:
+    pattern: cultural-heritage-object/{Unique_ID}/material/{material}
+    prefix: lynx
+  lynx_place:
+    pattern: place/{place_id}
+    prefix: lynx
+  lynx_shelf_location:
+    pattern: cultural-heritage-object/{Unique_ID}/shelf-location/{text}
+    prefix: lynx
+  lynx_site:
+    pattern: site/{site_id}
+    prefix: lynx
+  lynx_state_of_preservation:
+    pattern: cultural-heritage-object/{Unique_ID}/state-of-preservation/{text}
+    prefix: lynx
+  lynx_technical_features:
+    pattern: cultural-heritage-object/{Unique_ID}/technical-feature/{text}
+    prefix: lynx
+rules:
+- domain: /scheda/row
+  entity:
+    types:
+    - base:E18_Physical_Thing
+    uri:
+      generator: URIwithTypeAndId
+      args:
+        type:
+          const: cultural-heritage-object
+        id: Unique_ID/text()
+    additional:
+    - predicate: base:P2_has_type
+      entity:
+        types:
+        - base:E55_Type
+        uri:
+          generator: URIwithType
+          args:
+            type:
+              const: archaeological-object
+  links:
+  - range: Unique_ID
+    predicate: base:P1_is_identified_by
+    entity:
+      types:
+      - base:E42_Identifier
+      uri:
+        generator: ID_lynx
+        args:
+          Unique_ID: text()
+          id: text()
+      label: text()
+      additional:
+      - predicate: base:P2_has_type
+        entity:
+          types:
+          - base:E55_Type
+          uri:
+            generator: URIwithType
+            args:
+              type:
+                const: cultural-heritage-object/identifier/general-id
+  - range: Project_ID
+    predicate: base:P1_is_identified_by
+    entity:
+      types:
+      - base:E42_Identifier
+      uri:
+        generator: ID_lynx
+        args:
+          Unique_ID: ../Unique_ID/text()
+          id: text()
+      label: text()
+      additional:
+      - predicate: base:P2_has_type
+        entity:
+          types:
+          - base:E55_Type
+          uri:
+            generator: URIwithType
+            args:
+              type:
+                const: cultural-heritage-object/identifier/internal-id
+  - range: Inventory_ID
+    predicate: base:P1_is_identified_by
+    entity:
+      types:
+      - base:E42_Identifier
+      uri:
+        generator: inventory_id
+        args:
+          Unique_ID: ../Unique_ID/text()
+          id: text()
+      label: text()
+      additional:
+      - predicate: base:P2_has_type
+        entity:
+          types:
+          - base:E55_Type
+          uri:
+            generator: URIwithType
+            args:
+              type:
+                const: cultural-heritage-object/identifier/inventory-id
+  - range: Classification
+    predicate: base:P2_has_type
+    entity:
+      types:
+      - base:E55_Type
+      uri:
+        generator: LynxType
+        args:
+          Unique_ID: ../Unique_ID/text()
+          type: text()
+      label: text()
+      additional:
+      - predicate: base:P2_has_type
+        entity:
+          types:
+          - base:E55_Type
+          uri:
+            generator: URIwithType
+            args:
+              type:
+                const: classification
+  - range: Material
+    predicate: base:P45_consists_of
+    entity:
+      types:
+      - base:E57_Material
+      uri:
+        generator: lynx_mterial
+        args:
+          Unique_ID: ../Unique_ID/text()
+          material: text()
+      label: text()
+  - range: Manifacturing_marks
+    predicate: base:P56_bears_feature
+    entity:
+      types:
+      - base:E25_Man-Made_Feature
+      uri:
+        generator: lynx_manifacturing_marks
+        args:
+          Unique_ID: ../Unique_ID/text()
+          text: text()
+      label: text()
+      additional:
+      - predicate: base:P2_has_type
+        entity:
+          types:
+          - base:E55_Type
+          uri:
+            generator: URIwithType
+            args:
+              type:
+                const: manifacturing-marks
+  - range: Technical_diagnostic_features/value
+    predicate: base:P56_bears_feature
+    entity:
+      types:
+      - base:E25_Man-Made_Feature
+      uri:
+        generator: lynx_technical_features
+        args:
+          Unique_ID: ../../Unique_ID/text()
+          text: text()
+      label: text()
+      additional:
+      - predicate: base:P2_has_type
+        entity:
+          types:
+          - base:E55_Type
+          uri:
+            generator: URIwithType
+            args:
+              type:
+                const: technical-diagnostic-feature
+  - range: Height
+    predicate: base:P43_has_dimension
+    entity:
+      types:
+      - base:E54_Dimension
+      uri:
+        generator: lynx_dimension_height
+        args:
+          Unique_ID: ../Unique_ID/text()
+          text: text()
+      label: text()
+      additional:
+      - predicate: base:P2_has_type
+        entity:
+          types:
+          - base:E55_Type
+          uri:
+            generator: URIwithType
+            args:
+              type:
+                const: cultural-heritage-object/dimension/height
+      - predicate: base:P91_has_unit
+        entity:
+          types:
+          - base:E58_Measurement_Unit
+          uri:
+            generator: URIwithType
+            args:
+              type:
+                const: cultural-heritage-object/dimension-unit/cm
+  - range: Lenght
+    predicate: base:P43_has_dimension
+    entity:
+      types:
+      - base:E54_Dimension
+      uri:
+        generator: lynx_dimension_lenght
+        args:
+          Unique_ID: ../Unique_ID/text()
+          text: text()
+      label: text()
+      additional:
+      - predicate: base:P2_has_type
+        entity:
+          types:
+          - base:E55_Type
+          uri:
+            generator: URIwithType
+            args:
+              type:
+                const: cultural-heritage-object/dimension/lenght
+      - predicate: base:P91_has_unit
+        entity:
+          types:
+          - base:E58_Measurement_Unit
+          uri:
+            generator: URIwithType
+            args:
+              type:
+                const: cultural-heritage-object/dimension-unit/cm
+  - range: Depth
+    predicate: base:P43_has_dimension
+    entity:
+      types:
+      - base:E54_Dimension
+      uri:
+        generator: lynx_dimension_depth
+        args:
+          Unique_ID: ../Unique_ID/text()
+          text: text()
+      label: text()
+      additional:
+      - predicate: base:P2_has_type
+        entity:
+          types:
+          - base:E55_Type
+          uri:
+            generator: URIwithType
+            args:
+              type:
+                const: cultural-heritage-object/dimension/depth
+      - predicate: base:P91_has_unit
+        entity:
+          types:
+          - base:E58_Measurement_Unit
+          uri:
+            generator: URIwithType
+            args:
+              type:
+                const: cultural-heritage-object/dimension-unit/cm
+  - range: Diameter
+    predicate: base:P43_has_dimension
+    entity:
+      types:
+      - base:E54_Dimension
+      uri:
+        generator: lynx_dimension_diameter
+        args:
+          Unique_ID: ../Unique_ID/text()
+          text: text()
+      label: text()
+      additional:
+      - predicate: base:P2_has_type
+        entity:
+          types:
+          - base:E55_Type
+          uri:
+            generator: URIwithType
+            args:
+              type:
+                const: cultural-heritage-object/dimension/diameter
+      - predicate: base:P91_has_unit
+        entity:
+          types:
+          - base:E58_Measurement_Unit
+          uri:
+            generator: URIwithType
+            args:
+              type:
+                const: cultural-heritage-object/dimension-unit/cm
+  - range: State_of_preservation
+    predicate: base:P44_has_condition
+    entity:
+      types:
+      - base:E3_Condition_State
+      uri:
+        generator: lynx_state_of_preservation
+        args:
+          Unique_ID: ../Unique_ID/text()
+          text: text()
+      label: text()
+  - range: Provenance
+    predicate: base:P53_has_former_or_current_location
+    entity:
+      types:
+      - base:E53_Place
+      uri:
+        generator: lynx_site
+        args:
+          site_id: ../Unique_ID/text()
+      label: text()
+      additional:
+      - predicate: base:P2_has_type
+        entity:
+          types:
+          - base:E55_Type
+          uri:
+            generator: URIwithType
+            args:
+              type:
+                const: provenance
+  - range: Date_of_discovery
+    through:
+    - predicate: base:P12i_was_present_at
+      entity:
+        types:
+        - base:E7_Activity
+        uri:
+          generator: UUID
+    predicate: base:P4_has_time-span
+    entity:
+      types:
+      - base:E52_Time-Span
+      uri:
+        generator: lynx_discovery_activity
+        args:
+          Unique_ID: ../Unique_ID/text()
+          text: text()
+      label: text()
+      additional:
+      - predicate: base:P2_has_type
+        entity:
+          types:
+          - base:E55_Type
+          uri:
+            generator: URIwithType
+            args:
+              type:
+                const: date_of_discovery
+  - range: Current_shelf_location
+    predicate: base:P55_has_current_location
+    entity:
+      types:
+      - base:E53_Place
+      uri:
+        generator: lynx_shelf_location
+        args:
+          Unique_ID: ../Unique_ID/text()
+          text: text()
+      label: text()
+      additional:
+      - predicate: base:P2_has_type
+        entity:
+          types:
+          - base:E55_Type
+          uri:
+            generator: URIwithType
+            args:
+              type:
+                const: cultural-heritage-object/shelf/location
+  - range: Current_box_location
+    predicate: base:P55_has_current_location
+    entity:
+      types:
+      - base:E53_Place
+      uri:
+        generator: lynx_box_location
+        args:
+          Unique_ID: ../Unique_ID/text()
+          text: text()
+      label: text()
+      additional:
+      - predicate: base:P2_has_type
+        entity:
+          types:
+          - base:E55_Type
+          uri:
+            generator: URIwithType
+            args:
+              type:
+                const: cultural-heritage-object/box/location
+  - range: Bibliography
+    predicate: base:P129i_is_subject_of
+    entity:
+      types:
+      - base:E73_Information_Object
+      uri:
+        generator: lynx-bibliography
+        args:
+          Unique_ID: ../Unique_ID/text()
+      label: text()
+  - range: Stylistic_notes
+    predicate: base:P67i_is_referred_to_by
+    when:
+      exists: text()
+    entity:
+      types:
+      - base:E33_Linguistic_Object
+      uri:
+        generator: lynx-notes
+        args:
+          Unique_ID: ../Unique_ID/text()
+          project_id: ../Project_ID/text()
+      label: text()
+      additional:
+      - predicate: base:P2_has_type
+        entity:
+          types:
+          - base:E55_Type
+          uri:
+            generator: URIwithType
+            args:
+              type:
+                const: stylistic-notes
+  - range: Status
+    predicate: base:P2_has_type
+    entity:
+      types:
+      - base:E55_Type
+      uri:
+        generator: lynx-status
+        args:
+          Unique_ID: ../Unique_ID/text()
+          status: text()
+      label: text()
+      additional:
+      - predicate: base:P2_has_type
+        entity:
+          types:
+          - base:E55_Type
+          uri:
+            generator: URIwithType
+            args:
+              type:
+                const: status
+  - range: Chronology
+    through:
+    - predicate: base:P108i_was_produced_by
+      entity:
+        types:
+        - base:E12_Production
+        uri:
+          generator: lynx-production
+          args:
+            Unique_ID: ../Unique_ID/text()
+    predicate: base:P4_has_time-span
+    when:
+      exists: text()
+    entity:
+      types:
+      - base:E52_Time-Span
+      uri:
+        generator: lynx-chronology
+        args:
+          Unique_ID: ../Unique_ID/text()
+          text: text()
+      label: text()
+  - range: Place_of_discovery
+    predicate: base:P53_has_former_or_current_location
+    entity:
+      types:
+      - base:E53_Place
+      uri:
+        generator: lynx_place
+        args:
+          place_id: text()
+      additional:
+      - predicate: base:P2_has_type
+        entity:
+          types:
+          - base:E55_Type
+          uri:
+            generator: URIwithType
+            args:
+              type:
+                const: place-of-discovery
+  - range: Description
+    predicate: base:P67i_is_referred_to_by
+    when:
+      exists: text()
+    entity:
+      types:
+      - base:E33_Linguistic_Object
+      uri:
+        generator: lynx-description
+        args:
+          Unique_ID: ../Unique_ID/text()
+          project_id: ../Project_ID/text()
+      label: text()
+      additional:
+      - predicate: base:P2_has_type
+        entity:
+          types:
+          - base:E55_Type
+          uri:
+            generator: URIwithType
+            args:
+              type:
+                const: description-notes
+  - range: Site_of_discovery
+    predicate: base:P53_has_former_or_current_location
+    entity:
+      types:
+      - base:E53_Place
+      uri:
+        generator: lynx_site
+        args:
+          site_id: text()
+      additional:
+      - predicate: base:P2_has_type
+        entity:
+          types:
+          - base:E55_Type
+          uri:
+            generator: URIwithType
+            args:
+              type:
+                const: site-of-discovery

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scheda>
+  <row index="2">
+    <Unique_ID>1</Unique_ID>
+    <US_ID>1041</US_ID>
+    <Ente_responsabile>TEST</Ente_responsabile>
+    <Anno>2026</Anno>
+    <Ufficio_MiC>TEST</Ufficio_MiC>
+    <excavation-event>
+      <Id._Saggio>TEST</Id._Saggio>
+      <place_name>2</place_name>
+      <site_name>2</site_name>
+      <Area_Struttura>Area dellla Peschiera</Area_Struttura>
+      <Saggio>SAS 1</Saggio>
+      <Ambiente_UnitaFunzionale>TEST</Ambiente_UnitaFunzionale>
+      <Posizione>TEST</Posizione>
+      <Settore>TEST</Settore>
+      <Quadrato>TEST</Quadrato>
+    </excavation-event>
+    <Quote>cfr. GIS</Quote>
+    <Tipologia>
+      <value>TEST</value>
+      <value>Artificiale</value>
+      <value>Positiva</value>
+      <value>TEST</value>
+    </Tipologia>
+    <Piante>Sì</Piante>
+    <Prospetti>TEST</Prospetti>
+    <Sezioni>TEST</Sezioni>
+    <Fotografie>Sì</Fotografie>
+    <Riferimenti_materiali>TEST</Riferimenti_materiali>
+    <Definizione>US positiva localizzata nel settore E dell'ampliamento S del saggio</Definizione>
+    <Criteri_distinzione>
+      <value>Composizione</value>
+      <value>Colore</value>
+      <value>Consistenza</value>
+    </Criteri_distinzione>
+    <Modo_formazione>
+      <value>Antropico sincronico</value>
+    </Modo_formazione>
+    <Componenti_inorganici>
+      <value>Laterizio</value>
+      <value>Litico</value>
+      <value>Intonaco</value>
+      <value>Malta</value>
+    </Componenti_inorganici>
+    <Componenti_organici>
+      <value>TEST</value>
+    </Componenti_organici>
+    <Consistenza>Sabbiosa molto compatta</Consistenza>
+    <Colore>Arancione scuro</Colore>
+    <Misure>TEST</Misure>
+    <Stato_conservazione>Parziale</Stato_conservazione>
+    <Descrizione>Strato di terra a matrice sabbiosa compatta di colore arancione scuro, localizzata nel settore E dell'ampliamento S del SAS 1, restituisce laterizi, malta, intonaco ed elementi litici</Descrizione>
+    <Osservazioni>scavato parzialmente</Osservazioni>
+    <Interpretazione>strato di riempimento moderno successivo allo sradicamento dei pini</Interpretazione>
+    <periodizzazione>
+      <Datazione>TEST</Datazione>
+      <Periodo>TEST</Periodo>
+      <Fase>TEST</Fase>
+      <Attivit>TEST</Attivit>
+    </periodizzazione>
+    <Elementi_datanti>TEST</Elementi_datanti>
+    <Quantitativi_reperti>TEST</Quantitativi_reperti>
+    <Campionatura>TEST</Campionatura>
+    <Flottazione>TEST</Flottazione>
+    <Setacciatura>TEST</Setacciatura>
+    <Affidabilit_stratigrafica>TEST</Affidabilit_stratigrafica>
+    <Responsabile_scientifico>Maria Luisa Catoni, Riccardo Olivito</Responsabile_scientifico>
+    <Data_rilevamento>2026-07-09 00:00:00</Data_rilevamento>
+    <Responsabile_compilazione>Nicole Crescenzi, Rodolfo Gagliardi</Responsabile_compilazione>
+    <Data_rielaborazione>TEST</Data_rielaborazione>
+    <Responsabile_rielaborazione>TEST</Responsabile_rielaborazione>
+  </row>
+</scheda>

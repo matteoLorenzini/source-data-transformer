@@ -1,0 +1,486 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<x3ml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      source_type="xpath"
+      version="1.0"
+      xsi:noNamespaceSchemaLocation="https://isl.ics.forth.gr/x3ml/schema/x3ml.xsd">
+   <info>
+      <title>Lynx-US-relations</title>
+      <general_description/>
+      <source>
+         <source_info>
+            <source_schema schema_file="US_data_SAS1_relations_sample.xml"
+                           type="xml"
+                           version="">US_data_SAS1_relations_sample</source_schema>
+            <namespaces>
+               <namespace prefix="" uri=""/>
+            </namespaces>
+         </source_info>
+      </source>
+      <target>
+         <target_info>
+            <target_schema schema_file="CIDOC_CRM_v7.1.3.rdf" type="rdf" version="">CIDOC_CRM_v7.1.3</target_schema>
+            <namespaces>
+               <namespace prefix="owl" uri="http://www.w3.org/2002/07/owl#"/>
+               <namespace prefix="rdf" uri="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
+               <namespace prefix="lynx" uri="http://www.lynx.com/resource/"/>
+               <namespace prefix="xsd" uri="http://www.w3.org/2001/XMLSchema#"/>
+               <namespace prefix="crm" uri="http://www.cidoc-crm.org/cidoc-crm/"/>
+            </namespaces>
+         </target_info>
+         <target_info>
+            <target_schema schema_file="CRMarchaeo_v2.1.1.owl" type="owl" version="">CRMarchaeo_v2.1.1</target_schema>
+            <namespaces>
+               <namespace prefix="crmcsi" uri="http://www.cidoc-crm.org/extensions/crmsci/"/>
+               <namespace prefix="owl" uri="http://www.w3.org/2002/07/owl#"/>
+               <namespace prefix="rdf" uri="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
+               <namespace prefix="xsd" uri="http://www.w3.org/2001/XMLSchema#"/>
+               <namespace prefix="skos" uri="http://www.w3.org/2004/02/skos/core#"/>
+               <namespace prefix="rdfs" uri="http://www.w3.org/2000/01/rdfs-namespace#"/>
+               <namespace prefix="crmarchaeo"
+                          uri="http://www.cidoc-crm.org/extensions/crmarchaeo/"/>
+               <namespace prefix="crm" uri="http://www.cidoc-crm.org/cidoc-crm/"/>
+            </namespaces>
+         </target_info>
+      </target>
+      <mapping_info>
+         <mapping_created_by_org/>
+         <mapping_created_by_person/>
+         <in_collaboration_with/>
+      </mapping_info>
+      <example_data_info>
+         <example_data_from/>
+         <example_data_contact_person/>
+         <example_data_source_record/>
+         <generator_policy_info/>
+         <example_data_target_record/>
+         <thesaurus_info/>
+      </example_data_info>
+   </info>
+   <namespaces>
+      <namespace prefix="lynx" uri="http://www.lynx.com/resource/"/>
+   </namespaces>
+   <mappings>
+      <mapping>
+         <domain>
+            <source_node>/scheda/row</source_node>
+            <target_node>
+               <entity>
+                  <type>crmarchaeo:A2_Stratigraphic_Volume_Unit</type>
+                  <instance_generator name="URIwithTypeAndId">
+                     <arg name="type" type="constant">stratigraphic-unit</arg>
+                     <arg name="id" type="xpath">US_ID/text()</arg>
+                  </instance_generator>
+               </entity>
+            </target_node>
+         </domain>
+         <link>
+            <path>
+               <source_relation>
+                  <relation>Sequenza_fisica_uguale_a_US_ID/value</relation>
+               </source_relation>
+               <target_relation>
+                  <relationship>crmarchaeo:AP11_has_physical_relation_to</relationship>
+               </target_relation>
+            </path>
+            <range>
+               <source_node>Sequenza_fisica_uguale_a_US_ID/value</source_node>
+               <target_node>
+                  <if>
+                     <exists>text()</exists>
+                  </if>
+                  <entity>
+                     <type>crmarchaeo:A2_Stratigraphic_Volume_Unit</type>
+                     <instance_generator name="URIwithTypeAndId">
+                        <arg name="type" type="constant">stratigraphic-unit</arg>
+                        <arg name="id" type="xpath">text()</arg>
+                     </instance_generator>
+                     <additional>
+                        <relationship>crm:P2_has_type</relationship>
+                        <entity>
+                           <type>crm:E55_Type</type>
+                           <instance_generator name="URIwithType">
+                              <arg name="text" type="constant">uguale-a</arg>
+                           </instance_generator>
+                        </entity>
+                     </additional>
+                  </entity>
+               </target_node>
+            </range>
+         </link>
+         <link>
+            <path>
+               <source_relation>
+                  <relation>Sequenza_fisica_si_lega_a_US_ID/value</relation>
+               </source_relation>
+               <target_relation>
+                  <relationship>crmarchaeo:AP11_has_physical_relation_to</relationship>
+               </target_relation>
+            </path>
+            <range>
+               <source_node>Sequenza_fisica_si_lega_a_US_ID/value</source_node>
+               <target_node>
+                  <if>
+                     <exists>text()</exists>
+                  </if>
+                  <entity>
+                     <type>crmarchaeo:A2_Stratigraphic_Volume_Unit</type>
+                     <instance_generator name="URIwithTypeAndId">
+                        <arg name="type" type="constant">stratigraphic-unit</arg>
+                        <arg name="id" type="xpath">text()</arg>
+                     </instance_generator>
+                     <additional>
+                        <relationship>crm:P2_has_type</relationship>
+                        <entity>
+                           <type>crm:E55_Type</type>
+                           <instance_generator name="URIwithType">
+                              <arg name="text" type="constant">si-lega-a</arg>
+                           </instance_generator>
+                        </entity>
+                     </additional>
+                  </entity>
+               </target_node>
+            </range>
+         </link>
+         <link>
+            <path>
+               <source_relation>
+                  <relation>Sequenza_fisica_gli_si_appoggia_US_ID/value</relation>
+               </source_relation>
+               <target_relation>
+                  <relationship>crmarchaeo:AP11i_is_physical_relation_from</relationship>
+               </target_relation>
+            </path>
+            <range>
+               <source_node>Sequenza_fisica_gli_si_appoggia_US_ID/value</source_node>
+               <target_node>
+                  <if>
+                     <exists>text()</exists>
+                  </if>
+                  <entity>
+                     <type>crmarchaeo:A2_Stratigraphic_Volume_Unit</type>
+                     <instance_generator name="URIwithTypeAndId">
+                        <arg name="type" type="constant">stratigraphic-unit</arg>
+                        <arg name="id" type="xpath">text()</arg>
+                     </instance_generator>
+                     <additional>
+                        <relationship>crm:P2_has_type</relationship>
+                        <entity>
+                           <type>crm:E55_Type</type>
+                           <instance_generator name="URIwithType">
+                              <arg name="text" type="constant">gli-si-appoggia</arg>
+                           </instance_generator>
+                        </entity>
+                     </additional>
+                  </entity>
+               </target_node>
+            </range>
+         </link>
+         <link>
+            <path>
+               <source_relation>
+                  <relation>Sequenza_fisica_si_appoggia_a_US_ID/value</relation>
+               </source_relation>
+               <target_relation>
+                  <relationship>crmarchaeo:AP11_has_physical_relation_to</relationship>
+               </target_relation>
+            </path>
+            <range>
+               <source_node>Sequenza_fisica_si_appoggia_a_US_ID/value</source_node>
+               <target_node>
+                  <if>
+                     <exists>text()</exists>
+                  </if>
+                  <entity>
+                     <type>crmarchaeo:A2_Stratigraphic_Volume_Unit</type>
+                     <instance_generator name="URIwithTypeAndId">
+                        <arg name="type" type="constant">stratigraphic-unit</arg>
+                        <arg name="id" type="xpath">text()</arg>
+                     </instance_generator>
+                     <additional>
+                        <relationship>crm:P2_has_type</relationship>
+                        <entity>
+                           <type>crm:E55_Type</type>
+                           <instance_generator name="URIwithType">
+                              <arg name="text" type="constant">si-appoggia-a</arg>
+                           </instance_generator>
+                        </entity>
+                     </additional>
+                  </entity>
+               </target_node>
+            </range>
+         </link>
+         <link>
+            <path>
+               <source_relation>
+                  <relation>Sequenza_fisica_coperto_da_US_ID/value</relation>
+               </source_relation>
+               <target_relation>
+                  <relationship>crmarchaeo:AP11i_is_physical_relation_from</relationship>
+               </target_relation>
+            </path>
+            <range>
+               <source_node>Sequenza_fisica_coperto_da_US_ID/value</source_node>
+               <target_node>
+                  <if>
+                     <exists>text()</exists>
+                  </if>
+                  <entity>
+                     <type>crmarchaeo:A2_Stratigraphic_Volume_Unit</type>
+                     <instance_generator name="URIwithTypeAndId">
+                        <arg name="type" type="constant">stratigraphic-unit</arg>
+                        <arg name="id" type="xpath">text()</arg>
+                     </instance_generator>
+                     <additional>
+                        <relationship>crm:P2_has_type</relationship>
+                        <entity>
+                           <type>crm:E55_Type</type>
+                           <instance_generator name="URIwithType">
+                              <arg name="text" type="constant">coperto-da</arg>
+                           </instance_generator>
+                        </entity>
+                     </additional>
+                  </entity>
+               </target_node>
+            </range>
+         </link>
+         <link>
+            <path>
+               <source_relation>
+                  <relation>Sequenza_fisica_copre_US_ID/value</relation>
+               </source_relation>
+               <target_relation>
+                  <relationship>crmarchaeo:AP11_has_physical_relation_to</relationship>
+               </target_relation>
+            </path>
+            <range>
+               <source_node>Sequenza_fisica_copre_US_ID/value</source_node>
+               <target_node>
+                  <if>
+                     <exists>text()</exists>
+                  </if>
+                  <entity>
+                     <type>crmarchaeo:A2_Stratigraphic_Volume_Unit</type>
+                     <instance_generator name="URIwithTypeAndId">
+                        <arg name="type" type="constant">stratigraphic-unit</arg>
+                        <arg name="id" type="xpath">text()</arg>
+                     </instance_generator>
+                     <additional>
+                        <relationship>crm:P2_has_type</relationship>
+                        <entity>
+                           <type>crm:E55_Type</type>
+                           <instance_generator name="URIwithType">
+                              <arg name="text" type="constant">copre</arg>
+                           </instance_generator>
+                        </entity>
+                     </additional>
+                  </entity>
+               </target_node>
+            </range>
+         </link>
+         <link>
+            <path>
+               <source_relation>
+                  <relation>Sequenza_fisica_tagliato_da_US_ID/value</relation>
+               </source_relation>
+               <target_relation>
+                  <relationship>crmarchaeo:AP11i_is_physical_relation_from</relationship>
+               </target_relation>
+            </path>
+            <range>
+               <source_node>Sequenza_fisica_tagliato_da_US_ID/value</source_node>
+               <target_node>
+                  <if>
+                     <exists>text()</exists>
+                  </if>
+                  <entity>
+                     <type>crmarchaeo:A8_Stratigraphic_Unit</type>
+                     <instance_generator name="URIwithTypeAndId">
+                        <arg name="type" type="constant">stratigraphic-unit</arg>
+                        <arg name="id" type="xpath">text()</arg>
+                     </instance_generator>
+                     <additional>
+                        <relationship>crm:P2_has_type</relationship>
+                        <entity>
+                           <type>crm:E55_Type</type>
+                           <instance_generator name="URIwithType">
+                              <arg name="text" type="constant">tagliato-da</arg>
+                           </instance_generator>
+                        </entity>
+                     </additional>
+                  </entity>
+               </target_node>
+            </range>
+         </link>
+         <link>
+            <path>
+               <source_relation>
+                  <relation>Sequenza_fisica_taglia_US_ID/value</relation>
+               </source_relation>
+               <target_relation>
+                  <relationship>crmarchaeo:AP11_has_physical_relation_to</relationship>
+               </target_relation>
+            </path>
+            <range>
+               <source_node>Sequenza_fisica_taglia_US_ID/value</source_node>
+               <target_node>
+                  <if>
+                     <exists>text()</exists>
+                  </if>
+                  <entity>
+                     <type>crmarchaeo:A8_Stratigraphic_Unit</type>
+                     <instance_generator name="URIwithTypeAndId">
+                        <arg name="type" type="constant">stratigraphic-unit</arg>
+                        <arg name="id" type="xpath">text()</arg>
+                     </instance_generator>
+                     <additional>
+                        <relationship>crm:P2_has_type</relationship>
+                        <entity>
+                           <type>crm:E55_Type</type>
+                           <instance_generator name="URIwithType">
+                              <arg name="text" type="constant">taglia</arg>
+                           </instance_generator>
+                        </entity>
+                     </additional>
+                  </entity>
+               </target_node>
+            </range>
+         </link>
+         <link>
+            <path>
+               <source_relation>
+                  <relation>Sequenza_fisica_riempito_da_US_ID/value</relation>
+               </source_relation>
+               <target_relation>
+                  <relationship>crmarchaeo:AP11i_is_physical_relation_from</relationship>
+               </target_relation>
+            </path>
+            <range>
+               <source_node>Sequenza_fisica_riempito_da_US_ID/value</source_node>
+               <target_node>
+                  <if>
+                     <exists>text()</exists>
+                  </if>
+                  <entity>
+                     <type>crmarchaeo:A2_Stratigraphic_Volume_Unit</type>
+                     <instance_generator name="URIwithTypeAndId">
+                        <arg name="type" type="constant">stratigraphic-unit</arg>
+                        <arg name="id" type="xpath">text()</arg>
+                     </instance_generator>
+                     <additional>
+                        <relationship>crm:P2_has_type</relationship>
+                        <entity>
+                           <type>crm:E55_Type</type>
+                           <instance_generator name="URIwithType">
+                              <arg name="text" type="constant">riempito-da</arg>
+                           </instance_generator>
+                        </entity>
+                     </additional>
+                  </entity>
+               </target_node>
+            </range>
+         </link>
+         <link>
+            <path>
+               <source_relation>
+                  <relation>Sequenza_fisica_riempie_US_ID/value</relation>
+               </source_relation>
+               <target_relation>
+                  <relationship>crmarchaeo:AP11_has_physical_relation_to</relationship>
+               </target_relation>
+            </path>
+            <range>
+               <source_node>Sequenza_fisica_riempie_US_ID/value</source_node>
+               <target_node>
+                  <if>
+                     <exists>text()</exists>
+                  </if>
+                  <entity>
+                     <type>crmarchaeo:A8_Stratigraphic_Unit</type>
+                     <instance_generator name="URIwithTypeAndId">
+                        <arg name="type" type="constant">stratigraphic-unit</arg>
+                        <arg name="id" type="xpath">text()</arg>
+                     </instance_generator>
+                     <additional>
+                        <relationship>crm:P2_has_type</relationship>
+                        <entity>
+                           <type>crm:E55_Type</type>
+                           <instance_generator name="URIwithType">
+                              <arg name="text" type="constant">riempie</arg>
+                           </instance_generator>
+                        </entity>
+                     </additional>
+                  </entity>
+               </target_node>
+            </range>
+         </link>
+         <link>
+            <path>
+               <source_relation>
+                  <relation>Sequenza_stratigrafica_posteriore_a_US_ID/value</relation>
+               </source_relation>
+               <target_relation>
+                  <relationship>crm:P120i_occurs_after</relationship>
+               </target_relation>
+            </path>
+            <range>
+               <source_node>Sequenza_stratigrafica_posteriore_a_US_ID/value</source_node>
+               <target_node>
+                  <if>
+                     <exists>text()</exists>
+                  </if>
+                  <entity>
+                     <type>crmarchaeo:A8_Stratigraphic_Unit</type>
+                     <instance_generator name="URIwithTypeAndId">
+                        <arg name="type" type="constant">stratigraphic-unit</arg>
+                        <arg name="id" type="xpath">text()</arg>
+                     </instance_generator>
+                     <additional>
+                        <relationship>crm:P2_has_type</relationship>
+                        <entity>
+                           <type>crm:E55_Type</type>
+                           <instance_generator name="URIwithType">
+                              <arg name="text" type="constant">posteriore-a</arg>
+                           </instance_generator>
+                        </entity>
+                     </additional>
+                  </entity>
+               </target_node>
+            </range>
+         </link>
+         <link>
+            <path>
+               <source_relation>
+                  <relation>Sequenza_stratigrafica_anteriore_a_US_ID/value</relation>
+               </source_relation>
+               <target_relation>
+                  <relationship>crm:P120_occurs_before</relationship>
+               </target_relation>
+            </path>
+            <range>
+               <source_node>Sequenza_stratigrafica_anteriore_a_US_ID/value</source_node>
+               <target_node>
+                  <if>
+                     <exists>text()</exists>
+                  </if>
+                  <entity>
+                     <type>crmarchaeo:A8_Stratigraphic_Unit</type>
+                     <instance_generator name="URIwithTypeAndId">
+                        <arg name="type" type="constant">stratigraphic-unit</arg>
+                        <arg name="id" type="xpath">text()</arg>
+                     </instance_generator>
+                     <additional>
+                        <relationship>crm:P2_has_type</relationship>
+                        <entity>
+                           <type>crm:E55_Type</type>
+                           <instance_generator name="URIwithType">
+                              <arg name="text" type="constant">anteriore-a</arg>
+                           </instance_generator>
+                        </entity>
+                     </additional>
+                  </entity>
+               </target_node>
+            </range>
+         </link>
+      </mapping>
+   </mappings>
+</x3ml>

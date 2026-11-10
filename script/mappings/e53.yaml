@@ -1,0 +1,105 @@
+name: Lynx_places_sites
+default_prefix: lynx
+namespaces:
+  geo: http://www.ics.forth.gr/isl/CRMgeo/
+  lynx: http://www.lynx.com/resource/
+  crm: http://www.cidoc-crm.org/cidoc-crm/
+generators:
+  UriWithType:
+    pattern: place/{type}
+    prefix: lynx
+  coordinates:
+    pattern: '{coordinates}'
+    prefix: lynx
+  lynx_place:
+    pattern: place/{place_id}
+    prefix: lynx
+  lynx_place_name:
+    pattern: place/{place_id}/{place_name}
+    prefix: lynx
+  lynx_site:
+    pattern: site/{site_id}
+    prefix: lynx
+  lynx_site_name:
+    pattern: site/{place_id}/{site_id}/{site_name}
+    prefix: lynx
+rules:
+- domain: /places/place
+  entity:
+    types:
+    - crm:E53_Place
+    uri:
+      generator: lynx_place
+      args:
+        place_id: place_id/text()
+    additional:
+    - predicate: crm:P2_has_type
+      entity:
+        types:
+        - crm:E55_Type
+        uri:
+          generator: UriWithType
+          args:
+            type:
+              const: place
+  links:
+  - range: place_name
+    predicate: crm:P1_is_identified_by
+    entity:
+      types:
+      - crm:E41_Appellation
+      uri:
+        generator: lynx_place_name
+        args:
+          place_id: ../place_id/text()
+          place_name: text()
+      label: text()
+  - range: coordinates
+    predicate: crm:P168_place_is_defined_by
+    entity:
+      types:
+      - rdfs:Literal
+      uri:
+        generator: coordinates
+        args:
+          coordinates: text()
+      label: text()
+  - range: site_id
+    predicate: crm:P89_falls_within
+    entity:
+      types:
+      - crm:E53_Place
+      uri:
+        generator: lynx_site
+        args:
+          site_id: text()
+      additional:
+      - predicate: crm:P1_is_identified_by
+        entity:
+          types:
+          - crm:E41_Appellation
+          uri:
+            generator: lynx_site_name
+            args:
+              place_id: ../place_id/text()
+              site_id: ../site_id/text()
+              site_name: ../site_name/text()
+          label: ../site_name/text()
+      - predicate: crm:P168_place_is_defined_by
+        entity:
+          types:
+          - rdfs:Literal
+          uri:
+            generator: coordinates
+            args:
+              coordinates: ../site_coordinates/text()
+          label: ../site_coordinates/text()
+      - predicate: crm:P2_has_type
+        entity:
+          types:
+          - crm:E55_Type
+          uri:
+            generator: UriWithType
+            args:
+              type:
+                const: site

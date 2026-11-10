@@ -1,0 +1,47 @@
+name: SPE_E18_relation
+source: relations
+default_prefix: lynx
+namespaces:
+  base: http://www.cidoc-crm.org/cidoc-crm/
+  archeo: http://www.ics.forth.gr/isl/CRMarchaeo/
+  dig: http://www.ics.forth.gr/isl/CRMdig/
+  lynx: http://www.lynx.com/resource/
+generators:
+  URIorUUID:
+    kind: uri_or_uuid
+rules:
+- domain: /scheda/row
+  when:
+    or:
+    - exists: Attaches_to_unique_id/text()
+    - exists: Similar_to_unique_id/text()
+  entity:
+    types:
+    - archeo:E18_Physical_Thing
+    uri:
+      generator: URIorUUID
+      args:
+        text: Unique_ID/text()
+  links:
+  - range: Attaches_to_unique_id
+    predicate: archeo:P46_is_composed_of
+    when:
+      exists: text()
+    entity:
+      types:
+      - archeo:E18_Physical_Thing
+      uri:
+        generator: URIorUUID
+        args:
+          text: text()
+  - range: Similar_to_unique_id
+    predicate: archeo:L54_is_same-as
+    when:
+      exists: text()
+    entity:
+      types:
+      - archeo:E18_Physical_Thing
+      uri:
+        generator: URIorUUID
+        args:
+          text: text()

@@ -1,0 +1,734 @@
+name: Lynx-US
+default_prefix: lynx
+namespaces:
+  lynx: http://www.lynx.com/resource/
+  crm: http://www.cidoc-crm.org/cidoc-crm/
+  skos: http://www.w3.org/2004/02/skos/core#
+  crmarchaeo: http://www.cidoc-crm.org/extensions/crmarchaeo/
+  crmdig: http://www.ics.forth.gr/isl/CRMdig/
+  crmsci: http://www.ics.forth.gr/isl/CRMsci/
+  crmgeo: http://www.ics.forth.gr/isl/CRMgeo/
+generators:
+  ID_lynx:
+    pattern: stratigraphic-unit/{US_ID}/global-identifier/{Unique_ID}
+    prefix: lynx
+  URIwithTypeAndId:
+    pattern: '{type}/{id}'
+    prefix: lynx
+  US_Typology:
+    pattern: stratigraphic-unit/{US_ID}/tipologia/{text}
+    prefix: lynx
+  UUID:
+    kind: uuid
+  UriwithTye:
+    pattern: '{type}'
+    prefix: lynx
+  lynx-affidabilita-stratigrafica:
+    pattern: stratigraphic-unit/{US_ID}/affidabilita-stratigrafica/{text}
+    prefix: lynx
+  lynx-ambiente:
+    pattern: stratigraphic-unit/{US_ID}/ambiente-unita-funzionale/{ambiente}
+    prefix: lynx
+  lynx-anno-scavo:
+    pattern: stratigraphic-unit/{US_ID}/anno-scavo/{anno}
+    prefix: lynx
+  lynx-area-struttura:
+    pattern: stratigraphic-unit/{US_ID}/area-struttura/{area}
+    prefix: lynx
+  lynx-colore:
+    pattern: stratigraphic-unit/{US_ID}/consistenza/{valore_colore}
+    prefix: lynx
+  lynx-componenti-inorganici:
+    pattern: stratigraphic-unit/{US_ID}/componenti-inorganici/{componenti}
+    prefix: lynx
+  lynx-componenti-organici:
+    pattern: stratigraphic-unit/{US_ID}/componenti-organici/{componenti_organici}
+    prefix: lynx
+  lynx-consistenza:
+    pattern: stratigraphic-unit/{US_ID}/consistenza/{valore_consistenza}
+    prefix: lynx
+  lynx-criteri-distinzione:
+    pattern: stratigraphic-unit/{US_ID}/criteri-distinzione/{criteri}
+    prefix: lynx
+  lynx-datazione:
+    pattern: stratigraphic-unit/{US_ID}/datazione/{date}
+    prefix: lynx
+  lynx-elementi-datanti:
+    pattern: stratigraphic-unit/{US_ID}/elementi-datanti/{text}
+    prefix: lynx
+  lynx-ente-competente:
+    pattern: stratigraphic-unit/{US_ID}/ente-competente/{ente}
+    prefix: lynx
+  lynx-misure:
+    pattern: stratigraphic-unit/{US_ID}/misure/{valore_misure}
+    prefix: lynx
+  lynx-modo-formazione:
+    pattern: stratigraphic-unit/{US_ID}/modo-di-formazione/{formazione}
+    prefix: lynx
+  lynx-periodizzazione-attività:
+    pattern: stratigraphic-unit/{US_ID}/periodizzazione/attivita/{text}
+    prefix: lynx
+  lynx-periodizzazione-fase:
+    pattern: stratigraphic-unit/{US_ID}/periodizzazione-fase/{text}
+    prefix: lynx
+  lynx-periodizzazione-periodo:
+    pattern: stratigraphic-unit/{US_ID}/periodizzazione-periodo/{text}
+    prefix: lynx
+  lynx-posizione:
+    pattern: stratigraphic-unit/{US_ID}/posizione/{posizione}
+    prefix: lynx
+  lynx-quadrato:
+    pattern: stratigraphic-unit/{US_ID}/quadrato/{quadrato}
+    prefix: lynx
+  lynx-quote:
+    pattern: stratigraphic-unit/{US_ID}/quote/{quote}
+    prefix: lynx
+  lynx-saggio:
+    pattern: stratigraphic-unit/{US_ID}/saggio/{saggio}
+    prefix: lynx
+  lynx-settore:
+    pattern: stratigraphic-unit/{US_ID}/settore/{settore}
+    prefix: lynx
+  lynx-stato-conservazione:
+    pattern: stratigraphic-unit/{US_ID}/stato-conservazione/{statoconservazione}
+    prefix: lynx
+  lynx_ente_responsabile:
+    pattern: stratigraphic-unit/{US_ID}/ente-responsabile/{ente}
+    prefix: lynx
+    uuid: true
+  lynx_place:
+    pattern: place/{place_id}
+    prefix: lynx
+  lynx_site:
+    pattern: site/{site_id}
+    prefix: lynx
+rules:
+- domain: /scheda/row
+  entity:
+    types:
+    - crmarchaeo:A8_Stratigraphic_Unit
+    - crmarchaeo:A2_Stratigraphic_Volume_Unit
+    uri:
+      generator: URIwithTypeAndId
+      args:
+        type:
+          const: stratigraphic-unit
+        id: US_ID/text()
+    label: US_ID/text()
+    additional:
+    - predicate: crm:P2_has_type
+      entity:
+        types:
+        - crm:E55_Type
+        uri:
+          generator: UriwithTye
+          args:
+            type:
+              const: stratigraphic-unit
+    - predicate: crm:P1_is_identified_by
+      entity:
+        types:
+        - crm:E42_Identifier
+        uri:
+          generator: UriwithTye
+          args:
+            type:
+              const: us-number
+  links:
+  - range: Unique_ID
+    predicate: crm:P1_is_identified_by
+    entity:
+      types:
+      - crm:E42_Identifier
+      uri:
+        generator: ID_lynx
+        args:
+          US_ID: ../US_ID/text()
+          Unique_ID: text()
+      label: text()
+      additional:
+      - predicate: crm:P2_has_type
+        entity:
+          types:
+          - crm:E55_Type
+          uri:
+            generator: UriwithTye
+            args:
+              type:
+                const: global-id
+  - range: Tipologia/value
+    predicate: crm:P2_has_type
+    entity:
+      types:
+      - crm:E55_Type
+      uri:
+        generator: US_Typology
+        args:
+          US_ID: ../../US_ID/text()
+          text: text()
+      label: text()
+  - range: excavation-event
+    predicate: crmarchaeo:AP5i_was_partially_or_totally_removed_by
+    entity:
+      types:
+      - crmarchaeo:A1_Excavation_Processing_Unit
+      uri:
+        generator: UUID
+  - range: Ente_responsabile
+    predicate: crm:P105_right_held_by
+    when:
+      exists: text()
+    entity:
+      types:
+      - crm:E74_Group
+      uri:
+        generator: lynx_ente_responsabile
+        args:
+          US_ID: ../US_ID/text()
+          ente: text()
+  - range: Ufficio_MiC
+    predicate: crm:P105_right_held_by
+    when:
+      exists: text()
+    entity:
+      types:
+      - crm:E74_Group
+      uri:
+        generator: lynx-ente-competente
+        args:
+          US_ID: ../US_ID/text()
+          ente: text()
+      label: text()
+  - range: Quote
+    predicate: http://www.ics.forth.gr/isl/CRMsci/O24i_was_measured_by
+    when:
+      exists: text()
+    entity:
+      types:
+      - http://www.ics.forth.gr/isl/CRMsci/S21_Measurement
+      uri:
+        generator: lynx-quote
+        args:
+          US_ID: ../US_ID/text()
+          quote: text()
+      label: text()
+      additional:
+      - predicate: crm:P2_has_type
+        entity:
+          types:
+          - crm:E55_Type
+          uri:
+            generator: UriwithTye
+            args:
+              type:
+                const: quote
+  - range: Piante
+    predicate: crm:P138i_has_representation
+    entity:
+      types:
+      - crm:E36_Visual_Item
+      uri:
+        generator: UUID
+  - range: Prospetti
+    predicate: crm:P138i_has_representation
+    entity:
+      types:
+      - crm:E36_Visual_Item
+      uri:
+        generator: UUID
+  - range: Sezioni
+    predicate: crm:P138i_has_representation
+    entity:
+      types:
+      - crm:E36_Visual_Item
+      uri:
+        generator: UUID
+  - range: Fotografie
+    predicate: crm:P67i_is_referred_to_by
+    entity:
+      types:
+      - crmdig:D1_Digital_Object
+      uri:
+        generator: UUID
+  - range: Riferimenti_materiali
+    predicate: crmarchaeo:AP21_contains
+    entity:
+      types:
+      - crm:E18_Physical_Thing
+      uri:
+        generator: UUID
+  - range: Definizione
+    predicate: crm:P67i_is_referred_to_by
+    entity:
+      types:
+      - crm:E33_Linguistic_Object
+      uri:
+        generator: UUID
+      label: text()
+      additional:
+      - predicate: crm:P2_has_type
+        entity:
+          types:
+          - crm:E55_Type
+          uri:
+            generator: UriwithTye
+            args:
+              type:
+                const: definizione
+  - range: Criteri_distinzione/value
+    predicate: crm:P130_shows_features_of
+    entity:
+      types:
+      - http://www.ics.forth.gr/isl/CRMsci/S9_Property_Type
+      uri:
+        generator: lynx-criteri-distinzione
+        args:
+          US_ID: ../../US_ID/text()
+          criteri: text()
+      label: text()
+  - range: Modo_formazione/value
+    predicate: crm:P136i_supported_type_creation
+    entity:
+      types:
+      - crm:E83_Type_Creation
+      uri:
+        generator: lynx-modo-formazione
+        args:
+          US_ID: ../../US_ID/text()
+          formazione: text()
+      label: text()
+  - range: Componenti_inorganici/value
+    predicate: crmarchaeo:AP21_contains
+    entity:
+      types:
+      - crm:E18_Physical_Thing
+      uri:
+        generator: lynx-componenti-inorganici
+        args:
+          US_ID: ../../US_ID/text()
+          componenti: text()
+      label: text()
+      additional:
+      - predicate: crm:P2_has_type
+        entity:
+          types:
+          - crm:E55_Type
+          uri:
+            generator: UriwithTye
+            args:
+              type:
+                const: componenti-inorganici
+  - range: Componenti_organici/value
+    predicate: crmarchaeo:AP21_contains
+    entity:
+      types:
+      - crm:E20_Biological_Object
+      uri:
+        generator: lynx-componenti-organici
+        args:
+          US_ID: ../../US_ID/text()
+          componenti_organici: text()
+      label: text()
+      additional:
+      - predicate: crm:P2_has_type
+        entity:
+          types:
+          - crm:E55_Type
+          uri:
+            generator: UriwithTye
+            args:
+              type:
+                const: componenti-organici
+  - range: Consistenza
+    predicate: crm:P130_shows_features_of
+    entity:
+      types:
+      - http://www.ics.forth.gr/isl/CRMsci/S9_Property_Type
+      uri:
+        generator: lynx-consistenza
+        args:
+          US_ID: ../US_ID/text()
+          valore_consistenza: text()
+      label: text()
+      additional:
+      - predicate: crm:P2_has_type
+        entity:
+          types:
+          - crm:E55_Type
+          uri:
+            generator: UriwithTye
+            args:
+              type:
+                const: consistenza
+  - range: Colore
+    predicate: crm:P130_shows_features_of
+    entity:
+      types:
+      - http://www.ics.forth.gr/isl/CRMsci/S9_Property_Type
+      uri:
+        generator: lynx-colore
+        args:
+          US_ID: ../US_ID/text()
+          valore_colore: text()
+      label: text()
+      additional:
+      - predicate: crm:P2_has_type
+        entity:
+          types:
+          - crm:E55_Type
+          uri:
+            generator: UriwithTye
+            args:
+              type:
+                const: colore
+  - range: Misure
+    predicate: crmgeo:Q11i_is_approximated_by
+    entity:
+      types:
+      - crmgeo:SP6_Declarative_Place
+      uri:
+        generator: lynx-misure
+        args:
+          US_ID: ../US_ID/text()
+          valore_misure: text()
+      label: text()
+      additional:
+      - predicate: crm:P2_has_type
+        entity:
+          types:
+          - crm:E55_Type
+          uri:
+            generator: UriwithTye
+            args:
+              type:
+                const: misure-us
+  - range: Stato_conservazione
+    predicate: crm:P44_has_condition
+    entity:
+      types:
+      - crm:E3_Condition_State
+      uri:
+        generator: lynx-stato-conservazione
+        args:
+          US_ID: ../US_ID/text()
+          statoconservazione: text()
+      label: text()
+  - range: Descrizione
+    predicate: crm:P67i_is_referred_to_by
+    entity:
+      types:
+      - crm:E33_Linguistic_Object
+      uri:
+        generator: UUID
+      label: text()
+      additional:
+      - predicate: crm:P2_has_type
+        entity:
+          types:
+          - crm:E55_Type
+          uri:
+            generator: UriwithTye
+            args:
+              type:
+                const: descrizione
+  - range: Osservazioni
+    predicate: crm:P67i_is_referred_to_by
+    entity:
+      types:
+      - crm:E33_Linguistic_Object
+      uri:
+        generator: UUID
+      label: text()
+      additional:
+      - predicate: crm:P2_has_type
+        entity:
+          types:
+          - crm:E55_Type
+          uri:
+            generator: UriwithTye
+            args:
+              type:
+                const: osservazioni
+  - range: Interpretazione
+    predicate: crm:P67i_is_referred_to_by
+    entity:
+      types:
+      - crm:E33_Linguistic_Object
+      uri:
+        generator: UUID
+      label: text()
+      additional:
+      - predicate: crm:P2_has_type
+        entity:
+          types:
+          - crm:E55_Type
+          uri:
+            generator: UriwithTye
+            args:
+              type:
+                const: interpretazione
+  - range: periodizzazione
+    predicate: crmarchaeo:AP7i_was_produced_by
+    entity:
+      types:
+      - crmarchaeo:A4_Stratigraphic_Genesis
+      uri:
+        generator: UUID
+  - range: Elementi_datanti
+    predicate: crmarchaeo:AP21_contains
+    entity:
+      types:
+      - crm:E18_Physical_Thing
+      uri:
+        generator: lynx-elementi-datanti
+        args:
+          US_ID: ../US_ID/text()
+          text: text()
+      label: text()
+  - range: Affidabilit_stratigrafica
+    predicate: crm:P44_has_condition
+    entity:
+      types:
+      - crm:E3_Condition_State
+      uri:
+        generator: lynx-affidabilita-stratigrafica
+        args:
+          US_ID: ../US_ID/text()
+          text: text()
+      label: text()
+- domain: /scheda/row/excavation-event
+  entity:
+    types:
+    - crmarchaeo:A1_Excavation_Processing_Unit
+    uri:
+      generator: UUID
+  links:
+  - range: site_name
+    predicate: crm:P7_took_place_at
+    entity:
+      types:
+      - crm:E27_Site
+      uri:
+        generator: lynx_site
+        args:
+          site_id: text()
+      additional:
+      - predicate: crm:P89_falls_within
+        entity:
+          types:
+          - crm:E53_Place
+          uri:
+            generator: lynx_place
+            args:
+              place_id: ../place_name/text()
+          additional:
+          - predicate: crm:P2_has_type
+            entity:
+              types:
+              - crm:E55_Type
+              uri:
+                generator: UriwithTye
+                args:
+                  type:
+                    const: cultural-heritage-place
+      - predicate: crm:P89_falls_within
+        entity:
+          types:
+          - crm:E53_Place
+          uri:
+            generator: lynx-area-struttura
+            args:
+              US_ID: ../../US_ID/text()
+              area: ../Area_Struttura/text()
+          label: ../Area_Struttura/text()
+          additional:
+          - predicate: crm:P2_has_type
+            entity:
+              types:
+              - crm:E55_Type
+              uri:
+                generator: UriwithTye
+                args:
+                  type:
+                    const: area-struttura
+      - predicate: crm:P89_falls_within
+        entity:
+          types:
+          - crm:E53_Place
+          uri:
+            generator: lynx-saggio
+            args:
+              US_ID: ../../US_ID/text()
+              saggio: ../Saggio/text()
+          label: ../Saggio/text()
+          additional:
+          - predicate: crm:P2_has_type
+            entity:
+              types:
+              - crm:E55_Type
+              uri:
+                generator: UriwithTye
+                args:
+                  type:
+                    const: saggio
+      - predicate: crm:P89_falls_within
+        entity:
+          types:
+          - crm:E53_Place
+          uri:
+            generator: lynx-ambiente
+            args:
+              US_ID: ../../US_ID/text()
+              ambiente: ../Ambiente_UnitaFunzionale/text()
+          label: ../Ambiente_UnitaFunzionale/text()
+          additional:
+          - predicate: crm:P2_has_type
+            entity:
+              types:
+              - crm:E55_Type
+              uri:
+                generator: UriwithTye
+                args:
+                  type:
+                    const: ambiente-unita-funzionale
+      - predicate: crm:P89_falls_within
+        entity:
+          types:
+          - crm:E53_Place
+          uri:
+            generator: lynx-posizione
+            args:
+              US_ID: ../../US_ID/text()
+              posizione: ../Posizione/text()
+          label: ../Posizione/text()
+          additional:
+          - predicate: crm:P2_has_type
+            entity:
+              types:
+              - crm:E55_Type
+              uri:
+                generator: UriwithTye
+                args:
+                  type:
+                    const: posizione
+      - predicate: crm:P89_falls_within
+        entity:
+          types:
+          - crm:E53_Place
+          uri:
+            generator: lynx-settore
+            args:
+              US_ID: ../../US_ID/text()
+              settore: ../Settore/text()
+          label: ../Settore/text()
+          additional:
+          - predicate: crm:P2_has_type
+            entity:
+              types:
+              - crm:E55_Type
+              uri:
+                generator: UriwithTye
+                args:
+                  type:
+                    const: settore
+      - predicate: crm:P89_falls_within
+        entity:
+          types:
+          - crm:E53_Place
+          uri:
+            generator: lynx-quadrato
+            args:
+              US_ID: ../../US_ID/text()
+              quadrato: ../Quadrato/text()
+          label: ../Quadrato/text()
+          additional:
+          - predicate: crm:P2_has_type
+            entity:
+              types:
+              - crm:E55_Type
+              uri:
+                generator: UriwithTye
+                args:
+                  type:
+                    const: quadrato
+      - predicate: crm:P2_has_type
+        entity:
+          types:
+          - crm:E55_Type
+          uri:
+            generator: UriwithTye
+            args:
+              type:
+                const: sito-archeologico
+  - range: Anno
+    predicate: crm:P4_has_time-span
+    entity:
+      types:
+      - crm:E52_Time-Span
+      uri:
+        generator: lynx-anno-scavo
+        args:
+          US_ID: ../../US_ID/text()
+          anno: text()
+      label: text()
+- domain: /scheda/row/periodizzazione
+  entity:
+    types:
+    - crmarchaeo:A4_Stratigraphic_Genesis
+    uri:
+      generator: UUID
+  links:
+  - range: Datazione
+    predicate: crm:P4_has_time-span
+    entity:
+      types:
+      - crm:E52_Time-Span
+      uri:
+        generator: lynx-datazione
+        args:
+          US_ID: ../../US_ID/text()
+          date: text()
+      label: text()
+      additional:
+      - predicate: crm:P2_has_type
+        entity:
+          types:
+          - crm:E55_Type
+          uri:
+            generator: UriwithTye
+            args:
+              type:
+                const: datazione
+  - range: Attivit
+    predicate: crm:P9i_forms_part_of
+    entity:
+      types:
+      - crm:E7_Activity
+      uri:
+        generator: lynx-periodizzazione-attività
+        args:
+          US_ID: ../../US_ID/text()
+          text: text()
+      label: text()
+      additional:
+      - predicate: crm:P9i_forms_part_of
+        entity:
+          types:
+          - crm:E5_Event
+          uri:
+            generator: lynx-periodizzazione-fase
+            args:
+              US_ID: ../../US_ID/text()
+              text: text()
+          label: text()
+          additional:
+          - predicate: crm:P9i_forms_part_of
+            entity:
+              types:
+              - crm:E4_Period
+              uri:
+                generator: lynx-periodizzazione-periodo
+                args:
+                  US_ID: ../../US_ID/text()
+                  text: text()
+              label: text()

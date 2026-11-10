@@ -1,0 +1,171 @@
+name: Person
+default_prefix: lynx
+namespaces:
+  geo: http://www.ics.forth.gr/isl/CRMgeo/
+  crm: http://www.cidoc-crm.org/cidoc-crm/
+  lynx: http://www.lynx.com/resource/
+generators:
+  URIwithType:
+    pattern: '{type}'
+    prefix: lynx
+  URIwithTypeAndId:
+    pattern: '{type}/{id}'
+    prefix: lynx
+  UUID:
+    kind: uuid
+  birth-event:
+    pattern: person/{uniqueid}/birth-event
+    prefix: lynx
+  death-event:
+    pattern: person/{uniqueid}/death-event
+    prefix: lynx
+  lynx-place:
+    pattern: place/{id}
+    prefix: lynx
+  person-birth-date:
+    pattern: person/{id}/{birthdate}
+    prefix: lynx
+  person-death-date:
+    pattern: person/{id}/{deathdate}
+    prefix: lynx
+  person-unique-identifier:
+    pattern: person/unique-id/{Unique_ID}
+    prefix: lynx
+  personAppellation:
+    pattern: person/{id}/{name}
+    prefix: lynx
+rules:
+- domain: /scheda/row
+  entity:
+    types:
+    - crm:E21_Person
+    uri:
+      generator: URIwithTypeAndId
+      args:
+        type:
+          const: person
+        id: Unique_ID/text()
+  links:
+  - range: Unique_ID
+    predicate: crm:P1_is_identified_by
+    entity:
+      types:
+      - crm:E42_Identifier
+      uri:
+        generator: person-unique-identifier
+        args:
+          Unique_ID: text()
+      additional:
+      - predicate: crm:P2_has_type
+        entity:
+          types:
+          - crm:E55_Type
+          uri:
+            generator: URIwithType
+            args:
+              type:
+                const: unique-id
+  - range: Name_Surname
+    predicate: crm:P1_is_identified_by
+    entity:
+      types:
+      - crm:E41_Appellation
+      uri:
+        generator: personAppellation
+        args:
+          id: ../Unique_ID/text()
+          name: text()
+      label: text()
+  - range: Birth_place
+    through:
+    - predicate: crm:P98i_was_born
+      entity:
+        types:
+        - crm:E67_Birth
+        uri:
+          generator: birth-event
+          args:
+            uniqueid: ../Unique_ID/text()
+        additional:
+        - predicate: crm:P4_has_time-span
+          entity:
+            types:
+            - crm:E52_Time-Span
+            uri:
+              generator: person-birth-date
+              args:
+                id: ../Unique_ID/text()
+                birthdate: ../Birth_date/text()
+            label: ../Birth_date/text()
+    predicate: crm:P7_took_place_at
+    entity:
+      types:
+      - crm:E53_Place
+      uri:
+        generator: lynx-place
+        args:
+          id: text()
+      additional:
+      - predicate: crm:P2_has_type
+        entity:
+          types:
+          - crm:E55_Type
+          uri:
+            generator: URIwithType
+            args:
+              type:
+                const: birth-place
+  - range: Death_place
+    through:
+    - predicate: crm:P100i_died_in
+      entity:
+        types:
+        - crm:E69_Death
+        uri:
+          generator: death-event
+          args:
+            uniqueid: ../Unique_ID/text()
+        additional:
+        - predicate: crm:P4_has_time-span
+          entity:
+            types:
+            - crm:E52_Time-Span
+            uri:
+              generator: person-death-date
+              args:
+                id: ../Unique_ID/text()
+                deathdate: text()
+            label: ../Death_date/text()
+    predicate: crm:P7_took_place_at
+    entity:
+      types:
+      - crm:E53_Place
+      uri:
+        generator: lynx-place
+        args:
+          id: text()
+      additional:
+      - predicate: crm:P2_has_type
+        entity:
+          types:
+          - crm:E55_Type
+          uri:
+            generator: URIwithType
+            args:
+              type:
+                const: death-place
+  - range: Biography
+    predicate: crm:P67i_is_referred_to_by
+    entity:
+      types:
+      - crm:E73_Information_Object
+      uri:
+        generator: UUID
+      label: text()
+  - range: Role
+    predicate: crm:P2_has_type
+    entity:
+      types:
+      - crm:E55_Type
+      uri:
+        generator: UUID

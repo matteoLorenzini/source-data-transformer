@@ -88,6 +88,18 @@ def build_parser() -> argparse.ArgumentParser:
         type=Path,
         help="Entity JSON produced by extract_entities.py; writes <name>_entities.xml with the entities of each row.",
     )
+    parser.add_argument(
+        "--rdf-mapping",
+        type=Path,
+        action="append",
+        help="YAML mapping (see mappings/) that turns an XML export into CIDOC-CRM RDF; repeat for several mappings. "
+        "Its 'source' key selects <name>.xml, <name>_relations.xml, or <name>_entities.xml.",
+    )
+    parser.add_argument(
+        "--rdf-format",
+        default="turtle",
+        help="RDF serialization for --rdf-mapping outputs: turtle, xml, nt, nquads, or trig.",
+    )
     return parser
 
 
@@ -160,14 +172,25 @@ def main(argv: Iterable[str] | None = None) -> int:
         except (OSError, ValueError) as exc:
             parser.error(str(exc))
 
+    rdf_mappings = []
+    if args.rdf_mapping:
+        from .rdf_mapper import export_rdf, load_mapping, serialization_format
+
+        try:
+            serialization_format(args.rdf_format)
+            rdf_mappings = [load_mapping(mapping_path) for mapping_path in args.rdf_mapping]
+        except (OSError, ValueError) as exc:
+            parser.error(str(exc))
+
     def export(source_root: Element, csv_path: Path, xml_path: Path) -> None:
         write_source_exports(source_root, csv_path, xml_path, stylesheet, args.sample_row)
-        if entity_store is None:
-            return
-        attach_entities(source_root, entity_store)
-        entities_path = xml_path.with_name(f"{xml_path.stem}_entities{xml_path.suffix}")
-        if write_entity_tables(source_root, entities_path):
-            print(f"Writing entities to {entities_path}...")
+        if entity_store is not None:
+            attach_entities(source_root, entity_store)
+            entities_path = xml_path.with_name(f"{xml_path.stem}_entities{xml_path.suffix}")
+            if write_entity_tables(source_root, entities_path):
+                print(f"Writing entities to {entities_path}...")
+        for rdf_mapping in rdf_mappings:
+            export_rdf(rdf_mapping, xml_path, args.rdf_format)
 
     output_dir = Path(args.output_dir)
     workbook_dir = output_dir / args.base_name

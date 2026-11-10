@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<generator_policy>
+   <generator name="URIorUUID" type="any">
+      <custom generatorClass="gr.forth.URIorUUID">
+         <set-arg name="text"/>
+      </custom>
+   </generator>
+   <generator name="URIwithTypeAndId" prefix="lynx" type="any">
+      <pattern>{type}/{id}</pattern>
+   </generator>
+   <generator name="URIwith2TypesAndId" prefix="sari" type="any">
+      <pattern>{type1}/{type2}/{id}</pattern>
+   </generator>
+   <generator name="URIwithGndId" prefix="gnd" type="any">
+      <pattern>{id}</pattern>
+   </generator>
+   <generator name="URIwithUlanId" prefix="ulan" type="any">
+      <pattern>{id}</pattern>
+   </generator>
+   <generator name="URIwithWikidataId" prefix="wikidata" type="any">
+      <pattern>{id}</pattern>
+   </generator>
+   <generator name="TypedLiteralGen" type="any">
+      <custom generatorClass="gr.forth.TypedLiteralGenerator">
+         <set-arg name="text"/>
+      </custom>
+   </generator>
+   <generator name="ArtistURI" prefix="artist" type="any">
+      <pattern>{type}/{id}</pattern>
+   </generator>
+   <generator name="CollectionURI" prefix="inst" type="any">
+      <pattern>{type}/{id}</pattern>
+   </generator>
+   <generator name="DrawingSideURI" prefix="pref" type="any">
+      <pattern>{side}/{id}</pattern>
+   </generator>
+   <generator name="DrawingVisualURI" prefix="pref" type="any">
+      <pattern>{side}/{visual}/{id}</pattern>
+   </generator>
+   <generator name="Identifier" prefix="pref" type="any">
+      <pattern>{type}/{id}/{identifier}</pattern>
+   </generator>
+   <generator name="DrawingSideIdentifier" prefix="pref" type="any">
+      <pattern>{side}/{type}/{id}/{identifier}/</pattern>
+   </generator>
+   <generator name="IntermediateURI" prefix="pref" type="any">
+      <pattern>{type}/{id}/{number}</pattern>
+   </generator>
+   <generator name="GenericURI" prefix="pref" type="any">
+      <pattern>{type}/{id}</pattern>
+   </generator>
+   <generator name="GenericEditionURI" prefix="pref" type="any">
+      <pattern>{year}/{type}/{id}</pattern>
+   </generator>
+   <generator name="LocalTermURI" prefix="pref" type="any">
+      <pattern>{hierarchy}/{term}</pattern>
+   </generator>
+   <generator name="DrawingSideIntermediateURI" prefix="pref" type="any">
+      <pattern>{side}/{type}/{id}/{number}</pattern>
+   </generator>
+   <generator name="DrawingSideIntermediateURI2" prefix="pref" type="any">
+      <pattern>{side}/{type}/{id}</pattern>
+   </generator>
+   <generator name="URIorUUID_(rename_it)" type="any">
+      <custom generatorClass="gr.forth.URIorUUID">
+         <set-arg name="text"/>
+      </custom>
+   </generator>
+   <generator name="object_id" prefix="lynx" type="any">
+      <pattern>cultural-heritage-object/{unique_id}/identifier/{id}</pattern>
+   </generator>
+   <generator name="URIwithType" prefix="lynx" type="any">
+      <pattern>{type}</pattern>
+   </generator>
+   <generator name="ID_lynx" prefix="lynx" type="any">
+      <pattern>cultural-heritage-object/{Unique_ID}/identifier/{id}</pattern>
+   </generator>
+   <generator name="inventory_id" prefix="lynx" type="any">
+      <pattern>cultural-heritage-object/{Unique_ID}/identifier/{id}</pattern>
+   </generator>
+   <generator name="ObjectAppellationURI" prefix="lynx" type="any">
+      <pattern>{id}/{appellation}</pattern>
+   </generator>
+   <generator name="LynxType" prefix="lynx" type="any">
+      <pattern>cultural-heritage-object/{Unique_ID}/type/{type}</pattern>
+   </generator>
+   <generator name="lynx_mterial" prefix="lynx" type="any">
+      <pattern>cultural-heritage-object/{Unique_ID}/material/{material}</pattern>
+   </generator>
+   <generator name="lynx_manifacturing_marks" prefix="lynx" type="any">
+      <pattern>cultural-heritage-object/{Unique_ID}/manifacturing-marks/{text}</pattern>
+   </generator>
+   <generator name="lynx_production" prefix="lynx" type="any">
+      <pattern>cultural-heritage-object/{id}/production/{classification}</pattern>
+   </generator>
+   <generator name="lynx_technical_features" prefix="lynx" type="any">
+      <pattern>cultural-heritage-object/{Unique_ID}/technical-feature/{text}</pattern>
+   </generator>
+   <generator name="lynx_technical_feature_type" prefix="lynx" type="any">
+      <pattern>cultural-heritage-object/{Unique_ID}/technical-feature-type/{text}</pattern>
+   </generator>
+   <generator name="lynx_dimension_height" prefix="lynx" type="any">
+      <pattern>cultural-heritage-object/{Unique_ID}/dimension/height/{text}</pattern>
+   </generator>
+   <generator name="lynx_dimension_lenght" prefix="lynx" type="any">
+      <pattern>cultural-heritage-object/{Unique_ID}/dimension/lenght/{text}</pattern>
+   </generator>
+   <generator name="lynx_dimension_depth" prefix="lynx" type="any">
+      <pattern>cultural-heritage-object/{Unique_ID}/dimension/depth/{text}</pattern>
+   </generator>
+   <generator name="lynx_dimension_diameter" prefix="lynx" type="any">
+      <pattern>cultural-heritage-object/{Unique_ID}/dimension/diameter/{text}</pattern>
+   </generator>
+   <generator name="lynx_state_of_preservation" prefix="lynx" type="any">
+      <pattern>cultural-heritage-object/{Unique_ID}/state-of-preservation/{text}</pattern>
+   </generator>
+   <generator name="lynx_site" prefix="lynx" type="any">
+      <pattern>site/{site_id}</pattern>
+   </generator>
+   <generator name="lynx_discovery_activity" prefix="lynx" type="any">
+      <pattern>cultural-heritage-object/{Unique_ID}/date-discovery/{text}</pattern>
+   </generator>
+   <generator name="lynx_shelf_location" prefix="lynx" type="any">
+      <pattern>cultural-heritage-object/{Unique_ID}/shelf-location/{text}</pattern>
+   </generator>
+   <generator name="lynx_box_location" prefix="lynx" type="any">
+      <pattern>cultural-heritage-object/{Unique_ID}/box-location/{text}</pattern>
+   </generator>
+   <generator name="lynx-chronology" prefix="lynx" type="any">
+      <pattern>cultural-heritage-object/{Unique_ID}/chronology/{text}</pattern>
+   </generator>
+   <generator name="lynx-bibliography" prefix="lynx" type="any">
+      <pattern>cultural-heritage-object/{Unique_ID}/bibliography</pattern>
+   </generator>
+   <generator name="lynx-status" prefix="lynx" type="any">
+      <pattern>cultural-heritage-object/{Unique_ID}/status/{status}</pattern>
+   </generator>
+   <generator name="lynx-production" prefix="lynx" type="any">
+      <pattern>cultural-heritage-object/{Unique_ID}/production</pattern>
+   </generator>
+   <generator name="lynx_attaches_to" prefix="lynx" type="any">
+      <pattern>cultural-heritage-object/{Unique_ID}</pattern>
+   </generator>
+   <generator name="lynx_similar_to" prefix="lynx" type="any">
+      <pattern>cultural-heritage-object/{Unique_ID}</pattern>
+   </generator>
+   <generator name="lynx-appellation" prefix="lynx" type="any">
+      <pattern>cultural-heritage-object/{Unique_ID}/appellation/{text}</pattern>
+   </generator>
+   <generator name="lynx-description" prefix="lynx" type="any">
+      <pattern>cultural-heritage-object/{Unique_ID}/description/{project_id}</pattern>
+   </generator>
+   <generator name="lynx-notes" prefix="lynx" type="any">
+      <pattern>cultural-heritage-object/{Unique_ID}/stylistic-notes/{project_id}</pattern>
+   </generator>
+   <generator name="lynx_place" prefix="lynx" type="any">
+      <pattern>place/{place_id}</pattern>
+   </generator>
+</generator_policy>

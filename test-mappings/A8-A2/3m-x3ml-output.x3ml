@@ -1,0 +1,1141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<x3ml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      source_type="xpath"
+      version="1.0"
+      xsi:noNamespaceSchemaLocation="https://isl.ics.forth.gr/x3ml/schema/x3ml.xsd">
+   <info>
+      <title>Lynx-US</title>
+      <general_description/>
+      <source>
+         <source_info>
+            <source_schema schema_file="US_data_SAS1_sample.xml" type="xml" version="">US_data_SAS1_sample</source_schema>
+            <namespaces>
+               <namespace prefix="" uri=""/>
+            </namespaces>
+         </source_info>
+      </source>
+      <target>
+         <target_info>
+            <target_schema schema_file="CIDOC_CRM_v7.1.3.rdf" type="rdf" version="">CIDOC_CRM_v7.1.3</target_schema>
+            <namespaces>
+               <namespace prefix="owl" uri="http://www.w3.org/2002/07/owl#"/>
+               <namespace prefix="rdf" uri="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
+               <namespace prefix="lynx" uri="http://www.lynx.com/resource/"/>
+               <namespace prefix="xsd" uri="http://www.w3.org/2001/XMLSchema#"/>
+               <namespace prefix="rdfs" uri="http://www.w3.org/2000/01/rdf-schema#"/>
+               <namespace prefix="crm" uri="http://www.cidoc-crm.org/cidoc-crm/"/>
+            </namespaces>
+         </target_info>
+         <target_info>
+            <target_schema schema_file="CRMarchaeo_v2.1.1.owl" type="owl" version="">CRMarchaeo_v2.1.1</target_schema>
+            <namespaces>
+               <namespace prefix="owl" uri="http://www.w3.org/2002/07/owl#"/>
+               <namespace prefix="rdf" uri="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
+               <namespace prefix="xsd" uri="http://www.w3.org/2001/XMLSchema#"/>
+               <namespace prefix="skos" uri="http://www.w3.org/2004/02/skos/core#"/>
+               <namespace prefix="rdfs" uri="http://www.w3.org/2000/01/rdf-schema#"/>
+               <namespace prefix="crmarchaeo"
+                          uri="http://www.cidoc-crm.org/extensions/crmarchaeo/"/>
+               <namespace prefix="crm" uri="http://www.cidoc-crm.org/cidoc-crm/"/>
+            </namespaces>
+         </target_info>
+         <target_info>
+            <target_schema schema_file="CRMdig_v3.2.rdfs" type="rdfs" version="">CRMdig_v3.2</target_schema>
+            <namespaces>
+               <namespace prefix="owl" uri="http://www.w3.org/2002/07/owl#"/>
+               <namespace prefix="rdf" uri="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
+               <namespace prefix="xsd" uri="http://www.w3.org/2001/XMLSchema#"/>
+               <namespace prefix="rdfs" uri="http://www.w3.org/2000/01/rdf-schema#"/>
+               <namespace prefix="crmdig" uri="http://www.ics.forth.gr/isl/CRMdig/"/>
+            </namespaces>
+         </target_info>
+         <target_info>
+            <target_schema schema_file="CRMsci_v1.2.2.rdfs" type="rdfs" version="">CRMsci_v1.2.2</target_schema>
+            <namespaces>
+               <namespace prefix="crmsci" uri="http://www.ics.forth.gr/isl/CRMsci/"/>
+               <namespace prefix="owl" uri="http://www.w3.org/2002/07/owl#"/>
+               <namespace prefix="rdf" uri="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
+               <namespace prefix="xsd" uri="http://www.w3.org/2001/XMLSchema#"/>
+               <namespace prefix="rdfs" uri="http://www.w3.org/2000/01/rdf-schema#"/>
+            </namespaces>
+         </target_info>
+         <target_info>
+            <target_schema schema_file="CRMgeo_v1.2.rdfs" type="rdfs" version="">CRMgeo_v1.2</target_schema>
+            <namespaces>
+               <namespace prefix="owl" uri="http://www.w3.org/2002/07/owl#"/>
+               <namespace prefix="rdf" uri="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
+               <namespace prefix="xsd" uri="http://www.w3.org/2001/XMLSchema#"/>
+               <namespace prefix="rdfs" uri="http://www.w3.org/2000/01/rdf-schema#"/>
+               <namespace prefix="crmgeo" uri="http://www.ics.forth.gr/isl/CRMgeo/"/>
+            </namespaces>
+         </target_info>
+      </target>
+      <mapping_info>
+         <mapping_created_by_org/>
+         <mapping_created_by_person/>
+         <in_collaboration_with/>
+      </mapping_info>
+      <example_data_info>
+         <example_data_from/>
+         <example_data_contact_person/>
+         <example_data_source_record/>
+         <generator_policy_info/>
+         <example_data_target_record/>
+         <thesaurus_info/>
+      </example_data_info>
+   </info>
+   <namespaces>
+      <namespace prefix="lynx" uri="http://www.lynx.com/resource/"/>
+   </namespaces>
+   <mappings>
+      <mapping>
+         <domain>
+            <source_node>/scheda/row</source_node>
+            <target_node>
+               <entity>
+                  <type>crmarchaeo:A8_Stratigraphic_Unit</type>
+                  <type>crmarchaeo:A2_Stratigraphic_Volume_Unit</type>
+                  <instance_generator name="URIwithTypeAndId">
+                     <arg name="type" type="constant">stratigraphic-unit</arg>
+                     <arg name="id" type="xpath">US_ID/text()</arg>
+                  </instance_generator>
+                  <label_generator name="Literal">
+                     <arg name="text" type="xpath">US_ID/text()</arg>
+                  </label_generator>
+                  <additional>
+                     <relationship>crm:P2_has_type</relationship>
+                     <entity>
+                        <type>crm:E55_Type</type>
+                        <instance_generator name="UriwithTye">
+                           <arg name="type" type="constant">stratigraphic-unit</arg>
+                        </instance_generator>
+                     </entity>
+                  </additional>
+                  <additional>
+                     <relationship>crm:P1_is_identified_by</relationship>
+                     <entity>
+                        <type>crm:E42_Identifier</type>
+                        <instance_generator name="UriwithTye">
+                           <arg name="type" type="constant">us-number</arg>
+                        </instance_generator>
+                     </entity>
+                  </additional>
+               </entity>
+            </target_node>
+         </domain>
+         <link>
+            <path>
+               <source_relation>
+                  <relation>Unique_ID</relation>
+               </source_relation>
+               <target_relation>
+                  <relationship>crm:P1_is_identified_by</relationship>
+               </target_relation>
+            </path>
+            <range>
+               <source_node>Unique_ID</source_node>
+               <target_node>
+                  <entity>
+                     <type>crm:E42_Identifier</type>
+                     <instance_generator name="ID_lynx">
+                        <arg name="US_ID" type="xpath">../US_ID/text()</arg>
+                        <arg name="Unique_ID" type="xpath">text()</arg>
+                     </instance_generator>
+                     <label_generator name="Literal">
+                        <arg name="text" type="xpath">text()</arg>
+                     </label_generator>
+                     <additional>
+                        <relationship>crm:P2_has_type</relationship>
+                        <entity>
+                           <type>crm:E55_Type</type>
+                           <instance_generator name="UriwithTye">
+                              <arg name="type" type="constant">global-id</arg>
+                           </instance_generator>
+                        </entity>
+                     </additional>
+                  </entity>
+               </target_node>
+            </range>
+         </link>
+         <link>
+            <path>
+               <source_relation>
+                  <relation>Tipologia/value</relation>
+               </source_relation>
+               <target_relation>
+                  <relationship>crm:P2_has_type</relationship>
+               </target_relation>
+            </path>
+            <range>
+               <source_node>Tipologia/value</source_node>
+               <target_node>
+                  <entity>
+                     <type>crm:E55_Type</type>
+                     <instance_generator name="US_Typology">
+                        <arg name="US_ID" type="xpath">../../US_ID/text()</arg>
+                        <arg name="text" type="xpath">text()</arg>
+                     </instance_generator>
+                     <label_generator name="Literal">
+                        <arg name="text" type="xpath">text()</arg>
+                     </label_generator>
+                  </entity>
+               </target_node>
+            </range>
+         </link>
+         <link>
+            <path>
+               <source_relation>
+                  <relation>excavation-event</relation>
+               </source_relation>
+               <target_relation>
+                  <relationship>crmarchaeo:AP5i_was_partially_or_totally_removed_by</relationship>
+               </target_relation>
+            </path>
+            <range>
+               <source_node>excavation-event</source_node>
+               <target_node>
+                  <entity>
+                     <type>crmarchaeo:A1_Excavation_Processing_Unit</type>
+                     <instance_generator name="UUID"/>
+                  </entity>
+               </target_node>
+            </range>
+         </link>
+         <link>
+            <path>
+               <source_relation>
+                  <relation>Ente_responsabile</relation>
+               </source_relation>
+               <target_relation>
+                  <relationship>crm:P105_right_held_by</relationship>
+               </target_relation>
+            </path>
+            <range>
+               <source_node>Ente_responsabile</source_node>
+               <target_node>
+                  <if>
+                     <exists>text()</exists>
+                  </if>
+                  <entity>
+                     <type>crm:E74_Group</type>
+                     <instance_generator name="lynx_ente_responsabile">
+                        <arg name="US_ID" type="xpath">../US_ID/text()</arg>
+                        <arg name="ente" type="xpath">text()</arg>
+                     </instance_generator>
+                  </entity>
+               </target_node>
+            </range>
+         </link>
+         <link>
+            <path>
+               <source_relation>
+                  <relation>Ufficio_MiC</relation>
+               </source_relation>
+               <target_relation>
+                  <relationship>crm:P105_right_held_by</relationship>
+               </target_relation>
+            </path>
+            <range>
+               <source_node>Ufficio_MiC</source_node>
+               <target_node>
+                  <if>
+                     <exists>text()</exists>
+                  </if>
+                  <entity>
+                     <type>crm:E74_Group</type>
+                     <instance_generator name="lynx-ente-competente">
+                        <arg name="US_ID" type="xpath">../US_ID/text()</arg>
+                        <arg name="ente" type="xpath">text()</arg>
+                     </instance_generator>
+                     <label_generator name="Literal">
+                        <arg name="text" type="xpath">text()</arg>
+                     </label_generator>
+                  </entity>
+               </target_node>
+            </range>
+         </link>
+         <link>
+            <path>
+               <source_relation>
+                  <relation>Quote</relation>
+               </source_relation>
+               <target_relation>
+                  <relationship>http://www.ics.forth.gr/isl/CRMsci/O24i_was_measured_by</relationship>
+               </target_relation>
+            </path>
+            <range>
+               <source_node>Quote</source_node>
+               <target_node>
+                  <if>
+                     <exists>text()</exists>
+                  </if>
+                  <entity>
+                     <type>http://www.ics.forth.gr/isl/CRMsci/S21_Measurement</type>
+                     <instance_generator name="lynx-quote">
+                        <arg name="US_ID" type="xpath">../US_ID/text()</arg>
+                        <arg name="quote" type="xpath">text()</arg>
+                     </instance_generator>
+                     <label_generator name="Literal">
+                        <arg name="text" type="xpath">text()</arg>
+                     </label_generator>
+                     <additional>
+                        <relationship>crm:P2_has_type</relationship>
+                        <entity>
+                           <type>crm:E55_Type</type>
+                           <instance_generator name="UriwithTye">
+                              <arg name="type" type="constant">quote</arg>
+                           </instance_generator>
+                        </entity>
+                     </additional>
+                  </entity>
+               </target_node>
+            </range>
+         </link>
+         <link>
+            <path>
+               <source_relation>
+                  <relation>Piante</relation>
+               </source_relation>
+               <target_relation>
+                  <relationship>crm:P138i_has_representation</relationship>
+               </target_relation>
+            </path>
+            <range>
+               <source_node>Piante</source_node>
+               <target_node>
+                  <entity>
+                     <type>crm:E36_Visual_Item</type>
+                     <instance_generator name="UUID"/>
+                  </entity>
+               </target_node>
+            </range>
+         </link>
+         <link>
+            <path>
+               <source_relation>
+                  <relation>Prospetti</relation>
+               </source_relation>
+               <target_relation>
+                  <relationship>crm:P138i_has_representation</relationship>
+               </target_relation>
+            </path>
+            <range>
+               <source_node>Prospetti</source_node>
+               <target_node>
+                  <entity>
+                     <type>crm:E36_Visual_Item</type>
+                     <instance_generator name="UUID"/>
+                  </entity>
+               </target_node>
+            </range>
+         </link>
+         <link>
+            <path>
+               <source_relation>
+                  <relation>Sezioni</relation>
+               </source_relation>
+               <target_relation>
+                  <relationship>crm:P138i_has_representation</relationship>
+               </target_relation>
+            </path>
+            <range>
+               <source_node>Sezioni</source_node>
+               <target_node>
+                  <entity>
+                     <type>crm:E36_Visual_Item</type>
+                     <instance_generator name="UUID"/>
+                  </entity>
+               </target_node>
+            </range>
+         </link>
+         <link>
+            <path>
+               <source_relation>
+                  <relation>Fotografie</relation>
+               </source_relation>
+               <target_relation>
+                  <relationship>crm:P67i_is_referred_to_by</relationship>
+               </target_relation>
+            </path>
+            <range>
+               <source_node>Fotografie</source_node>
+               <target_node>
+                  <entity>
+                     <type>crmdig:D1_Digital_Object</type>
+                     <instance_generator name="UUID"/>
+                  </entity>
+               </target_node>
+            </range>
+         </link>
+         <link>
+            <path>
+               <source_relation>
+                  <relation>Riferimenti_materiali</relation>
+               </source_relation>
+               <target_relation>
+                  <relationship>crmarchaeo:AP21_contains</relationship>
+               </target_relation>
+            </path>
+            <range>
+               <source_node>Riferimenti_materiali</source_node>
+               <target_node>
+                  <entity>
+                     <type>crm:E18_Physical_Thing</type>
+                     <instance_generator name="UUID"/>
+                  </entity>
+               </target_node>
+            </range>
+         </link>
+         <link>
+            <path>
+               <source_relation>
+                  <relation>Definizione</relation>
+               </source_relation>
+               <target_relation>
+                  <relationship>crm:P67i_is_referred_to_by</relationship>
+               </target_relation>
+            </path>
+            <range>
+               <source_node>Definizione</source_node>
+               <target_node>
+                  <entity>
+                     <type>crm:E33_Linguistic_Object</type>
+                     <instance_generator name="UUID"/>
+                     <label_generator name="Literal">
+                        <arg name="text" type="xpath">text()</arg>
+                     </label_generator>
+                     <additional>
+                        <relationship>crm:P2_has_type</relationship>
+                        <entity>
+                           <type>crm:E55_Type</type>
+                           <instance_generator name="UriwithTye">
+                              <arg name="type" type="constant">definizione</arg>
+                           </instance_generator>
+                        </entity>
+                     </additional>
+                  </entity>
+               </target_node>
+            </range>
+         </link>
+         <link>
+            <path>
+               <source_relation>
+                  <relation>Criteri_distinzione/value</relation>
+               </source_relation>
+               <target_relation>
+                  <relationship>crm:P130_shows_features_of</relationship>
+               </target_relation>
+            </path>
+            <range>
+               <source_node>Criteri_distinzione/value</source_node>
+               <target_node>
+                  <entity>
+                     <type>http://www.ics.forth.gr/isl/CRMsci/S9_Property_Type</type>
+                     <instance_generator name="lynx-criteri-distinzione">
+                        <arg name="US_ID" type="xpath">../../US_ID/text()</arg>
+                        <arg name="criteri" type="xpath">text()</arg>
+                     </instance_generator>
+                     <label_generator name="Literal">
+                        <arg name="text" type="xpath">text()</arg>
+                     </label_generator>
+                  </entity>
+               </target_node>
+            </range>
+         </link>
+         <link>
+            <path>
+               <source_relation>
+                  <relation>Modo_formazione/value</relation>
+               </source_relation>
+               <target_relation>
+                  <relationship>crm:P136i_supported_type_creation</relationship>
+               </target_relation>
+            </path>
+            <range>
+               <source_node>Modo_formazione/value</source_node>
+               <target_node>
+                  <entity>
+                     <type>crm:E83_Type_Creation</type>
+                     <instance_generator name="lynx-modo-formazione">
+                        <arg name="US_ID" type="xpath">../../US_ID/text()</arg>
+                        <arg name="formazione" type="xpath">text()</arg>
+                     </instance_generator>
+                     <label_generator name="Literal">
+                        <arg name="text" type="xpath">text()</arg>
+                     </label_generator>
+                  </entity>
+               </target_node>
+            </range>
+         </link>
+         <link>
+            <path>
+               <source_relation>
+                  <relation>Componenti_inorganici/value</relation>
+               </source_relation>
+               <target_relation>
+                  <relationship>crmarchaeo:AP21_contains</relationship>
+               </target_relation>
+            </path>
+            <range>
+               <source_node>Componenti_inorganici/value</source_node>
+               <target_node>
+                  <entity>
+                     <type>crm:E18_Physical_Thing</type>
+                     <instance_generator name="lynx-componenti-inorganici">
+                        <arg name="US_ID" type="xpath">../../US_ID/text()</arg>
+                        <arg name="componenti" type="xpath">text()</arg>
+                     </instance_generator>
+                     <label_generator name="Literal">
+                        <arg name="text" type="xpath">text()</arg>
+                     </label_generator>
+                     <additional>
+                        <relationship>crm:P2_has_type</relationship>
+                        <entity>
+                           <type>crm:E55_Type</type>
+                           <instance_generator name="UriwithTye">
+                              <arg name="type" type="constant">componenti-inorganici</arg>
+                           </instance_generator>
+                        </entity>
+                     </additional>
+                  </entity>
+               </target_node>
+            </range>
+         </link>
+         <link>
+            <path>
+               <source_relation>
+                  <relation>Componenti_organici/value</relation>
+               </source_relation>
+               <target_relation>
+                  <relationship>crmarchaeo:AP21_contains</relationship>
+               </target_relation>
+            </path>
+            <range>
+               <source_node>Componenti_organici/value</source_node>
+               <target_node>
+                  <entity>
+                     <type>crm:E20_Biological_Object</type>
+                     <instance_generator name="lynx-componenti-organici">
+                        <arg name="US_ID" type="xpath">../../US_ID/text()</arg>
+                        <arg name="componenti_organici" type="xpath">text()</arg>
+                     </instance_generator>
+                     <label_generator name="Literal">
+                        <arg name="text" type="xpath">text()</arg>
+                     </label_generator>
+                     <additional>
+                        <relationship>crm:P2_has_type</relationship>
+                        <entity>
+                           <type>crm:E55_Type</type>
+                           <instance_generator name="UriwithTye">
+                              <arg name="type" type="constant">componenti-organici</arg>
+                           </instance_generator>
+                        </entity>
+                     </additional>
+                  </entity>
+               </target_node>
+            </range>
+         </link>
+         <link>
+            <path>
+               <source_relation>
+                  <relation>Consistenza</relation>
+               </source_relation>
+               <target_relation>
+                  <relationship>crm:P130_shows_features_of</relationship>
+               </target_relation>
+            </path>
+            <range>
+               <source_node>Consistenza</source_node>
+               <target_node>
+                  <entity>
+                     <type>http://www.ics.forth.gr/isl/CRMsci/S9_Property_Type</type>
+                     <instance_generator name="lynx-consistenza">
+                        <arg name="US_ID" type="xpath">../US_ID/text()</arg>
+                        <arg name="valore_consistenza" type="xpath">text()</arg>
+                     </instance_generator>
+                     <label_generator name="Literal">
+                        <arg name="text" type="xpath">text()</arg>
+                     </label_generator>
+                     <additional>
+                        <relationship>crm:P2_has_type</relationship>
+                        <entity>
+                           <type>crm:E55_Type</type>
+                           <instance_generator name="UriwithTye">
+                              <arg name="type" type="constant">consistenza</arg>
+                           </instance_generator>
+                        </entity>
+                     </additional>
+                  </entity>
+               </target_node>
+            </range>
+         </link>
+         <link>
+            <path>
+               <source_relation>
+                  <relation>Colore</relation>
+               </source_relation>
+               <target_relation>
+                  <relationship>crm:P130_shows_features_of</relationship>
+               </target_relation>
+            </path>
+            <range>
+               <source_node>Colore</source_node>
+               <target_node>
+                  <entity>
+                     <type>http://www.ics.forth.gr/isl/CRMsci/S9_Property_Type</type>
+                     <instance_generator name="lynx-colore">
+                        <arg name="US_ID" type="xpath">../US_ID/text()</arg>
+                        <arg name="valore_colore" type="xpath">text()</arg>
+                     </instance_generator>
+                     <label_generator name="Literal">
+                        <arg name="text" type="xpath">text()</arg>
+                     </label_generator>
+                     <additional>
+                        <relationship>crm:P2_has_type</relationship>
+                        <entity>
+                           <type>crm:E55_Type</type>
+                           <instance_generator name="UriwithTye">
+                              <arg name="type" type="constant">colore</arg>
+                           </instance_generator>
+                        </entity>
+                     </additional>
+                  </entity>
+               </target_node>
+            </range>
+         </link>
+         <link>
+            <path>
+               <source_relation>
+                  <relation>Misure</relation>
+               </source_relation>
+               <target_relation>
+                  <relationship>crmgeo:Q11i_is_approximated_by</relationship>
+               </target_relation>
+            </path>
+            <range>
+               <source_node>Misure</source_node>
+               <target_node>
+                  <entity>
+                     <type>crmgeo:SP6_Declarative_Place</type>
+                     <instance_generator name="lynx-misure">
+                        <arg name="US_ID" type="xpath">../US_ID/text()</arg>
+                        <arg name="valore_misure" type="xpath">text()</arg>
+                     </instance_generator>
+                     <label_generator name="Literal">
+                        <arg name="text" type="xpath">text()</arg>
+                     </label_generator>
+                     <additional>
+                        <relationship>crm:P2_has_type</relationship>
+                        <entity>
+                           <type>crm:E55_Type</type>
+                           <instance_generator name="UriwithTye">
+                              <arg name="type" type="constant">misure-us</arg>
+                           </instance_generator>
+                        </entity>
+                     </additional>
+                  </entity>
+               </target_node>
+            </range>
+         </link>
+         <link>
+            <path>
+               <source_relation>
+                  <relation>Stato_conservazione</relation>
+               </source_relation>
+               <target_relation>
+                  <relationship>crm:P44_has_condition</relationship>
+               </target_relation>
+            </path>
+            <range>
+               <source_node>Stato_conservazione</source_node>
+               <target_node>
+                  <entity>
+                     <type>crm:E3_Condition_State</type>
+                     <instance_generator name="lynx-stato-conservazione">
+                        <arg name="US_ID" type="xpath">../US_ID/text()</arg>
+                        <arg name="statoconservazione" type="xpath">text()</arg>
+                     </instance_generator>
+                     <label_generator name="Literal">
+                        <arg name="text" type="xpath">text()</arg>
+                     </label_generator>
+                  </entity>
+               </target_node>
+            </range>
+         </link>
+         <link>
+            <path>
+               <source_relation>
+                  <relation>Descrizione</relation>
+               </source_relation>
+               <target_relation>
+                  <relationship>crm:P67i_is_referred_to_by</relationship>
+               </target_relation>
+            </path>
+            <range>
+               <source_node>Descrizione</source_node>
+               <target_node>
+                  <entity>
+                     <type>crm:E33_Linguistic_Object</type>
+                     <instance_generator name="UUID"/>
+                     <label_generator name="Literal">
+                        <arg name="text" type="xpath">text()</arg>
+                     </label_generator>
+                     <additional>
+                        <relationship>crm:P2_has_type</relationship>
+                        <entity>
+                           <type>crm:E55_Type</type>
+                           <instance_generator name="UriwithTye">
+                              <arg name="type" type="constant">descrizione</arg>
+                           </instance_generator>
+                        </entity>
+                     </additional>
+                  </entity>
+               </target_node>
+            </range>
+         </link>
+         <link>
+            <path>
+               <source_relation>
+                  <relation>Osservazioni</relation>
+               </source_relation>
+               <target_relation>
+                  <relationship>crm:P67i_is_referred_to_by</relationship>
+               </target_relation>
+            </path>
+            <range>
+               <source_node>Osservazioni</source_node>
+               <target_node>
+                  <entity>
+                     <type>crm:E33_Linguistic_Object</type>
+                     <instance_generator name="UUID"/>
+                     <label_generator name="Literal">
+                        <arg name="text" type="xpath">text()</arg>
+                     </label_generator>
+                     <additional>
+                        <relationship>crm:P2_has_type</relationship>
+                        <entity>
+                           <type>crm:E55_Type</type>
+                           <instance_generator name="UriwithTye">
+                              <arg name="type" type="constant">osservazioni</arg>
+                           </instance_generator>
+                        </entity>
+                     </additional>
+                  </entity>
+               </target_node>
+            </range>
+         </link>
+         <link>
+            <path>
+               <source_relation>
+                  <relation>Interpretazione</relation>
+               </source_relation>
+               <target_relation>
+                  <relationship>crm:P67i_is_referred_to_by</relationship>
+               </target_relation>
+            </path>
+            <range>
+               <source_node>Interpretazione</source_node>
+               <target_node>
+                  <entity>
+                     <type>crm:E33_Linguistic_Object</type>
+                     <instance_generator name="UUID"/>
+                     <label_generator name="Literal">
+                        <arg name="text" type="xpath">text()</arg>
+                     </label_generator>
+                     <additional>
+                        <relationship>crm:P2_has_type</relationship>
+                        <entity>
+                           <type>crm:E55_Type</type>
+                           <instance_generator name="UriwithTye">
+                              <arg name="type" type="constant">interpretazione</arg>
+                           </instance_generator>
+                        </entity>
+                     </additional>
+                  </entity>
+               </target_node>
+            </range>
+         </link>
+         <link>
+            <path>
+               <source_relation>
+                  <relation>periodizzazione</relation>
+               </source_relation>
+               <target_relation>
+                  <relationship>crmarchaeo:AP7i_was_produced_by</relationship>
+               </target_relation>
+            </path>
+            <range>
+               <source_node>periodizzazione</source_node>
+               <target_node>
+                  <entity>
+                     <type>crmarchaeo:A4_Stratigraphic_Genesis</type>
+                     <instance_generator name="UUID"/>
+                  </entity>
+               </target_node>
+            </range>
+         </link>
+         <link>
+            <path>
+               <source_relation>
+                  <relation>Elementi_datanti</relation>
+               </source_relation>
+               <target_relation>
+                  <relationship>crmarchaeo:AP21_contains</relationship>
+               </target_relation>
+            </path>
+            <range>
+               <source_node>Elementi_datanti</source_node>
+               <target_node>
+                  <entity>
+                     <type>crm:E18_Physical_Thing</type>
+                     <instance_generator name="lynx-elementi-datanti">
+                        <arg name="US_ID" type="xpath">../US_ID/text()</arg>
+                        <arg name="text" type="xpath">text()</arg>
+                     </instance_generator>
+                     <label_generator name="Literal">
+                        <arg name="text" type="xpath">text()</arg>
+                     </label_generator>
+                  </entity>
+               </target_node>
+            </range>
+         </link>
+         <link>
+            <path>
+               <source_relation>
+                  <relation>Affidabilit_stratigrafica</relation>
+               </source_relation>
+               <target_relation>
+                  <relationship>crm:P44_has_condition</relationship>
+               </target_relation>
+            </path>
+            <range>
+               <source_node>Affidabilit_stratigrafica</source_node>
+               <target_node>
+                  <entity>
+                     <type>crm:E3_Condition_State</type>
+                     <instance_generator name="lynx-affidabilita-stratigrafica">
+                        <arg name="US_ID" type="xpath">../US_ID/text()</arg>
+                        <arg name="text" type="xpath">text()</arg>
+                     </instance_generator>
+                     <label_generator name="Literal">
+                        <arg name="text" type="xpath">text()</arg>
+                     </label_generator>
+                  </entity>
+               </target_node>
+            </range>
+         </link>
+      </mapping>
+      <mapping>
+         <domain>
+            <source_node>/scheda/row/excavation-event</source_node>
+            <target_node>
+               <entity>
+                  <type>crmarchaeo:A1_Excavation_Processing_Unit</type>
+                  <instance_generator name="UUID"/>
+               </entity>
+            </target_node>
+         </domain>
+         <link>
+            <path>
+               <source_relation>
+                  <relation>site_name</relation>
+               </source_relation>
+               <target_relation>
+                  <relationship>crm:P7_took_place_at</relationship>
+               </target_relation>
+            </path>
+            <range>
+               <source_node>site_name</source_node>
+               <target_node>
+                  <entity>
+                     <type>crm:E27_Site</type>
+                     <instance_generator name="lynx_site">
+                        <arg name="site_id" type="xpath">text()</arg>
+                     </instance_generator>
+                     <additional>
+                        <relationship>crm:P89_falls_within</relationship>
+                        <entity>
+                           <type>crm:E53_Place</type>
+                           <instance_generator name="lynx_place">
+                              <arg name="place_id" type="xpath">../place_name/text()</arg>
+                           </instance_generator>
+                           <additional>
+                              <relationship>crm:P2_has_type</relationship>
+                              <entity>
+                                 <type>crm:E55_Type</type>
+                                 <instance_generator name="UriwithTye">
+                                    <arg name="type" type="constant">cultural-heritage-place</arg>
+                                 </instance_generator>
+                              </entity>
+                           </additional>
+                        </entity>
+                     </additional>
+                     <additional>
+                        <relationship>crm:P89_falls_within</relationship>
+                        <entity>
+                           <type>crm:E53_Place</type>
+                           <instance_generator name="lynx-area-struttura">
+                              <arg name="US_ID" type="xpath">../../US_ID/text()</arg>
+                              <arg name="area" type="xpath">../Area_Struttura/text()</arg>
+                           </instance_generator>
+                           <label_generator name="Literal">
+                              <arg name="text" type="xpath">../Area_Struttura/text()</arg>
+                           </label_generator>
+                           <additional>
+                              <relationship>crm:P2_has_type</relationship>
+                              <entity>
+                                 <type>crm:E55_Type</type>
+                                 <instance_generator name="UriwithTye">
+                                    <arg name="type" type="constant">area-struttura</arg>
+                                 </instance_generator>
+                              </entity>
+                           </additional>
+                        </entity>
+                     </additional>
+                     <additional>
+                        <relationship>crm:P89_falls_within</relationship>
+                        <entity>
+                           <type>crm:E53_Place</type>
+                           <instance_generator name="lynx-saggio">
+                              <arg name="US_ID" type="xpath">../../US_ID/text()</arg>
+                              <arg name="saggio" type="xpath">../Saggio/text()</arg>
+                           </instance_generator>
+                           <label_generator name="Literal">
+                              <arg name="text" type="xpath">../Saggio/text()</arg>
+                           </label_generator>
+                           <additional>
+                              <relationship>crm:P2_has_type</relationship>
+                              <entity>
+                                 <type>crm:E55_Type</type>
+                                 <instance_generator name="UriwithTye">
+                                    <arg name="type" type="constant">saggio</arg>
+                                 </instance_generator>
+                              </entity>
+                           </additional>
+                        </entity>
+                     </additional>
+                     <additional>
+                        <relationship>crm:P89_falls_within</relationship>
+                        <entity>
+                           <type>crm:E53_Place</type>
+                           <instance_generator name="lynx-ambiente">
+                              <arg name="US_ID" type="xpath">../../US_ID/text()</arg>
+                              <arg name="ambiente" type="xpath">../Ambiente_UnitaFunzionale/text()</arg>
+                           </instance_generator>
+                           <label_generator name="Literal">
+                              <arg name="text" type="xpath">../Ambiente_UnitaFunzionale/text()</arg>
+                           </label_generator>
+                           <additional>
+                              <relationship>crm:P2_has_type</relationship>
+                              <entity>
+                                 <type>crm:E55_Type</type>
+                                 <instance_generator name="UriwithTye">
+                                    <arg name="type" type="constant">ambiente-unita-funzionale</arg>
+                                 </instance_generator>
+                              </entity>
+                           </additional>
+                        </entity>
+                     </additional>
+                     <additional>
+                        <relationship>crm:P89_falls_within</relationship>
+                        <entity>
+                           <type>crm:E53_Place</type>
+                           <instance_generator name="lynx-posizione">
+                              <arg name="US_ID" type="xpath">../../US_ID/text()</arg>
+                              <arg name="posizione" type="xpath">../Posizione/text()</arg>
+                           </instance_generator>
+                           <label_generator name="Literal">
+                              <arg name="text" type="xpath">../Posizione/text()</arg>
+                           </label_generator>
+                           <additional>
+                              <relationship>crm:P2_has_type</relationship>
+                              <entity>
+                                 <type>crm:E55_Type</type>
+                                 <instance_generator name="UriwithTye">
+                                    <arg name="type" type="constant">posizione</arg>
+                                 </instance_generator>
+                              </entity>
+                           </additional>
+                        </entity>
+                     </additional>
+                     <additional>
+                        <relationship>crm:P89_falls_within</relationship>
+                        <entity>
+                           <type>crm:E53_Place</type>
+                           <instance_generator name="lynx-settore">
+                              <arg name="US_ID" type="xpath">../../US_ID/text()</arg>
+                              <arg name="settore" type="xpath">../Settore/text()</arg>
+                           </instance_generator>
+                           <label_generator name="Literal">
+                              <arg name="text" type="xpath">../Settore/text()</arg>
+                           </label_generator>
+                           <additional>
+                              <relationship>crm:P2_has_type</relationship>
+                              <entity>
+                                 <type>crm:E55_Type</type>
+                                 <instance_generator name="UriwithTye">
+                                    <arg name="type" type="constant">settore</arg>
+                                 </instance_generator>
+                              </entity>
+                           </additional>
+                        </entity>
+                     </additional>
+                     <additional>
+                        <relationship>crm:P89_falls_within</relationship>
+                        <entity>
+                           <type>crm:E53_Place</type>
+                           <instance_generator name="lynx-quadrato">
+                              <arg name="US_ID" type="xpath">../../US_ID/text()</arg>
+                              <arg name="quadrato" type="xpath">../Quadrato/text()</arg>
+                           </instance_generator>
+                           <label_generator name="Literal">
+                              <arg name="text" type="xpath">../Quadrato/text()</arg>
+                           </label_generator>
+                           <additional>
+                              <relationship>crm:P2_has_type</relationship>
+                              <entity>
+                                 <type>crm:E55_Type</type>
+                                 <instance_generator name="UriwithTye">
+                                    <arg name="type" type="constant">quadrato</arg>
+                                 </instance_generator>
+                              </entity>
+                           </additional>
+                        </entity>
+                     </additional>
+                     <additional>
+                        <relationship>crm:P2_has_type</relationship>
+                        <entity>
+                           <type>crm:E55_Type</type>
+                           <instance_generator name="UriwithTye">
+                              <arg name="type" type="constant">sito-archeologico</arg>
+                           </instance_generator>
+                        </entity>
+                     </additional>
+                  </entity>
+               </target_node>
+            </range>
+         </link>
+         <link>
+            <path>
+               <source_relation>
+                  <relation>Anno</relation>
+               </source_relation>
+               <target_relation>
+                  <relationship>crm:P4_has_time-span</relationship>
+               </target_relation>
+            </path>
+            <range>
+               <source_node>Anno</source_node>
+               <target_node>
+                  <entity>
+                     <type>crm:E52_Time-Span</type>
+                     <instance_generator name="lynx-anno-scavo">
+                        <arg name="US_ID" type="xpath">../../US_ID/text()</arg>
+                        <arg name="anno" type="xpath">text()</arg>
+                     </instance_generator>
+                     <label_generator name="Literal">
+                        <arg name="text" type="xpath">text()</arg>
+                     </label_generator>
+                  </entity>
+               </target_node>
+            </range>
+         </link>
+      </mapping>
+      <mapping>
+         <domain>
+            <source_node>/scheda/row/periodizzazione</source_node>
+            <target_node>
+               <entity>
+                  <type>crmarchaeo:A4_Stratigraphic_Genesis</type>
+                  <instance_generator name="UUID"/>
+               </entity>
+            </target_node>
+         </domain>
+         <link>
+            <path>
+               <source_relation>
+                  <relation>Datazione</relation>
+               </source_relation>
+               <target_relation>
+                  <relationship>crm:P4_has_time-span</relationship>
+               </target_relation>
+            </path>
+            <range>
+               <source_node>Datazione</source_node>
+               <target_node>
+                  <entity>
+                     <type>crm:E52_Time-Span</type>
+                     <instance_generator name="lynx-datazione">
+                        <arg name="US_ID" type="xpath">../../US_ID/text()</arg>
+                        <arg name="date" type="xpath">text()</arg>
+                     </instance_generator>
+                     <label_generator name="Literal">
+                        <arg name="text" type="xpath">text()</arg>
+                     </label_generator>
+                     <additional>
+                        <relationship>crm:P2_has_type</relationship>
+                        <entity>
+                           <type>crm:E55_Type</type>
+                           <instance_generator name="Literal">
+                              <arg name="text" type="constant">datazione</arg>
+                           </instance_generator>
+                        </entity>
+                     </additional>
+                  </entity>
+               </target_node>
+            </range>
+         </link>
+         <link>
+            <path>
+               <source_relation>
+                  <relation>Attivit</relation>
+               </source_relation>
+               <target_relation>
+                  <relationship>crm:P9i_forms_part_of</relationship>
+               </target_relation>
+            </path>
+            <range>
+               <source_node>Attivit</source_node>
+               <target_node>
+                  <entity>
+                     <type>crm:E7_Activity</type>
+                     <instance_generator name="lynx-periodizzazione-attività">
+                        <arg name="US_ID" type="xpath">../../US_ID/text()</arg>
+                        <arg name="text" type="xpath">text()</arg>
+                     </instance_generator>
+                     <label_generator name="Literal">
+                        <arg name="text" type="xpath">text()</arg>
+                     </label_generator>
+                     <additional>
+                        <relationship>crm:P9i_forms_part_of</relationship>
+                        <entity>
+                           <type>crm:E5_Event</type>
+                           <instance_generator name="lynx-periodizzazione-fase">
+                              <arg name="US_ID" type="xpath">../../US_ID/text()</arg>
+                              <arg name="text" type="xpath">text()</arg>
+                           </instance_generator>
+                           <label_generator name="Literal">
+                              <arg name="text" type="xpath">text()</arg>
+                           </label_generator>
+                           <additional>
+                              <relationship>crm:P9i_forms_part_of</relationship>
+                              <entity>
+                                 <type>crm:E4_Period</type>
+                                 <instance_generator name="lynx-periodizzazione-periodo">
+                                    <arg name="US_ID" type="xpath">../../US_ID/text()</arg>
+                                    <arg name="text" type="xpath">text()</arg>
+                                 </instance_generator>
+                                 <label_generator name="Literal">
+                                    <arg name="text" type="xpath">text()</arg>
+                                 </label_generator>
+                              </entity>
+                           </additional>
+                        </entity>
+                     </additional>
+                  </entity>
+               </target_node>
+            </range>
+         </link>
+      </mapping>
+   </mappings>
+</x3ml>

@@ -1,0 +1,1568 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<rdf:RDF xmlns:crmarchaeo="http://www.cidoc-crm.org/extensions/crmarchaeo/" xmlns:owl="http://www.w3.org/2002/07/owl#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" xmlns:skos="http://www.w3.org/2004/02/skos/core#" xml:base="http://www.cidoc-crm.org/extensions/crmarchaeo/">
+  <!--
+OWL implementation of CRMarchaeo v2.1.1 April, 2024 (https://www.cidoc-crm.org/crmarchaeo/ModelVersion/version-2.1.1)).
+
+Created by FORTH-ICS - September, 2026
+CC BY 4.0 https://creativecommons.org/licenses/by/4.0/legalcode
+
+-->
+  <owl:Ontology rdf:about="http://www.cidoc-crm.org/extensions/crmarchaeo/">
+    <rdfs:label xml:lang="en">CRMarchaeo 2.1.1 / OWL</rdfs:label>
+    <owl:versionIRI rdf:resource="http://www.cidoc-crm.org/extensions/crmarchaeo/owl/2.1.1/"/>
+    <owl:imports rdf:resource="http://www.cidoc-crm.org/cidoc-crm/owl/7.1.2/"/>
+    <owl:imports rdf:resource="http://www.cidoc-crm.org/extensions/crmsci/owl/2.0/"/>
+    <owl:versionInfo xml:lang="en">CRMarchaeo 2.1.1 (April, 2024) including references to CIDOC-CRM 7.1.2 and CRMsci 2.0</owl:versionInfo>
+  </owl:Ontology>
+  <owl:Class rdf:about="A1_Excavation_Processing_Unit">
+    <rdfs:label xml:lang="en">A1 Excavation Processing Unit</rdfs:label>
+    <skos:notation>A1</skos:notation>
+    <skos:prefLabel xml:lang="en">Excavation Processing Unit</skos:prefLabel>
+    <rdfs:subClassOf rdf:resource="http://www.cidoc-crm.org/cidoc-crm/E12_Production"/>
+    <rdfs:subClassOf rdf:resource="http://www.cidoc-crm.org/cidoc-crm/E64_End_of_Existence"/>
+    <rdfs:subClassOf rdf:resource="http://www.cidoc-crm.org/extensions/crmsci/S1_Matter_Removal"/>
+    <rdfs:subClassOf rdf:resource="http://www.cidoc-crm.org/extensions/crmsci/S4_Observation"/>
+    <rdfs:comment xml:lang="en">Scope note:
+This class comprises activities of excavating in the sense of archaeology, which are documented as a coherent set of actions of progressively recording and removing matter from a pre-specified location under specific rules. Typically, an instance of A1 Excavation Processing Unit would be terminated if significant discontinuities of substance or finds come to light, or if the activity is interrupted due to external factors, such as end of a working day. In other cases, the termination would be based on predefined physical specifications, such as the boundaries of a maximal volume of matter to be excavated in one unit of excavation.
+Depending on the methodology, an instance of A1 Excavation Processing Unit may intend to remove matter only within the boundaries of a particular stratigraphic unit, or it may follow a pre-declared spatial extent such as a trench. It may only uncover, clean or expose a structure or parts of it.
+The process of excavation results in the production of a set of recorded (documentation) data that should be sufficient to provide researchers enough information regarding the consistency and spatial distribution of the excavated Segment of Matter and things and features embedded in it. Some parts or all of the removed physical material (instances of S11 Amount of Matter) may be dispersed, whereas others may be kept in custody in the form of finds or samples, while others (such as parts of walls) may be left at the place of their discovery. The data produced by an instance of A1 Excavation Processing Unit should pertain to the material state of matter at excavation time only and should be clearly distinguished from subsequent interpretation about the causes for this state of matter.
+The current class A1 Excavation Processing Unit is somewhat overloaded and may be split into two subclasses, one for the intellectual process and one for the physical process. This is left for a future refinement of the model.
+
+Examples:
+- The activity taking place on 21.9.2007 between 12:00 and 13:00 that excavated the Stratigraphic Volume Unit “(2)” of Figure 4 and created the surface “S1” 
+- The activity that excavated the first 20 cm of a spit excavation on 21.7.2007 created the surface “S2” in Figure 4.
+
+In First Order Logic:
+- A1(x) ⇒ S1(x)
+- A1(x) ⇒ S4(x)
+- A1(x) ⇒ E12(x)
+- A1(x) ⇒ E64(x)
+</rdfs:comment>
+  </owl:Class>
+  <owl:Class rdf:about="A2_Stratigraphic_Volume_Unit">
+    <rdfs:label xml:lang="en">A2 Stratigraphic Volume Unit</rdfs:label>
+    <skos:notation>A2</skos:notation>
+    <skos:prefLabel xml:lang="en">Stratigraphic Volume Unit</skos:prefLabel>
+    <rdfs:subClassOf rdf:resource="A8_Stratigraphic_Unit"/>
+    <rdfs:comment xml:lang="en">Scope note:
+This class comprises instances of A8 Stratigraphic Unit which are connected portions of terrain or other solid structures on, in, or under the surface of earth or seafloor exhibiting some homogeneity of structure or substance and which are completely bounded by surfaces or discontinuities in substance or structure with respect to other portions of the terrain or surfaces of objects or finds.
+Normally at least one of the surfaces, i.e. instances of A3 Stratigraphic Interface (such as the lower one), from the genesis event of the A2 Stratigraphic Volume Unit will remain during its existence.
+An instance of A2 Stratigraphic Volume Unit may contain physical objects.
+
+Examples:
+- the stratigraphic deposit unit number “(2)” of Figure 6 representing the filling of post hole “[3]”
+- thick layer “A”, consisting of grey soil and small tuff stones [One of the principal successive layers making up a collapsed part of the roof of the West House, which was found in a horizontal position on the first floor during the excavation of Room 3 –see Figure 7] (Michailidou, 2021)
+- thinner layer “B”, consisting of brownish red soil and marine pebbles [One of the principal successive layers making up a collapsed part of the roof of the West House, which was found in a horizontal position on the first floor during the excavation of Room 3 –see Figure 7] (Michailidou, 2021)
+
+In First Order Logic:
+- A8(x) ⇒ A2(x)
+</rdfs:comment>
+  </owl:Class>
+  <owl:Class rdf:about="A3_Stratigraphic_Interface">
+    <rdfs:label xml:lang="en">A3 Stratigraphic Interface</rdfs:label>
+    <skos:notation>A3</skos:notation>
+    <skos:prefLabel xml:lang="en">Stratigraphic Interface</skos:prefLabel>
+    <rdfs:subClassOf rdf:resource="A8_Stratigraphic_Unit"/>
+    <rdfs:comment xml:lang="en">Scope note:
+This class comprises instances of A8 Stratigraphic Unit, which are coherent parts of a boundary surface that appear as the result of a stratigraphic genesis event or process. The interface marks the limit of the geometric extent of the effect of a genesis or modification event, and indicates in particular where the effect of this event ended. Each event of creation or destruction of a deposition layer implies the creation of new interfaces. Thus, there are two main types of interfaces: those that are surfaces of strata (that can be directly related to the corresponding stratum via the AP12 confines property), and those that are only surfaces, formed by the removal or destruction of existing stratifications.
+
+Examples:
+- the Stratigraphic Interface number “[19]” confining the Stratigraphic Volume Unit number “(2)” in Figure 6
+- the stratigraphic interface separating layers “A” and “B”, in Figure 7 (Michailidou, 2021)
+
+In First Order Logic:
+- A3(x) ⇒ A8(x)
+</rdfs:comment>
+  </owl:Class>
+  <owl:Class rdf:about="A4_Stratigraphic_Genesis">
+    <rdfs:label xml:lang="en">A4 Stratigraphic Genesis</rdfs:label>
+    <skos:notation>A4</skos:notation>
+    <skos:prefLabel xml:lang="en">Stratigraphic Genesis</skos:prefLabel>
+    <rdfs:subClassOf rdf:resource="A5_Stratigraphic_Modification"/>
+    <rdfs:subClassOf rdf:resource="http://www.cidoc-crm.org/extensions/crmsci/S17_Physical_Genesis"/>
+    <rdfs:comment xml:lang="en">Scope note:
+This class comprises activities or processes that have produced homogeneous, distinguishable units of stratification that are in a relatively stable form from the time of their genesis until they are observed. Such processes may be the aggregation of cycles of erosion/destruction, deposit/accumulation, or transformation/modification occurring on a particular site throughout a particular period of time. These processes are usually not only due to natural forces (i.e., climate, the impact of flora and fauna, other natural events), but also to human activities, in particular excavation and construction. An event of stratification genesis typically produces two main forms of stratification units, both a deposit and an interface.
+
+Examples:
+- the production of the stratigraphic interface “[3]” by the cut in the pre-existing strata of the posthole –see Figure 6
+- the production of the stratigraphic unit volume “(18)” via the filling of the posthole with detritus or some other matter –see Figure 6
+- the creation of the one-meter-thick level of pumice caused by the Minoan eruption of Thera and consisting of five distinct layers, which covers the ruins at the excavation Akrotiri, Thera –see Figure 9 (Doumas et al., 2015)
+- the creation of the 8-10-metre-thick level of successive layers volcanic ash deposed on top of the one-meter-thick level of pumice, which covers the ruins at the excavation Akrotiri, Thera—see Figure 9 (Doumas et al., 2015)
+- the production of the deposits L14-L18 and L22-L24 by at least seven (7) distinct fill episodes of a neolithic ditch, observed at the northern section of Trenches 6 and 21, at the site Paliambela, Kolindros–see Figure 10
+
+In First Order Logic:
+- A4(x) ⇒ S17(x)
+- A4(x) ⇒ A5(x)
+</rdfs:comment>
+  </owl:Class>
+  <owl:Class rdf:about="A5_Stratigraphic_Modification">
+    <rdfs:label xml:lang="en">A5 Stratigraphic Modification</rdfs:label>
+    <skos:notation>A5</skos:notation>
+    <skos:prefLabel xml:lang="en">Stratigraphic Modification</skos:prefLabel>
+    <rdfs:subClassOf rdf:resource="http://www.cidoc-crm.org/extensions/crmsci/S18_Alteration"/>
+    <rdfs:comment xml:lang="en">Scope note:
+This class comprises activities or processes resulting in the modification of Stratigraphic Units after their genesis through instances of A4 Stratigraphic Genesis Event.
+
+Examples:
+- the event that eroded the number “(1)” Stratigraphic Volume Unit in Figure 4 and diminished it to its actual size
+- the creation of many burrows, of about 7 cm in diameter on average, due to rodents, lizards and insects disturbing otherwise intact layers, that were uncovered during the excavation at Eagle Cave, Texas (Larsen, 2015) 
+- the deformation of the saturated soil at the Dutton Paleo-Indian site, Colorado [The deformation was caused by involutions (flame-structures) due to aquaturbations] (Wood and Johnson, 1978)
+
+In First Order Logic:
+- A5(x) ⇒ S18(x)
+</rdfs:comment>
+  </owl:Class>
+  <owl:Class rdf:about="A6_Group_Declaration_Event">
+    <rdfs:label xml:lang="en">A6 Group Declaration Event</rdfs:label>
+    <skos:notation>A6</skos:notation>
+    <skos:prefLabel xml:lang="en">Group Declaration Event</skos:prefLabel>
+    <rdfs:subClassOf rdf:resource="http://www.cidoc-crm.org/cidoc-crm/E13_Attribute_Assignment"/>
+    <rdfs:comment xml:lang="en">Scope note:
+This class comprises interpretive activities that lead to the recognition two or more instances of Stratigraphic Units (A8) or other Physical Thing (E18) that simultaneously exist at the time of this activity or at the time of an archaeological observation this activity refers to as source and that are attributed to be the remains of one complete instance of Physical Thing (E18) that had existed at a time of reference in the past. Instances of this class could be, for example: two stratigraphic units (with no evident contact) cut through by a ditch having been segments of the same original stratigraphic unit, two or more surviving parts of a structure having been segments of the same wall (B5), a number of postholes being the indication of a past wooden house or a number of potsherds being segments of the same original artefact.
+
+Examples:
+- declaring post holes “[7]” and “[8]” in Figure 4 to be part of one building
+- grouping individual deposits forming the fill of the neolithic ditch (L14-18 and L22-24) in Trenches 6 and 21 at the archaeological site of Paliambela, Kolindros into larger stratigraphic entities or fill episodes –see Figure 10
+
+In First Order Logic:
+- A6(x) ⇒ E13(x)
+</rdfs:comment>
+  </owl:Class>
+  <owl:Class rdf:about="A7_Embedding">
+    <rdfs:label xml:lang="en">A7 Embedding</rdfs:label>
+    <skos:notation>A7</skos:notation>
+    <skos:prefLabel xml:lang="en">Embedding</skos:prefLabel>
+    <rdfs:subClassOf rdf:resource="A8_Stratigraphic_Unit"/>
+    <rdfs:comment xml:lang="en">Scope note:
+This class comprises instances of A8 Stratigraphic Unit partially or completely embedding one or more instances of E20 Physical Thing and at a particular position with relative stability in one or more instances of A2 Stratigraphic Volume Units. Normally, an embedding is expected to have been stable from the time of generation of the first instance of A2 Stratigraphic Volume Unit that surrounds it. However, it may also be due to later intrusion. As an empirical fact, the expert may only be able to decide that a particular embedding is not recent, i.e. has been persisting for longer than the activity that encountered it. This class can be used to document the fact of embedding generally with respect to the surrounding matter or, more specifically, with respect to a more precise position within this matter.
+
+Examples:
+- the pottery vessels embedded within the deposit on the ground floor of the West House at Akrotiri, Thera [The pottery vessels were discovered during the excavation process of Room 6 of the West House at Akrotiri –see Figure 8] (Michailidou, 2001)
+- San Galgano’s sword embedded at the Hermitage of Monte Siepi [He retired around 1170 to live as a hermit. As a symbol of peace, he embedded his sword in a stone, which can still be seen today] (Wikipedia, 2023) &lt;https://en.wikipedia.org/wiki/Galgano_Guidotti&gt;
+
+In First Order Logic:
+- A7(x) ⇒ A8(x)
+</rdfs:comment>
+  </owl:Class>
+  <owl:Class rdf:about="A8_Stratigraphic_Unit">
+    <rdfs:label xml:lang="en">A8 Stratigraphic Unit</rdfs:label>
+    <skos:notation>A8</skos:notation>
+    <skos:prefLabel xml:lang="en">Stratigraphic Unit</skos:prefLabel>
+    <rdfs:subClassOf rdf:resource="http://www.cidoc-crm.org/extensions/crmsci/S20_Rigid_Physical_Feature"/>
+    <rdfs:comment xml:lang="en">Scope note:
+This class comprises instances of S20 Rigid Physical Features which appear as the result of a stratigraphic genesis event or process. The form of an instance of A8 Stratigraphic Unit should be of a kind that can be attributed to a single genesis event or process and has the potential to be observed. One genesis event may have created more than one SU. An instance of A8 Stratigraphic Unit is regarded to exist as long as a part of its matter is still in place with respect to a surrounding reference space, such that its spatial features can be associated with effects of the genesis process of interest.
+This also implies that a certain degree of coherent (“conformal”) deformation is tolerable within its time-span of existence. Therefore, the place an instance of A8 Stratigraphic Unit occupies can be uniquely identified with respect to the surrounding reference space of archaeological interest
+
+Examples:
+- post holes “[7]” and “[8]” (A3) in Figure 4 
+- the one-meter-thick level of pumice caused by the Minoan eruption of Thera, which consists of five distinct layers and covers the ruins at the excavation Akrotiri, Thera –see Figure 9 (Doumas et al., 2015)
+
+In First Order Logic:
+- A8(x) ⇒ S20(x)
+</rdfs:comment>
+  </owl:Class>
+  <owl:Class rdf:about="A9_Archaeological_Excavation">
+    <rdfs:label xml:lang="en">A9 Archaeological Excavation</rdfs:label>
+    <skos:notation>A9</skos:notation>
+    <skos:prefLabel xml:lang="en">Archaeological Excavation</skos:prefLabel>
+    <rdfs:subClassOf rdf:resource="http://www.cidoc-crm.org/extensions/crmsci/S4_Observation"/>
+    <rdfs:comment xml:lang="en">Scope note:
+This class describes the general concept of archaeological excavation intended as a coordinated set of activities performed on an area considered as part of a broader topographical, rural, urban, or monumental context. An archaeological excavation is usually under the responsibility of a coordinator, officially designated, which is legally and scientifically responsible for all the activities carried out within each instance of A1 Excavation Processing Unit and is also responsible for the documentation of the whole process.
+
+Examples:
+- excavating the West House found at the archaeological site of Akrotiri, Thera, between 1967 and 1973, led by the archaeologist Sp. Marinatos (Michailidou, 2001)
+
+In First Order Logic:
+- A9(x) ⇒ S4(x)
+</rdfs:comment>
+  </owl:Class>
+  <owl:Class rdf:about="A10_Excavation_Interface">
+    <rdfs:label xml:lang="en">A10 Excavation Interface</rdfs:label>
+    <skos:notation>A10</skos:notation>
+    <skos:prefLabel xml:lang="en">Excavation Interface</skos:prefLabel>
+    <rdfs:subClassOf rdf:resource="http://www.cidoc-crm.org/cidoc-crm/E25_Human-Made_Feature"/>
+    <rdfs:subClassOf rdf:resource="http://www.cidoc-crm.org/extensions/crmsci/S20_Rigid_Physical_Feature"/>
+    <rdfs:comment xml:lang="en">Scope note:
+This class comprises instances of S20 Rigid Physical Feature that constitutes a surface produced through one or several instances of A1 Excavation Processing Unit. Instances are often documented through drawing and/or measured by technical means such as photography, tachymetry or laser scanning. Using a planar excavation methodology this is typically the surface of a planum or the surface of a profile. Using a stratigraphic excavation methodology, the instance of A10 Excavation Interface would have the intention to approximate an instance of A3 Stratigraphic Interface. The drawing and measurement of profiles is also common practice when a stratigraphic excavation methodology is used.
+
+Examples:
+- the Excavation Interface Planum 6 of square I22 in Area F-I, documented in the field drawing “Planum 6 F-I i22”, created in Fall 1982 (Bietak, 1996)
+- the Excavation Interface Eastern profile of square I22 in Area F-I, documented in field drawing “Ostprofil F-I i22”, confining the excavation square I22 to the East (Hiebel, Aspöck and Kucera, 2017)
+
+In First Order Logic:
+- A10(x) ⇒ S20(x)
+</rdfs:comment>
+  </owl:Class>
+  <owl:ObjectProperty rdf:about="AP1_produced">
+    <rdfs:label xml:lang="en">AP1 produced</rdfs:label>
+    <skos:notation>AP1</skos:notation>
+    <skos:prefLabel xml:lang="en">produced</skos:prefLabel>
+    <rdfs:domain rdf:resource="A1_Excavation_Processing_Unit"/>
+    <rdfs:range rdf:resource="http://www.cidoc-crm.org/extensions/crmsci/S11_Amount_of_Matter"/>
+    <owl:inverseOf rdf:resource="AP1i_was_produced_by"/>
+    <rdfs:subPropertyOf rdf:resource="http://www.cidoc-crm.org/extensions/crmsci/O2_removed"/>
+    <rdfs:comment xml:lang="en">Quantification: one to many (0,n:0,1)
+
+Scope note:
+This property identifies the S11 Amount of Matter, e.g. a basket, that is preserved (part or total of) from an instance of A1 Excavation Processing Unit for further examination or evidence keeping.
+
+Examples:
+- The excavation of the posthole (A1) produced an amount of black turf with wood inclusions (S11).
+
+In First Order Logic:
+- AP1(x,y) ⇒ A1(x)
+- AP1(x,y) ⇒ S11 (y)
+- AP1(x,y) ⇒ O2(x,y)
+</rdfs:comment>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="AP1i_was_produced_by">
+    <rdfs:label xml:lang="en">AP1i was produced by</rdfs:label>
+    <skos:notation>AP1i</skos:notation>
+    <skos:prefLabel xml:lang="en">was produced by</skos:prefLabel>
+    <rdfs:domain rdf:resource="http://www.cidoc-crm.org/extensions/crmsci/S11_Amount_of_Matter"/>
+    <rdfs:range rdf:resource="A1_Excavation_Processing_Unit"/>
+    <owl:inverseOf rdf:resource="AP1_produced"/>
+    <rdfs:subPropertyOf rdf:resource="http://www.cidoc-crm.org/extensions/crmsci/O2i_was_removed_by"/>
+    <rdfs:comment xml:lang="en">Quantification of the inverse property: one to many (0,n:0,1)
+
+Scope note of the inverse property:
+This property identifies the S11 Amount of Matter, e.g. a basket, that is preserved (part or total of) from an instance of A1 Excavation Processing Unit for further examination or evidence keeping.
+
+Examples of the inverse property:
+- The excavation of the posthole (A1) produced an amount of black turf with wood inclusions (S11).
+
+In First Order Logic of the inverse property:
+- AP1(x,y) ⇒ A1(x)
+- AP1(x,y) ⇒ S11 (y)
+- AP1(x,y) ⇒ O2(x,y)
+</rdfs:comment>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="AP2_discarded">
+    <rdfs:label xml:lang="en">AP2 discarded</rdfs:label>
+    <skos:notation>AP2</skos:notation>
+    <skos:prefLabel xml:lang="en">discarded</skos:prefLabel>
+    <rdfs:domain rdf:resource="A1_Excavation_Processing_Unit"/>
+    <rdfs:range rdf:resource="http://www.cidoc-crm.org/extensions/crmsci/S11_Amount_of_Matter"/>
+    <owl:inverseOf rdf:resource="AP2i_was_discarded_by"/>
+    <rdfs:subPropertyOf rdf:resource="http://www.cidoc-crm.org/extensions/crmsci/O2_removed"/>
+    <rdfs:comment xml:lang="en">Quantification: one to many (0,n:0,1)
+
+Scope note:
+This property identifies an instance of S11 Amount of Matter discarded (e.g. onto a heap) by an instance of A1 Excavation Processing Unit.
+
+Examples:
+- The stratum of ash, pumice and other volcanic material removed (S11) was discarded by the excavation of Villa of the Mysteries in Pompeii, Italy (A1). (Maiuri, 1931)
+
+In First Order Logic:
+- AP2(x,y) ⇒ A1(x)
+- AP2(x,y) ⇒ S11(y)
+- AP2(x,y) ⇒ O2(x,y)
+</rdfs:comment>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="AP2i_was_discarded_by">
+    <rdfs:label xml:lang="en">AP2i was discarded by</rdfs:label>
+    <skos:notation>AP2i</skos:notation>
+    <skos:prefLabel xml:lang="en">was discarded by</skos:prefLabel>
+    <rdfs:domain rdf:resource="http://www.cidoc-crm.org/extensions/crmsci/S11_Amount_of_Matter"/>
+    <rdfs:range rdf:resource="A1_Excavation_Processing_Unit"/>
+    <owl:inverseOf rdf:resource="AP2_discarded"/>
+    <rdfs:subPropertyOf rdf:resource="http://www.cidoc-crm.org/extensions/crmsci/O2i_was_removed_by"/>
+    <rdfs:comment xml:lang="en">Quantification of the inverse property: one to many (0,n:0,1)
+
+Scope note of the inverse property:
+This property identifies an instance of S11 Amount of Matter discarded (e.g. onto a heap) by an instance of A1 Excavation Processing Unit.
+
+Examples of the inverse property:
+- The stratum of ash, pumice and other volcanic material removed (S11) was discarded by the excavation of Villa of the Mysteries in Pompeii, Italy (A1). (Maiuri, 1931)
+
+In First Order Logic of the inverse property:
+- AP2(x,y) ⇒ A1(x)
+- AP2(x,y) ⇒ S11(y)
+- AP2(x,y) ⇒ O2(x,y)
+</rdfs:comment>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="AP3_investigated">
+    <rdfs:label xml:lang="en">AP3 investigated</rdfs:label>
+    <skos:notation>AP3</skos:notation>
+    <skos:prefLabel xml:lang="en">investigated</skos:prefLabel>
+    <rdfs:domain rdf:resource="A9_Archaeological_Excavation"/>
+    <rdfs:range rdf:resource="http://www.cidoc-crm.org/cidoc-crm/E27_Site"/>
+    <owl:inverseOf rdf:resource="AP3i_was_investigated_by"/>
+    <rdfs:subPropertyOf rdf:resource="http://www.cidoc-crm.org/extensions/crmsci/O8_observed"/>
+    <rdfs:comment xml:lang="en">Quantification: one to many (0,n:0,1)
+
+Scope note:
+This property identifies the 3D excavated volume instance of E27 Site, i.e., a three- dimensional volume, that was actually investigated during an A9 Archaeological Excavation.
+
+Examples:
+- The 1938 archaeological excavation, carried out by Pietro Romanelli (A9), investigated the archaeological site of the ancient Etruscan city of Tarquinia (E27). (Romanelli, 1940)
+
+In First Order Logic:
+- AP3(x,y) ⇒ A9(x)
+- AP3(x,y) ⇒ E27(y)
+- AP3(x,y) ⇒ O8(x,y)
+</rdfs:comment>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="AP3i_was_investigated_by">
+    <rdfs:label xml:lang="en">AP3i was investigated by</rdfs:label>
+    <skos:notation>AP3i</skos:notation>
+    <skos:prefLabel xml:lang="en">was investigated by</skos:prefLabel>
+    <rdfs:domain rdf:resource="http://www.cidoc-crm.org/cidoc-crm/E27_Site"/>
+    <rdfs:range rdf:resource="A9_Archaeological_Excavation"/>
+    <owl:inverseOf rdf:resource="AP3_investigated"/>
+    <rdfs:subPropertyOf rdf:resource="http://www.cidoc-crm.org/extensions/crmsci/O8i_was_observed_by"/>
+    <rdfs:comment xml:lang="en">Quantification of the inverse property: one to many (0,n:0,1)
+
+Scope note of the inverse property:
+This property identifies the 3D excavated volume instance of E27 Site, i.e., a three- dimensional volume, that was actually investigated during an A9 Archaeological Excavation.
+
+Examples of the inverse property:
+- The 1938 archaeological excavation, carried out by Pietro Romanelli (A9), investigated the archaeological site of the ancient Etruscan city of Tarquinia (E27). (Romanelli, 1940)
+
+In First Order Logic of the inverse property:
+- AP3(x,y) ⇒ A9(x)
+- AP3(x,y) ⇒ E27(y)
+- AP3(x,y) ⇒ O8(x,y)
+</rdfs:comment>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="AP4_produced_surface">
+    <rdfs:label xml:lang="en">AP4 produced surface</rdfs:label>
+    <skos:notation>AP4</skos:notation>
+    <skos:prefLabel xml:lang="en">produced surface</skos:prefLabel>
+    <rdfs:domain rdf:resource="A1_Excavation_Processing_Unit"/>
+    <rdfs:range rdf:resource="A10_Excavation_Interface"/>
+    <owl:inverseOf rdf:resource="AP4i_was_surface_produced_by"/>
+    <rdfs:subPropertyOf rdf:resource="http://www.cidoc-crm.org/cidoc-crm/P108_has_produced"/>
+    <rdfs:comment xml:lang="en">Quantification: one to many (0,n:0,1)
+
+Scope note:
+This property identifies the instance of A10 Excavation Interface that constitutes the new surface produced during an instance of A1 Excavation Processing Unit in the excavated area. Frequently this surface or parts of it are documented through drawing and/or measured by technical means such as photography, tachymetry or laser scanning.
+
+Examples:
+- The excavation of the south trench in 1949 (A1) produced surface the confinement of the south part of the archaeological site of Sybaris, Italy (A10). (Guzzo, 2014)
+
+In First Order Logic:
+- AP4(x,y) ⇒ A1(x)
+- AP4(x,y) ⇒ A10 (y)
+- AP4(x,y) ⇒ O2(x,y)
+- AP4(x,y) ⇒ P108(x,y)
+</rdfs:comment>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="AP4i_was_surface_produced_by">
+    <rdfs:label xml:lang="en">AP4i was surface produced by</rdfs:label>
+    <skos:notation>AP4i</skos:notation>
+    <skos:prefLabel xml:lang="en">was surface produced by</skos:prefLabel>
+    <rdfs:domain rdf:resource="A10_Excavation_Interface"/>
+    <rdfs:range rdf:resource="A1_Excavation_Processing_Unit"/>
+    <owl:inverseOf rdf:resource="AP4_produced_surface"/>
+    <rdfs:subPropertyOf rdf:resource="http://www.cidoc-crm.org/cidoc-crm/P108i_was_produced_by"/>
+    <rdfs:comment xml:lang="en">Quantification of the inverse property: one to many (0,n:0,1)
+
+Scope note of the inverse property:
+This property identifies the instance of A10 Excavation Interface that constitutes the new surface produced during an instance of A1 Excavation Processing Unit in the excavated area. Frequently this surface or parts of it are documented through drawing and/or measured by technical means such as photography, tachymetry or laser scanning.
+
+Examples of the inverse property:
+- The excavation of the south trench in 1949 (A1) produced surface the confinement of the south part of the archaeological site of Sybaris, Italy (A10). (Guzzo, 2014)
+
+In First Order Logic of the inverse property:
+- AP4(x,y) ⇒ A1(x)
+- AP4(x,y) ⇒ A10 (y)
+- AP4(x,y) ⇒ O2(x,y)
+- AP4(x,y) ⇒ P108(x,y)
+</rdfs:comment>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="AP5_removed_part_or_all_of">
+    <rdfs:label xml:lang="en">AP5 removed part or all of</rdfs:label>
+    <skos:notation>AP5</skos:notation>
+    <skos:prefLabel xml:lang="en">removed part or all of</skos:prefLabel>
+    <rdfs:domain rdf:resource="A1_Excavation_Processing_Unit"/>
+    <rdfs:range rdf:resource="A8_Stratigraphic_Unit"/>
+    <owl:inverseOf rdf:resource="AP5i_was_partially_or_totally_removed_by"/>
+    <rdfs:subPropertyOf rdf:resource="http://www.cidoc-crm.org/extensions/crmsci/O1_diminished"/>
+    <rdfs:comment xml:lang="en">Quantification: one to many (0,n:0,1)
+
+Scope note:
+This property identifies the instance of A8 Stratigraphic Unit that was cut during an A1 Excavation Processing Unit.
+
+Examples:
+- The spit excavation producing the surface “S2” (A1) removed part or all of the structures and infill marked “2”, “3”, “4”, “18”, and “19”, (A8) in Figure 4a.
+
+In First Order Logic:
+- AP5(x,y) ⇒ A1(x)
+- AP5(x,y) ⇒ A8(y)
+- AP5(x,y) ⇒ O2(x,y)
+</rdfs:comment>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="AP5i_was_partially_or_totally_removed_by">
+    <rdfs:label xml:lang="en">AP5i was partially or totally removed by</rdfs:label>
+    <skos:notation>AP5i</skos:notation>
+    <skos:prefLabel xml:lang="en">was partially or totally removed by</skos:prefLabel>
+    <rdfs:domain rdf:resource="A8_Stratigraphic_Unit"/>
+    <rdfs:range rdf:resource="A1_Excavation_Processing_Unit"/>
+    <owl:inverseOf rdf:resource="AP5_removed_part_or_all_of"/>
+    <rdfs:subPropertyOf rdf:resource="http://www.cidoc-crm.org/extensions/crmsci/O1i_was_diminished_by"/>
+    <rdfs:comment xml:lang="en">Quantification of the inverse property: one to many (0,n:0,1)
+
+Scope note of the inverse property:
+This property identifies the instance of A8 Stratigraphic Unit that was cut during an A1 Excavation Processing Unit.
+
+Examples of the inverse property:
+- The spit excavation producing the surface “S2” (A1) removed part or all of the structures and infill marked “2”, “3”, “4”, “18”, and “19”, (A8) in Figure 4a.
+
+In First Order Logic of the inverse property:
+- AP5(x,y) ⇒ A1(x)
+- AP5(x,y) ⇒ A8(y)
+- AP5(x,y) ⇒ O2(x,y)
+</rdfs:comment>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="AP6_intended_to_approximate">
+    <rdfs:label xml:lang="en">AP6 intended to approximate</rdfs:label>
+    <skos:notation>AP6</skos:notation>
+    <skos:prefLabel xml:lang="en">intended to approximate</skos:prefLabel>
+    <rdfs:domain rdf:resource="A1_Excavation_Processing_Unit"/>
+    <rdfs:range rdf:resource="A3_Stratigraphic_Interface"/>
+    <owl:inverseOf rdf:resource="AP6i_was_approximated_by"/>
+    <rdfs:subPropertyOf rdf:resource="http://www.cidoc-crm.org/extensions/crmsci/O8_observed"/>
+    <rdfs:comment xml:lang="en">Quantification: one to many (0,n:0,1)
+
+Scope note:
+This property identifies the A3 Stratigraphic Interface that was intended to approximate during an A1 Excavation Processing Unit. This property should be assigned when a stratigraphic excavation methodology is used. It enables the linkage of the surface produced by an A1 Excavation Processing Unit and an A3 Stratigraphic Interface.
+
+Examples:
+- The excavation at ancient Akrotiri (A1) intended to approximate the various interfaces witnessing the sequences of the Minoan eruption of Thera (A3), see Figure 9.
+- The excavation (A1) of the neolithic ditch at Trenches 6 and 21 at Paliambela, Kolindros, intended to approximate the various interfaces witnessing the sequence of the ditch's fill episodes (A3), see Figure 9.
+
+In First Order Logic:
+- AP6(x,y) ⇒ A1(x)
+- AP6(x,y) ⇒ A3 (y)
+- AP6(x,y) ⇒ O8(x,y)
+</rdfs:comment>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="AP6i_was_approximated_by">
+    <rdfs:label xml:lang="en">AP6i was approximated by</rdfs:label>
+    <skos:notation>AP6i</skos:notation>
+    <skos:prefLabel xml:lang="en">was approximated by</skos:prefLabel>
+    <rdfs:domain rdf:resource="A3_Stratigraphic_Interface"/>
+    <rdfs:range rdf:resource="A1_Excavation_Processing_Unit"/>
+    <owl:inverseOf rdf:resource="AP6_intended_to_approximate"/>
+    <rdfs:subPropertyOf rdf:resource="http://www.cidoc-crm.org/extensions/crmsci/O8i_was_observed_by"/>
+    <rdfs:comment xml:lang="en">Quantification of the inverse property: one to many (0,n:0,1)
+
+Scope note of the inverse property:
+This property identifies the A3 Stratigraphic Interface that was intended to approximate during an A1 Excavation Processing Unit. This property should be assigned when a stratigraphic excavation methodology is used. It enables the linkage of the surface produced by an A1 Excavation Processing Unit and an A3 Stratigraphic Interface.
+
+Examples of the inverse property:
+- The excavation at ancient Akrotiri (A1) intended to approximate the various interfaces witnessing the sequences of the Minoan eruption of Thera (A3), see Figure 9.
+- The excavation (A1) of the neolithic ditch at Trenches 6 and 21 at Paliambela, Kolindros, intended to approximate the various interfaces witnessing the sequence of the ditch's fill episodes (A3), see Figure 9.
+
+In First Order Logic of the inverse property:
+- AP6(x,y) ⇒ A1(x)
+- AP6(x,y) ⇒ A3 (y)
+- AP6(x,y) ⇒ O8(x,y)
+</rdfs:comment>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="AP7_produced">
+    <rdfs:label xml:lang="en">AP7 produced</rdfs:label>
+    <skos:notation>AP7</skos:notation>
+    <skos:prefLabel xml:lang="en">produced</skos:prefLabel>
+    <rdfs:domain rdf:resource="A4_Stratigraphic_Genesis"/>
+    <rdfs:range rdf:resource="A8_Stratigraphic_Unit"/>
+    <owl:inverseOf rdf:resource="AP7i_was_produced_by"/>
+    <rdfs:subPropertyOf rdf:resource="http://www.cidoc-crm.org/extensions/crmsci/O17_generated"/>
+    <rdfs:comment xml:lang="en">Quantification: one to many (0,n:0,1)
+
+Scope note:
+This property identifies the instance of A8 Stratigraphic Unit that was produced during an instance of A4 Stratigraphic Genesis Event.
+
+Examples:
+- The one-meter-thick level of pumice covering the ruins at Akrotiri, Thera, (A8) was produced by the Minoan eruption of Thera –see Figure 9. (Doumas et al., 2015)
+- The 8-10-metre-thick level of successive layers volcanic ash deposed on top of the one-meter-thick level of pumice covering the ruins at Akrotiri, Thera, was produced by the Minoan eruption of Thera –see Figure 9. (Doumas et al., 2015)
+
+In First Order Logic:
+- AP7(x,y) ⇒ A4(x)
+- AP7(x,y) ⇒ A8(y)
+- AP7(x,y) ⇒ O17(y)
+</rdfs:comment>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="AP7i_was_produced_by">
+    <rdfs:label xml:lang="en">AP7i was produced by</rdfs:label>
+    <skos:notation>AP7i</skos:notation>
+    <skos:prefLabel xml:lang="en">was produced by</skos:prefLabel>
+    <rdfs:domain rdf:resource="A8_Stratigraphic_Unit"/>
+    <rdfs:range rdf:resource="A4_Stratigraphic_Genesis"/>
+    <owl:inverseOf rdf:resource="AP7_produced"/>
+    <rdfs:subPropertyOf rdf:resource="http://www.cidoc-crm.org/extensions/crmsci/O17i_was_generated_by"/>
+    <rdfs:comment xml:lang="en">Quantification of the inverse property: one to many (0,n:0,1)
+
+Scope note of the inverse property:
+This property identifies the instance of A8 Stratigraphic Unit that was produced during an instance of A4 Stratigraphic Genesis Event.
+
+Examples of the inverse property:
+- The one-meter-thick level of pumice covering the ruins at Akrotiri, Thera, (A8) was produced by the Minoan eruption of Thera –see Figure 9. (Doumas et al., 2015)
+- The 8-10-metre-thick level of successive layers volcanic ash deposed on top of the one-meter-thick level of pumice covering the ruins at Akrotiri, Thera, was produced by the Minoan eruption of Thera –see Figure 9. (Doumas et al., 2015)
+
+In First Order Logic of the inverse property:
+- AP7(x,y) ⇒ A4(x)
+- AP7(x,y) ⇒ A8(y)
+- AP7(x,y) ⇒ O17(y)
+</rdfs:comment>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="AP8_disturbed">
+    <rdfs:label xml:lang="en">AP8 disturbed</rdfs:label>
+    <skos:notation>AP8</skos:notation>
+    <skos:prefLabel xml:lang="en">disturbed</skos:prefLabel>
+    <rdfs:domain rdf:resource="A5_Stratigraphic_Modification"/>
+    <rdfs:range rdf:resource="A8_Stratigraphic_Unit"/>
+    <owl:inverseOf rdf:resource="AP8i_was_disturbed_by"/>
+    <rdfs:subPropertyOf rdf:resource="http://www.cidoc-crm.org/extensions/crmsci/O18_altered"/>
+    <rdfs:comment xml:lang="en">Quantification: one to many (0,n:0,1)
+
+Scope note:
+This property identifies an A8 Stratigraphic Unit that was disturbed through an A5 Stratigraphic Modification. One A5 Stratigraphic Modification may disturb several A8 Stratigraphic Units.
+
+Examples:
+- Rodents, lizards, and insects burrowing into the ground led to the creation of burrows (A5) discovered during the excavation at Eagle Cave, Texas, which disturbed the otherwise intact stratigraphic layers of the archaeological site (A8). (Larsen, 2015)
+
+In First Order Logic:
+- AP8(x,y) ⇒ A5(x)
+- AP8(x,y) ⇒ A8(y)
+- AP8(x,y) ⇒ O18(y)
+</rdfs:comment>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="AP8i_was_disturbed_by">
+    <rdfs:label xml:lang="en">AP8i was disturbed by</rdfs:label>
+    <skos:notation>AP8i</skos:notation>
+    <skos:prefLabel xml:lang="en">was disturbed by</skos:prefLabel>
+    <rdfs:domain rdf:resource="A8_Stratigraphic_Unit"/>
+    <rdfs:range rdf:resource="A5_Stratigraphic_Modification"/>
+    <owl:inverseOf rdf:resource="AP8_disturbed"/>
+    <rdfs:subPropertyOf rdf:resource="http://www.cidoc-crm.org/extensions/crmsci/O18i_was_altered_by"/>
+    <rdfs:comment xml:lang="en">Quantification of the inverse property: one to many (0,n:0,1)
+
+Scope note of the inverse property:
+This property identifies an A8 Stratigraphic Unit that was disturbed through an A5 Stratigraphic Modification. One A5 Stratigraphic Modification may disturb several A8 Stratigraphic Units.
+
+Examples of the inverse property:
+- Rodents, lizards, and insects burrowing into the ground led to the creation of burrows (A5) discovered during the excavation at Eagle Cave, Texas, which disturbed the otherwise intact stratigraphic layers of the archaeological site (A8). (Larsen, 2015)
+
+In First Order Logic of the inverse property:
+- AP8(x,y) ⇒ A5(x)
+- AP8(x,y) ⇒ A8(y)
+- AP8(x,y) ⇒ O18(y)
+</rdfs:comment>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="AP9_took_matter_from">
+    <rdfs:label xml:lang="en">AP9 took matter from</rdfs:label>
+    <skos:notation>AP9</skos:notation>
+    <skos:prefLabel xml:lang="en">took matter from</skos:prefLabel>
+    <rdfs:domain rdf:resource="A4_Stratigraphic_Genesis"/>
+    <rdfs:range rdf:resource="http://www.cidoc-crm.org/extensions/crmsci/S10_Material_Substantial"/>
+    <owl:inverseOf rdf:resource="AP9i_provided_matter_to"/>
+    <rdfs:subPropertyOf rdf:resource="http://www.cidoc-crm.org/extensions/crmsci/O18_altered"/>
+    <rdfs:comment xml:lang="en">Quantification: one to many (0,n:0,1)
+
+Scope note:
+This property associates an instance of A4 Stratigraphic Genesis with an instance of S10 Material Substantial, from which matter was incorporated in the instance of A8 Stratigraphic Unit produced by this genesis.
+The instance of A8 Stratigraphic Unit produced by an instance of A4 Stratigraphic Genesis can be documented by using the property AP7 produced (was produced by) and should be distinct from the instance of S10 Material Substantial from which matter was taken. The latter instance will be modified or cease to exist due to this genesis process.
+
+Examples:
+- The formation of two slab deposit layers on the ground floor of Room 5 of the West House in ancient Akrotiri (A4) took matter from the slabs of the collapsed upper storey’s paved floor. (Michailidou, 2001)
+
+In First Order Logic:
+- AP9(x,y) ⇒ A4(x)
+- AP9(x,y) ⇒ S10(y)
+- AP9(x,y) ⇒ O18(x,y)
+</rdfs:comment>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="AP9i_provided_matter_to">
+    <rdfs:label xml:lang="en">AP9i provided matter to</rdfs:label>
+    <skos:notation>AP9i</skos:notation>
+    <skos:prefLabel xml:lang="en">provided matter to</skos:prefLabel>
+    <rdfs:domain rdf:resource="http://www.cidoc-crm.org/extensions/crmsci/S10_Material_Substantial"/>
+    <rdfs:range rdf:resource="A4_Stratigraphic_Genesis"/>
+    <owl:inverseOf rdf:resource="AP9_took_matter_from"/>
+    <rdfs:subPropertyOf rdf:resource="http://www.cidoc-crm.org/extensions/crmsci/O18i_was_altered_by"/>
+    <rdfs:comment xml:lang="en">Quantification of the inverse property: one to many (0,n:0,1)
+
+Scope note of the inverse property:
+This property associates an instance of A4 Stratigraphic Genesis with an instance of S10 Material Substantial, from which matter was incorporated in the instance of A8 Stratigraphic Unit produced by this genesis.
+The instance of A8 Stratigraphic Unit produced by an instance of A4 Stratigraphic Genesis can be documented by using the property AP7 produced (was produced by) and should be distinct from the instance of S10 Material Substantial from which matter was taken. The latter instance will be modified or cease to exist due to this genesis process.
+
+Examples of the inverse property:
+- The formation of two slab deposit layers on the ground floor of Room 5 of the West House in ancient Akrotiri (A4) took matter from the slabs of the collapsed upper storey’s paved floor. (Michailidou, 2001)
+
+In First Order Logic of the inverse property:
+- AP9(x,y) ⇒ A4(x)
+- AP9(x,y) ⇒ S10(y)
+- AP9(x,y) ⇒ O18(x,y)
+</rdfs:comment>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="AP10_destroyed">
+    <rdfs:label xml:lang="en">AP10 destroyed</rdfs:label>
+    <skos:notation>AP10</skos:notation>
+    <skos:prefLabel xml:lang="en">destroyed</skos:prefLabel>
+    <rdfs:domain rdf:resource="A1_Excavation_Processing_Unit"/>
+    <rdfs:range rdf:resource="http://www.cidoc-crm.org/extensions/crmsci/S22_Segment_of_Matter"/>
+    <owl:inverseOf rdf:resource="AP10i_was_destroyed_by"/>
+    <rdfs:subPropertyOf rdf:resource="http://www.cidoc-crm.org/cidoc-crm/P93_took_out_of_existence"/>
+    <rdfs:comment xml:lang="en">Quantification: one to many, necessary (1,n:0,1)
+
+Scope note:
+This property identifies the S22 Segment of Matter that was destroyed through an A1 Excavation Processing Unit. The spatial extent of the instance of S22 Segment of Matter is defined by the extent of the spatial 3-dimensional projection of the A1 Excavation Processing Unit. Depending on the granularity of the documented instance of A1 Excavation Processing Unit, different instances of S22 Segment of Matter may be identified by the A10 property.
+
+Examples:
+- The complete excavation of Villa of the Mysteries in Pompeii, Italy (A1) destroyed the stratum of ash, pumice, and other volcanic material (S22). (Maiuri, 1931)
+
+In First Order Logic:
+- AP10(x,y) ⇒ A1(x)
+- AP10(x,y) ⇒ S22(y)
+- AP10 (x,y) ⇒ P13(x,y)
+</rdfs:comment>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="AP10i_was_destroyed_by">
+    <rdfs:label xml:lang="en">AP10i was destroyed by</rdfs:label>
+    <skos:notation>AP10i</skos:notation>
+    <skos:prefLabel xml:lang="en">was destroyed by</skos:prefLabel>
+    <rdfs:domain rdf:resource="http://www.cidoc-crm.org/extensions/crmsci/S22_Segment_of_Matter"/>
+    <rdfs:range rdf:resource="A1_Excavation_Processing_Unit"/>
+    <owl:inverseOf rdf:resource="AP10_destroyed"/>
+    <rdfs:subPropertyOf rdf:resource="http://www.cidoc-crm.org/cidoc-crm/P93i_was_taken_out_of_existence_by"/>
+    <rdfs:comment xml:lang="en">Quantification of the inverse property: one to many, necessary (1,n:0,1)
+
+Scope note of the inverse property:
+This property identifies the S22 Segment of Matter that was destroyed through an A1 Excavation Processing Unit. The spatial extent of the instance of S22 Segment of Matter is defined by the extent of the spatial 3-dimensional projection of the A1 Excavation Processing Unit. Depending on the granularity of the documented instance of A1 Excavation Processing Unit, different instances of S22 Segment of Matter may be identified by the A10 property.
+
+Examples of the inverse property:
+- The complete excavation of Villa of the Mysteries in Pompeii, Italy (A1) destroyed the stratum of ash, pumice, and other volcanic material (S22). (Maiuri, 1931)
+
+In First Order Logic of the inverse property:
+- AP10(x,y) ⇒ A1(x)
+- AP10(x,y) ⇒ S22(y)
+- AP10 (x,y) ⇒ P13(x,y)
+</rdfs:comment>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="AP11_has_physical_relation_to">
+    <rdfs:label xml:lang="en">AP11 has physical relation to</rdfs:label>
+    <skos:notation>AP11</skos:notation>
+    <skos:prefLabel xml:lang="en">has physical relation to</skos:prefLabel>
+    <rdfs:domain rdf:resource="A8_Stratigraphic_Unit"/>
+    <rdfs:range rdf:resource="A8_Stratigraphic_Unit"/>
+    <owl:inverseOf rdf:resource="AP11i_is_physical_relation_from"/>
+    <rdfs:comment xml:lang="en">Quantification: many to many (0,n:0,n)
+
+Scope note:
+This property identifies the physical relationship between two A8 Stratigraphic Units. The described relationship may be between two adjacent instances of A2 Stratigraphic Volume Unit sharing a common interface (instance of A3 Stratigraphic Interface), between an instance of A2 Stratigraphic Volume Unit and one of its adjacent interfaces, such as human-made cuts or earthquake induced faults, or even between two intersecting interfaces.
+The type of physical relationships found between stratigraphic units in archaeological or geological documentation is documented through the property AP11.1 has type. The type applies to the direction from the domain to the range of the property AP11 has physical relation to (is physically related from). The type of physical relationship typically constitutes strong evidence for the sequence of genesis of the related stratigraphic units, which can be documented by the property AP13 has stratigraphic relation to (is stratigraphically related by). The type may either pertain to a relative topology, such as the one being “under” the other, or to the fine-structure of the interface between them, such as a layer of concrete having filled out earlier micro-cavities in various directions in the interface before solidifying.
+
+Examples:
+- The layer of burned remains of the log building in Søndre gate, Trondheim, Norway, (A8) has physical relation to under the foundation of the church of St. Clements (A8). (Norwegian Institute for Cultural Heritage Research, 2018)
+- The floors at B of the building 1 in Çatalhöyük, Turkey (A8) has physical relation to wall C (A8) has type runs up to (E55) [as observed initially] (Hodder, 1999)
+- The wall C of the building 1 in Çatalhöyük, Turkey (A8) has physical relation to the floors at B (A8) has type inserted by cut (E55) [as observed finally] (Hodder, 1999)
+- The wall C of the building 1 in Çatalhöyük, Turkey (A8) has physical relation to wall D (A8) has type abuts on (E55). (Hodder, 1999)
+- The wall D of the building 1 in Çatalhöyük, Turkey (A8) has physical relation to the floors at B (A8) has type on top of (E55). (Hodder, 1999)
+
+Properties:
+- AP11.1 has type:
+
+In First Order Logic:
+- AP11(x,y) ⇒ A8(x)
+- AP11(x,y) ⇒ A8 (y)
+- AP11.1 (x,y,z) ⇒ [AP11 (x,y) ∧ E55(z)]
+</rdfs:comment>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="AP11i_is_physical_relation_from">
+    <rdfs:label xml:lang="en">AP11i is physical relation from</rdfs:label>
+    <skos:notation>AP11i</skos:notation>
+    <skos:prefLabel xml:lang="en">is physical relation from</skos:prefLabel>
+    <rdfs:domain rdf:resource="A8_Stratigraphic_Unit"/>
+    <rdfs:range rdf:resource="A8_Stratigraphic_Unit"/>
+    <owl:inverseOf rdf:resource="AP11_has_physical_relation_to"/>
+    <rdfs:comment xml:lang="en">Quantification of the inverse property: many to many (0,n:0,n)
+
+Scope note of the inverse property:
+This property identifies the physical relationship between two A8 Stratigraphic Units. The described relationship may be between two adjacent instances of A2 Stratigraphic Volume Unit sharing a common interface (instance of A3 Stratigraphic Interface), between an instance of A2 Stratigraphic Volume Unit and one of its adjacent interfaces, such as human-made cuts or earthquake induced faults, or even between two intersecting interfaces.
+The type of physical relationships found between stratigraphic units in archaeological or geological documentation is documented through the property AP11.1 has type. The type applies to the direction from the domain to the range of the property AP11 has physical relation to (is physically related from). The type of physical relationship typically constitutes strong evidence for the sequence of genesis of the related stratigraphic units, which can be documented by the property AP13 has stratigraphic relation to (is stratigraphically related by). The type may either pertain to a relative topology, such as the one being “under” the other, or to the fine-structure of the interface between them, such as a layer of concrete having filled out earlier micro-cavities in various directions in the interface before solidifying.
+
+Examples of the inverse property:
+- The layer of burned remains of the log building in Søndre gate, Trondheim, Norway, (A8) has physical relation to under the foundation of the church of St. Clements (A8). (Norwegian Institute for Cultural Heritage Research, 2018)
+- The floors at B of the building 1 in Çatalhöyük, Turkey (A8) has physical relation to wall C (A8) has type runs up to (E55) [as observed initially] (Hodder, 1999)
+- The wall C of the building 1 in Çatalhöyük, Turkey (A8) has physical relation to the floors at B (A8) has type inserted by cut (E55) [as observed finally] (Hodder, 1999)
+- The wall C of the building 1 in Çatalhöyük, Turkey (A8) has physical relation to wall D (A8) has type abuts on (E55). (Hodder, 1999)
+- The wall D of the building 1 in Çatalhöyük, Turkey (A8) has physical relation to the floors at B (A8) has type on top of (E55). (Hodder, 1999)
+
+In First Order Logic of the inverse property:
+- AP11(x,y) ⇒ A8(x)
+- AP11(x,y) ⇒ A8 (y)
+- AP11.1 (x,y,z) ⇒ [AP11 (x,y) ∧ E55(z)]
+</rdfs:comment>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="AP12_confines">
+    <rdfs:label xml:lang="en">AP12 confines</rdfs:label>
+    <skos:notation>AP12</skos:notation>
+    <skos:prefLabel xml:lang="en">confines</skos:prefLabel>
+    <rdfs:domain rdf:resource="A3_Stratigraphic_Interface"/>
+    <rdfs:range rdf:resource="A2_Stratigraphic_Volume_Unit"/>
+    <owl:inverseOf rdf:resource="AP12i_is_confined_by"/>
+    <rdfs:comment xml:lang="en">Quantification: many to many (0,n:0,n)
+
+Scope note:
+This property identifies partly or completely the surface (A3 Stratigraphic Interface) of an A2 Stratigraphic Volume Unit. One A3 Stratigraphic Interface may confine two or more A2 Stratigraphic Volume Units.
+
+Examples:
+- The Stratigraphic Interface “[19]” (A3) confines the Stratigraphic Volume Unit “(2)” (A2) –see Figure 4a, above.
+
+In First Order Logic:
+- AP12(x,y) ⇒ A3(x)
+- AP12(x,y) ⇒ A2(y)
+</rdfs:comment>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="AP12i_is_confined_by">
+    <rdfs:label xml:lang="en">AP12i is confined by</rdfs:label>
+    <skos:notation>AP12i</skos:notation>
+    <skos:prefLabel xml:lang="en">is confined by</skos:prefLabel>
+    <rdfs:domain rdf:resource="A2_Stratigraphic_Volume_Unit"/>
+    <rdfs:range rdf:resource="A3_Stratigraphic_Interface"/>
+    <owl:inverseOf rdf:resource="AP12_confines"/>
+    <rdfs:comment xml:lang="en">Quantification of the inverse property: many to many (0,n:0,n)
+
+Scope note of the inverse property:
+This property identifies partly or completely the surface (A3 Stratigraphic Interface) of an A2 Stratigraphic Volume Unit. One A3 Stratigraphic Interface may confine two or more A2 Stratigraphic Volume Units.
+
+Examples of the inverse property:
+- The Stratigraphic Interface “[19]” (A3) confines the Stratigraphic Volume Unit “(2)” (A2) –see Figure 4a, above.
+
+In First Order Logic of the inverse property:
+- AP12(x,y) ⇒ A3(x)
+- AP12(x,y) ⇒ A2(y)
+</rdfs:comment>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="AP13_has_stratigraphic_relation_to">
+    <rdfs:label xml:lang="en">AP13 has stratigraphic relation to</rdfs:label>
+    <skos:notation>AP13</skos:notation>
+    <skos:prefLabel xml:lang="en">has stratigraphic relation to</skos:prefLabel>
+    <rdfs:domain rdf:resource="A5_Stratigraphic_Modification"/>
+    <rdfs:range rdf:resource="A5_Stratigraphic_Modification"/>
+    <owl:inverseOf rdf:resource="AP13i_is_stratigraphic_relation_of"/>
+    <rdfs:comment xml:lang="en">Quantification: one to many (0,n:0,1)
+
+Scope note:
+This property identifies the stratigraphic relation between two A5 Stratigraphic Modification events. This relation may be inferred from the kind of physical relation that exists between the two AP 8 Stratigraphic Units that have been created or modified during the corresponding A5 Stratigraphic Modification events. The type of stratigraphic relationships in archaeological documentation assigned to two A5 Stratigraphic Modification events is documented through the property AP 13.1 has type.
+
+Examples:
+- The burning of the log building in Søndre gate, Trondheim, Norway, (A5) has stratigraphic relation to the laying of the foundation for the church of St. Clements (A5) has type earlier (E55). (Norwegian Institute for Cultural Heritage Research, 2018)
+- The production of the floors at B of the building 1 in Çatalhöyük, Turkey (E12) has stratigraphic relation to the production of wall C (E12) has type after (E55). [as observed initially, see AP11] (Hodder, 1999)
+- The production of wall C of the building 1 in Çatalhöyük, Turkey (A5) has stratigraphic relation to the production of the floors at B (A5) has type after (E55). [as observed finally, see AP11] (Hodder,, 1999)
+- The production of the wall C of the building 1 in Çatalhöyük, Turkey (A5) has stratigraphic relation to the production of wall D (A5) has type after (E55). [See AP11] (Hodder, 1999)
+- The production of the wall D of the building 1 in Çatalhöyük, Turkey (A5) has stratigraphic relation to the production of the floors B’ (A5) has type after (E55). [See AP11] (Hodder, 1999)
+
+Properties:
+- AP13.1 has type:
+
+- AP13.2 justified by (is justification of): AP11 has physical relation to (is physical relation from)
+
+In First Order Logic:
+- AP13(x,y) ⇒ A5(x)
+- AP13(x,y) ⇒ A5(y)
+- AP13.1(x,y,z) ⇒ [AP13 (x,y) ∧ E55(z)]
+</rdfs:comment>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="AP13i_is_stratigraphic_relation_of">
+    <rdfs:label xml:lang="en">AP13i is stratigraphic relation of</rdfs:label>
+    <skos:notation>AP13i</skos:notation>
+    <skos:prefLabel xml:lang="en">is stratigraphic relation of</skos:prefLabel>
+    <rdfs:domain rdf:resource="A5_Stratigraphic_Modification"/>
+    <rdfs:range rdf:resource="A5_Stratigraphic_Modification"/>
+    <owl:inverseOf rdf:resource="AP13_has_stratigraphic_relation_to"/>
+    <rdfs:comment xml:lang="en">Quantification of the inverse property: one to many (0,n:0,1)
+
+Scope note of the inverse property:
+This property identifies the stratigraphic relation between two A5 Stratigraphic Modification events. This relation may be inferred from the kind of physical relation that exists between the two AP 8 Stratigraphic Units that have been created or modified during the corresponding A5 Stratigraphic Modification events. The type of stratigraphic relationships in archaeological documentation assigned to two A5 Stratigraphic Modification events is documented through the property AP 13.1 has type.
+
+Examples of the inverse property:
+- The burning of the log building in Søndre gate, Trondheim, Norway, (A5) has stratigraphic relation to the laying of the foundation for the church of St. Clements (A5) has type earlier (E55). (Norwegian Institute for Cultural Heritage Research, 2018)
+- The production of the floors at B of the building 1 in Çatalhöyük, Turkey (E12) has stratigraphic relation to the production of wall C (E12) has type after (E55). [as observed initially, see AP11] (Hodder, 1999)
+- The production of wall C of the building 1 in Çatalhöyük, Turkey (A5) has stratigraphic relation to the production of the floors at B (A5) has type after (E55). [as observed finally, see AP11] (Hodder,, 1999)
+- The production of the wall C of the building 1 in Çatalhöyük, Turkey (A5) has stratigraphic relation to the production of wall D (A5) has type after (E55). [See AP11] (Hodder, 1999)
+- The production of the wall D of the building 1 in Çatalhöyük, Turkey (A5) has stratigraphic relation to the production of the floors B’ (A5) has type after (E55). [See AP11] (Hodder, 1999)
+
+In First Order Logic of the inverse property:
+- AP13(x,y) ⇒ A5(x)
+- AP13(x,y) ⇒ A5(y)
+- AP13.1(x,y,z) ⇒ [AP13 (x,y) ∧ E55(z)]
+</rdfs:comment>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="AP15_is_or_contains_remains_of">
+    <rdfs:label xml:lang="en">AP15 is or contains remains of</rdfs:label>
+    <skos:notation>AP15</skos:notation>
+    <skos:prefLabel xml:lang="en">is or contains remains of</skos:prefLabel>
+    <rdfs:domain rdf:resource="A2_Stratigraphic_Volume_Unit"/>
+    <rdfs:range rdf:resource="http://www.cidoc-crm.org/extensions/crmsci/S10_Material_Substantial"/>
+    <owl:inverseOf rdf:resource="AP15i_is_or_has_remains_contained_in"/>
+    <rdfs:comment xml:lang="en">Quantification: one to many (0,n:0,1)
+
+Scope note:
+This property indicates that an instance of A2 Stratigraphic Volume Unit can be the remains of or contain the remains of an instance of S10 Material Substantial.
+
+Examples:
+- The posthole “Dilling 2AS34019” (A2) is or contains remains of the rotten bottom part of a pole (S10).
+
+In First Order Logic:
+- AP15(x,y) ⇒ A2(x)
+- AP15(x,y) ⇒ S10(y)
+</rdfs:comment>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="AP15i_is_or_has_remains_contained_in">
+    <rdfs:label xml:lang="en">AP15i is or has remains contained in</rdfs:label>
+    <skos:notation>AP15i</skos:notation>
+    <skos:prefLabel xml:lang="en">is or has remains contained in</skos:prefLabel>
+    <rdfs:domain rdf:resource="http://www.cidoc-crm.org/extensions/crmsci/S10_Material_Substantial"/>
+    <rdfs:range rdf:resource="A2_Stratigraphic_Volume_Unit"/>
+    <owl:inverseOf rdf:resource="AP15_is_or_contains_remains_of"/>
+    <rdfs:comment xml:lang="en">Quantification of the inverse property: one to many (0,n:0,1)
+
+Scope note of the inverse property:
+This property indicates that an instance of A2 Stratigraphic Volume Unit can be the remains of or contain the remains of an instance of S10 Material Substantial.
+
+Examples of the inverse property:
+- The posthole “Dilling 2AS34019” (A2) is or contains remains of the rotten bottom part of a pole (S10).
+
+In First Order Logic of the inverse property:
+- AP15(x,y) ⇒ A2(x)
+- AP15(x,y) ⇒ S10(y)
+</rdfs:comment>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="AP16_assigned_attribute_to">
+    <rdfs:label xml:lang="en">AP16 assigned attribute to</rdfs:label>
+    <skos:notation>AP16</skos:notation>
+    <skos:prefLabel xml:lang="en">assigned attribute to</skos:prefLabel>
+    <rdfs:domain rdf:resource="A6_Group_Declaration_Event"/>
+    <rdfs:range rdf:resource="http://www.cidoc-crm.org/cidoc-crm/E18_Physical_Thing"/>
+    <owl:inverseOf rdf:resource="AP16i_was_attributed_by"/>
+    <rdfs:subPropertyOf rdf:resource="http://www.cidoc-crm.org/cidoc-crm/P140_assigned_attribute_to"/>
+    <rdfs:comment xml:lang="en">Quantification: one to many (0,n:0,1)
+
+Scope note:
+This property indicates an instance of E18 Physical Thing that was assigned by an instance of A6 Group Declaration Event as remains of the target of this instance of A6 Group Declaration Event.
+
+Examples:
+- declaring post holes “[7]” and “[8]” in Figure 4 to be part of one building (A6) assigned attribute to the post holes [7] and [8] (E18) –see Figure 4a.
+
+In First Order Logic:
+- AP16(x,y) ⇒ A6(x)
+- AP16(x,y) ⇒ E18(y)
+- AP16(x,y) ⇒ P140(x,y)
+</rdfs:comment>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="AP16i_was_attributed_by">
+    <rdfs:label xml:lang="en">AP16i was attributed by</rdfs:label>
+    <skos:notation>AP16i</skos:notation>
+    <skos:prefLabel xml:lang="en">was attributed by</skos:prefLabel>
+    <rdfs:domain rdf:resource="http://www.cidoc-crm.org/cidoc-crm/E18_Physical_Thing"/>
+    <rdfs:range rdf:resource="A6_Group_Declaration_Event"/>
+    <owl:inverseOf rdf:resource="AP16_assigned_attribute_to"/>
+    <rdfs:subPropertyOf rdf:resource="http://www.cidoc-crm.org/cidoc-crm/P140i_was_attributed_by"/>
+    <rdfs:comment xml:lang="en">Quantification of the inverse property: one to many (0,n:0,1)
+
+Scope note of the inverse property:
+This property indicates an instance of E18 Physical Thing that was assigned by an instance of A6 Group Declaration Event as remains of the target of this instance of A6 Group Declaration Event.
+
+Examples of the inverse property:
+- declaring post holes “[7]” and “[8]” in Figure 4 to be part of one building (A6) assigned attribute to the post holes [7] and [8] (E18) –see Figure 4a.
+
+In First Order Logic of the inverse property:
+- AP16(x,y) ⇒ A6(x)
+- AP16(x,y) ⇒ E18(y)
+- AP16(x,y) ⇒ P140(x,y)
+</rdfs:comment>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="AP17_is_found_by">
+    <rdfs:label xml:lang="en">AP17 is found by</rdfs:label>
+    <skos:notation>AP17</skos:notation>
+    <skos:prefLabel xml:lang="en">is found by</skos:prefLabel>
+    <rdfs:domain rdf:resource="A7_Embedding"/>
+    <rdfs:range rdf:resource="http://www.cidoc-crm.org/extensions/crmsci/S19_Encounter_Event"/>
+    <owl:inverseOf rdf:resource="AP17i_found"/>
+    <rdfs:subPropertyOf rdf:resource="http://www.cidoc-crm.org/extensions/crmsci/O8_observed"/>
+    <rdfs:comment xml:lang="en">Quantification: one to many (0,n:0,1)
+
+Scope note:
+This property associates an instance of S19 Encounter Event with an instance of A7 Embedding that has been found during this event.
+
+Examples:
+- The small whetstone with an erratic runic inscription that was embedded in a medieval rubbish dump (A7) is found by the discovery of the whetstone in the early morning in November 2017 in Oslo, Norway (S19). (Norwegian Institute for Cultural Heritage Research, 2017)
+
+In First Order Logic:
+- AP17(x,y) ⇒ A7(x)
+- AP17(x,y) ⇒ S19(y)
+- AP17(x,y) ⇒ O8(x,y)
+</rdfs:comment>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="AP17i_found">
+    <rdfs:label xml:lang="en">AP17i found</rdfs:label>
+    <skos:notation>AP17i</skos:notation>
+    <skos:prefLabel xml:lang="en">found</skos:prefLabel>
+    <rdfs:domain rdf:resource="http://www.cidoc-crm.org/extensions/crmsci/S19_Encounter_Event"/>
+    <rdfs:range rdf:resource="A7_Embedding"/>
+    <owl:inverseOf rdf:resource="AP17_is_found_by"/>
+    <rdfs:subPropertyOf rdf:resource="http://www.cidoc-crm.org/extensions/crmsci/O8i_was_observed_by"/>
+    <rdfs:comment xml:lang="en">Quantification of the inverse property: one to many (0,n:0,1)
+
+Scope note of the inverse property:
+This property associates an instance of S19 Encounter Event with an instance of A7 Embedding that has been found during this event.
+
+Examples of the inverse property:
+- The small whetstone with an erratic runic inscription that was embedded in a medieval rubbish dump (A7) is found by the discovery of the whetstone in the early morning in November 2017 in Oslo, Norway (S19). (Norwegian Institute for Cultural Heritage Research, 2017)
+
+In First Order Logic of the inverse property:
+- AP17(x,y) ⇒ A7(x)
+- AP17(x,y) ⇒ S19(y)
+- AP17(x,y) ⇒ O8(x,y)
+</rdfs:comment>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="AP18_is_embedding_of">
+    <rdfs:label xml:lang="en">AP18 is embedding of</rdfs:label>
+    <skos:notation>AP18</skos:notation>
+    <skos:prefLabel xml:lang="en">is embedding of</skos:prefLabel>
+    <rdfs:domain rdf:resource="A7_Embedding"/>
+    <rdfs:range rdf:resource="http://www.cidoc-crm.org/cidoc-crm/E18_Physical_Thing"/>
+    <owl:inverseOf rdf:resource="AP18i_is_embedded"/>
+    <rdfs:subPropertyOf rdf:resource="http://www.cidoc-crm.org/cidoc-crm/P46_is_composed_of"/>
+    <rdfs:comment xml:lang="en">Quantification: one to many (0,n:0,1)
+
+Scope note:
+This property identifies the E18 Physical Thing that is contained in an A7 Embedding.
+
+Examples:
+- The embedding of the small whetstone with an erratic runic inscription in a medieval rubbish dump (A7) is embedding of this whetstone, discovered in the early morning in November 2017 in Oslo, Norway (E18). (Norwegian Institute for Cultural Heritage Research, 2017)
+
+In First Order Logic:
+- AP18(x,y) ⇒ A7(x)
+- AP18(x,y) ⇒ E18(y)
+- AP18(x,y) ⇒ P44(x,y)
+</rdfs:comment>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="AP18i_is_embedded">
+    <rdfs:label xml:lang="en">AP18i is embedded</rdfs:label>
+    <skos:notation>AP18i</skos:notation>
+    <skos:prefLabel xml:lang="en">is embedded</skos:prefLabel>
+    <rdfs:domain rdf:resource="http://www.cidoc-crm.org/cidoc-crm/E18_Physical_Thing"/>
+    <rdfs:range rdf:resource="A7_Embedding"/>
+    <owl:inverseOf rdf:resource="AP18_is_embedding_of"/>
+    <rdfs:subPropertyOf rdf:resource="http://www.cidoc-crm.org/cidoc-crm/P46i_forms_part_of"/>
+    <rdfs:comment xml:lang="en">Quantification of the inverse property: one to many (0,n:0,1)
+
+Scope note of the inverse property:
+This property identifies the E18 Physical Thing that is contained in an A7 Embedding.
+
+Examples of the inverse property:
+- The embedding of the small whetstone with an erratic runic inscription in a medieval rubbish dump (A7) is embedding of this whetstone, discovered in the early morning in November 2017 in Oslo, Norway (E18). (Norwegian Institute for Cultural Heritage Research, 2017)
+
+In First Order Logic of the inverse property:
+- AP18(x,y) ⇒ A7(x)
+- AP18(x,y) ⇒ E18(y)
+- AP18(x,y) ⇒ P44(x,y)
+</rdfs:comment>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="AP19_is_embedding_in">
+    <rdfs:label xml:lang="en">AP19 is embedding in</rdfs:label>
+    <skos:notation>AP19</skos:notation>
+    <skos:prefLabel xml:lang="en">is embedding in</skos:prefLabel>
+    <rdfs:domain rdf:resource="A7_Embedding"/>
+    <rdfs:range rdf:resource="A2_Stratigraphic_Volume_Unit"/>
+    <owl:inverseOf rdf:resource="AP19i_contains_embedding"/>
+    <rdfs:comment xml:lang="en">Quantification: one to many (1,1:0,n)
+
+Scope note:
+This property identifies the instance of A2 Stratigraphic Volume Unit that contains the A7 Embedding. An Embedding may not extend over more than one instance of A2 Stratigraphic Volume Unit.
+
+Examples:
+- The embedding of the small whetstone with an erratic runic inscription, discovered in the early morning in November 2017 in Oslo, Norway, in a medieval rubbish dump (A7) is embedding in the medieval rubbish dump “Follo234532” (A2). (Norwegian Institute for Cultural Heritage Research, 2017)
+
+In First Order Logic:
+- AP19(x,y) ⇒ A7(x)
+- AP19(x,y) ⇒ A2(y)
+</rdfs:comment>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="AP19i_contains_embedding">
+    <rdfs:label xml:lang="en">AP19i contains embedding</rdfs:label>
+    <skos:notation>AP19i</skos:notation>
+    <skos:prefLabel xml:lang="en">contains embedding</skos:prefLabel>
+    <rdfs:domain rdf:resource="A2_Stratigraphic_Volume_Unit"/>
+    <rdfs:range rdf:resource="A7_Embedding"/>
+    <owl:inverseOf rdf:resource="AP19_is_embedding_in"/>
+    <rdfs:comment xml:lang="en">Quantification of the inverse property: one to many (1,1:0,n)
+
+Scope note of the inverse property:
+This property identifies the instance of A2 Stratigraphic Volume Unit that contains the A7 Embedding. An Embedding may not extend over more than one instance of A2 Stratigraphic Volume Unit.
+
+Examples of the inverse property:
+- The embedding of the small whetstone with an erratic runic inscription, discovered in the early morning in November 2017 in Oslo, Norway, in a medieval rubbish dump (A7) is embedding in the medieval rubbish dump “Follo234532” (A2). (Norwegian Institute for Cultural Heritage Research, 2017)
+
+In First Order Logic of the inverse property:
+- AP19(x,y) ⇒ A7(x)
+- AP19(x,y) ⇒ A2(y)
+</rdfs:comment>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="AP21_contains">
+    <rdfs:label xml:lang="en">AP21 contains</rdfs:label>
+    <skos:notation>AP21</skos:notation>
+    <skos:prefLabel xml:lang="en">contains</skos:prefLabel>
+    <rdfs:domain rdf:resource="A2_Stratigraphic_Volume_Unit"/>
+    <rdfs:range rdf:resource="http://www.cidoc-crm.org/cidoc-crm/E18_Physical_Thing"/>
+    <owl:inverseOf rdf:resource="AP21i_is_contained_in"/>
+    <rdfs:comment xml:lang="en">Quantification: one to many (0,n:0,1)
+
+Scope note:
+This property associates an E18 Physical Thing that is found within an A2 Stratigraphic Volume Unit with the stratigraphic volume unit. AP21 contains (is contained in) is a shortcut for the more detailed path from E18 Physical Thing through AP18i is embedded, A7 Embedding, AP19 is embedding in, A2 Stratigraphic Volume Unit.
+
+Examples:
+- A mediaeval rubbish dump in Oslo, Norway, (A2) contains a whetstone, discovered in the early morning in November 2017 in Oslo, Norway (E18). (Norwegian Institute for Cultural Heritage Research, 2017)
+
+In First Order Logic:
+- AP21(x,y) ⇒ A2(x)
+- AP21(x,y) ⇒ E18(y)
+</rdfs:comment>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="AP21i_is_contained_in">
+    <rdfs:label xml:lang="en">AP21i is contained in</rdfs:label>
+    <skos:notation>AP21i</skos:notation>
+    <skos:prefLabel xml:lang="en">is contained in</skos:prefLabel>
+    <rdfs:domain rdf:resource="http://www.cidoc-crm.org/cidoc-crm/E18_Physical_Thing"/>
+    <rdfs:range rdf:resource="A2_Stratigraphic_Volume_Unit"/>
+    <owl:inverseOf rdf:resource="AP21_contains"/>
+    <rdfs:comment xml:lang="en">Quantification of the inverse property: one to many (0,n:0,1)
+
+Scope note of the inverse property:
+This property associates an E18 Physical Thing that is found within an A2 Stratigraphic Volume Unit with the stratigraphic volume unit. AP21 contains (is contained in) is a shortcut for the more detailed path from E18 Physical Thing through AP18i is embedded, A7 Embedding, AP19 is embedding in, A2 Stratigraphic Volume Unit.
+
+Examples of the inverse property:
+- A mediaeval rubbish dump in Oslo, Norway, (A2) contains a whetstone, discovered in the early morning in November 2017 in Oslo, Norway (E18). (Norwegian Institute for Cultural Heritage Research, 2017)
+
+In First Order Logic of the inverse property:
+- AP21(x,y) ⇒ A2(x)
+- AP21(x,y) ⇒ E18(y)
+</rdfs:comment>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="AP22_is_equal_in_time_to">
+    <rdfs:label xml:lang="en">AP22 is equal in time to</rdfs:label>
+    <skos:notation>AP22</skos:notation>
+    <skos:prefLabel xml:lang="en">is equal in time to</skos:prefLabel>
+    <rdfs:domain rdf:resource="http://www.cidoc-crm.org/cidoc-crm/E2_Temporal_Entity"/>
+    <rdfs:range rdf:resource="http://www.cidoc-crm.org/cidoc-crm/E2_Temporal_Entity"/>
+    <rdfs:subPropertyOf rdf:resource="http://www.cidoc-crm.org/cidoc-crm/P175_starts_before_or_with_the_start_of"/>
+    <rdfs:subPropertyOf rdf:resource="http://www.cidoc-crm.org/cidoc-crm/P175i_starts_after_or_with_the_start_of"/>
+    <rdfs:subPropertyOf rdf:resource="http://www.cidoc-crm.org/cidoc-crm/P184_ends_before_or_with_the_end_of"/>
+    <rdfs:subPropertyOf rdf:resource="http://www.cidoc-crm.org/cidoc-crm/P184i_ends_with_or_after_the_end_of"/>
+    <rdfs:comment xml:lang="en">Quantification: many to many (0,n:0,n)
+
+Scope note:
+This property symmetrically identifies a situation in which the starting point and the ending point for an instance of E2 Temporal Entity is equal to the starting point and the ending point of another instance of E2 Temporal Entity, respectively.
+This property is only necessary if the time span is unknown (otherwise the equivalence can be calculated).
+This property is the same as the "equal" relationship of Allen’s temporal logic (Allen, 1983, pp. 832-843).
+This property is transitive.
+
+Examples:
+- The burning of the Temple of Artemis at Ephesus (E6) is equal in time to the birth of Alexander the Great E69 [on July 6, 356 BC as reported by Plutarch in Vitae Parallelae, III, 3]. (Plutarch, 1919)
+
+In First Order Logic:
+- AP22(x,y) ⇒ E2(x)
+- AP22(x,y) ⇒ E2(y)
+- AP22(x,y) ⇒ P175(x,y)
+- AP22(x,y) ⇒ P175i(x,y)
+- AP22(x,y) ⇒ P184(x,y)
+- AP22(x,y) ⇒ P184i(x,y)
+</rdfs:comment>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="AP23_finishes">
+    <rdfs:label xml:lang="en">AP23 finishes</rdfs:label>
+    <skos:notation>AP23</skos:notation>
+    <skos:prefLabel xml:lang="en">finishes</skos:prefLabel>
+    <rdfs:domain rdf:resource="http://www.cidoc-crm.org/cidoc-crm/E2_Temporal_Entity"/>
+    <rdfs:range rdf:resource="http://www.cidoc-crm.org/cidoc-crm/E2_Temporal_Entity"/>
+    <owl:inverseOf rdf:resource="AP23i_is_finished_by"/>
+    <rdfs:subPropertyOf rdf:resource="http://www.cidoc-crm.org/cidoc-crm/P176i_starts_after_the_start_of"/>
+    <rdfs:subPropertyOf rdf:resource="http://www.cidoc-crm.org/cidoc-crm/P184_ends_before_or_with_the_end_of"/>
+    <rdfs:subPropertyOf rdf:resource="http://www.cidoc-crm.org/cidoc-crm/P184i_ends_with_or_after_the_end_of"/>
+    <rdfs:comment xml:lang="en">Quantification: many to many (0,n:0,n)
+
+Scope note:
+This property identifies a situation in which the ending point of an instance of E2 Temporal Entity is equal to the ending point of another temporal entity of longer duration. There is no causal relationship implied by this property.
+This property is only necessary if the time span is unknown (otherwise the relationship can be calculated). This property is the same as the "finishes / finished-by" relationships of Allen’s temporal logic (Allen, 1983, pp. 832-843).
+This property is transitive.
+
+Examples:
+- Late Bronze Age (E4) finishes Bronze Age (E4).
+
+In First Order Logic:
+- AP23(x,y) ⇒ E2(x)
+- AP23(x,y) ⇒ E2(y)
+- AP23(x,y) ⇒ P76i(x,y)
+- AP23(x,y) ⇒ P184(x,y)
+- AP23(x,y) ⇒ P184i(x,y)
+</rdfs:comment>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="AP23i_is_finished_by">
+    <rdfs:label xml:lang="en">AP23i is finished by</rdfs:label>
+    <skos:notation>AP23i</skos:notation>
+    <skos:prefLabel xml:lang="en">is finished by</skos:prefLabel>
+    <rdfs:domain rdf:resource="http://www.cidoc-crm.org/cidoc-crm/E2_Temporal_Entity"/>
+    <rdfs:range rdf:resource="http://www.cidoc-crm.org/cidoc-crm/E2_Temporal_Entity"/>
+    <owl:inverseOf rdf:resource="AP23_finishes"/>
+    <rdfs:subPropertyOf rdf:resource="http://www.cidoc-crm.org/cidoc-crm/P176_starts_before_the_start_of"/>
+    <rdfs:subPropertyOf rdf:resource="http://www.cidoc-crm.org/cidoc-crm/P184_ends_before_or_with_the_end_of"/>
+    <rdfs:subPropertyOf rdf:resource="http://www.cidoc-crm.org/cidoc-crm/P184i_ends_with_or_after_the_end_of"/>
+    <rdfs:comment xml:lang="en">Quantification of the inverse property: many to many (0,n:0,n)
+
+Scope note of the inverse property:
+This property identifies a situation in which the ending point of an instance of E2 Temporal Entity is equal to the ending point of another temporal entity of longer duration. There is no causal relationship implied by this property.
+This property is only necessary if the time span is unknown (otherwise the relationship can be calculated). This property is the same as the "finishes / finished-by" relationships of Allen’s temporal logic (Allen, 1983, pp. 832-843).
+This property is transitive.
+
+Examples of the inverse property:
+- Late Bronze Age (E4) finishes Bronze Age (E4).
+
+In First Order Logic of the inverse property:
+- AP23(x,y) ⇒ E2(x)
+- AP23(x,y) ⇒ E2(y)
+- AP23(x,y) ⇒ P76i(x,y)
+- AP23(x,y) ⇒ P184(x,y)
+- AP23(x,y) ⇒ P184i(x,y)
+</rdfs:comment>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="AP24_starts">
+    <rdfs:label xml:lang="en">AP24 starts</rdfs:label>
+    <skos:notation>AP24</skos:notation>
+    <skos:prefLabel xml:lang="en">starts</skos:prefLabel>
+    <rdfs:domain rdf:resource="http://www.cidoc-crm.org/cidoc-crm/E2_Temporal_Entity"/>
+    <rdfs:range rdf:resource="http://www.cidoc-crm.org/cidoc-crm/E2_Temporal_Entity"/>
+    <owl:inverseOf rdf:resource="AP24i_is_started_by"/>
+    <rdfs:subPropertyOf rdf:resource="http://www.cidoc-crm.org/cidoc-crm/P175_starts_before_or_with_the_start_of"/>
+    <rdfs:subPropertyOf rdf:resource="http://www.cidoc-crm.org/cidoc-crm/P175i_starts_after_or_with_the_start_of"/>
+    <rdfs:subPropertyOf rdf:resource="http://www.cidoc-crm.org/cidoc-crm/P185_ends_before_the_end_of"/>
+    <rdfs:comment xml:lang="en">Quantification: many to many (0,n:0,n)
+
+Scope note:
+This property identifies a situation in which the starting point for an instance of E2 Temporal Entity is equal to the starting point of another instance of E2 Temporal Entity of longer duration.
+This property is only necessary if the time span is unknown (otherwise the relationship can be calculated). This property is the same as the "starts / started-by" relationships of Allen’s temporal logic (Allen, 1983, pp. 832-843).
+This property is transitive.
+
+Examples:
+- Early Bronze Age (E4) starts Bronze Age (E4).
+
+In First Order Logic:
+- AP24(x,y) ⇒ E2(x)
+- AP24(x,y) ⇒ E2(y)
+- AP24(x,y) ⇒ P175(x,y)
+- AP24(x,y) ⇒ P175i(x,y)
+- AP24(x,y) ⇒ P185(x,y)
+</rdfs:comment>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="AP24i_is_started_by">
+    <rdfs:label xml:lang="en">AP24i is started by</rdfs:label>
+    <skos:notation>AP24i</skos:notation>
+    <skos:prefLabel xml:lang="en">is started by</skos:prefLabel>
+    <rdfs:domain rdf:resource="http://www.cidoc-crm.org/cidoc-crm/E2_Temporal_Entity"/>
+    <rdfs:range rdf:resource="http://www.cidoc-crm.org/cidoc-crm/E2_Temporal_Entity"/>
+    <owl:inverseOf rdf:resource="AP24_starts"/>
+    <rdfs:subPropertyOf rdf:resource="http://www.cidoc-crm.org/cidoc-crm/P175_starts_before_or_with_the_start_of"/>
+    <rdfs:subPropertyOf rdf:resource="http://www.cidoc-crm.org/cidoc-crm/P175i_starts_after_or_with_the_start_of"/>
+    <rdfs:subPropertyOf rdf:resource="http://www.cidoc-crm.org/cidoc-crm/P185i_ends_after_the_end_of"/>
+    <rdfs:comment xml:lang="en">Quantification of the inverse property: many to many (0,n:0,n)
+
+Scope note of the inverse property:
+This property identifies a situation in which the starting point for an instance of E2 Temporal Entity is equal to the starting point of another instance of E2 Temporal Entity of longer duration.
+This property is only necessary if the time span is unknown (otherwise the relationship can be calculated). This property is the same as the "starts / started-by" relationships of Allen’s temporal logic (Allen, 1983, pp. 832-843).
+This property is transitive.
+
+Examples of the inverse property:
+- Early Bronze Age (E4) starts Bronze Age (E4).
+
+In First Order Logic of the inverse property:
+- AP24(x,y) ⇒ E2(x)
+- AP24(x,y) ⇒ E2(y)
+- AP24(x,y) ⇒ P175(x,y)
+- AP24(x,y) ⇒ P175i(x,y)
+- AP24(x,y) ⇒ P185(x,y)
+</rdfs:comment>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="AP25_occurs_during">
+    <rdfs:label xml:lang="en">AP25 occurs during</rdfs:label>
+    <skos:notation>AP25</skos:notation>
+    <skos:prefLabel xml:lang="en">occurs during</skos:prefLabel>
+    <rdfs:domain rdf:resource="http://www.cidoc-crm.org/cidoc-crm/E2_Temporal_Entity"/>
+    <rdfs:range rdf:resource="http://www.cidoc-crm.org/cidoc-crm/E2_Temporal_Entity"/>
+    <owl:inverseOf rdf:resource="AP25i_includes"/>
+    <rdfs:subPropertyOf rdf:resource="http://www.cidoc-crm.org/cidoc-crm/P176i_starts_after_the_start_of"/>
+    <rdfs:subPropertyOf rdf:resource="http://www.cidoc-crm.org/cidoc-crm/P185_ends_before_the_end_of"/>
+    <rdfs:comment xml:lang="en">Quantification: many to many (0,n:0,n)
+
+Scope note:
+This property identifies the situation in which the entire temporal extent of an instance of E2 Temporal Entity is within the temporal extent of another instance of E2 Temporal Entity that starts before and ends after the included temporal entity.
+This property is only necessary if the time span is unknown (otherwise the relationship can be calculated). This property is the same as the "during / includes" relationships of Allen’s temporal logic (Allen, 1983, pp. 832-843).
+This property is transitive.
+
+Examples:
+- Middle Saxon period (E4) occurs during Saxon period (E4).
+
+In First Order Logic:
+- AP25(x,y) ⇒ E2(x)
+- AP25(x,y) ⇒ E2(y)
+- AP25(x,y) ⇒ P176i(x,y)
+- AP25(x,y) ⇒ P185(x,y)
+</rdfs:comment>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="AP25i_includes">
+    <rdfs:label xml:lang="en">AP25i includes</rdfs:label>
+    <skos:notation>AP25i</skos:notation>
+    <skos:prefLabel xml:lang="en">includes</skos:prefLabel>
+    <rdfs:domain rdf:resource="http://www.cidoc-crm.org/cidoc-crm/E2_Temporal_Entity"/>
+    <rdfs:range rdf:resource="http://www.cidoc-crm.org/cidoc-crm/E2_Temporal_Entity"/>
+    <owl:inverseOf rdf:resource="AP25_occurs_during"/>
+    <rdfs:subPropertyOf rdf:resource="http://www.cidoc-crm.org/cidoc-crm/P176_starts_before_the_start_of"/>
+    <rdfs:subPropertyOf rdf:resource="http://www.cidoc-crm.org/cidoc-crm/P185i_ends_after_the_end_of"/>
+    <rdfs:comment xml:lang="en">Quantification of the inverse property: many to many (0,n:0,n)
+
+Scope note of the inverse property:
+This property identifies the situation in which the entire temporal extent of an instance of E2 Temporal Entity is within the temporal extent of another instance of E2 Temporal Entity that starts before and ends after the included temporal entity.
+This property is only necessary if the time span is unknown (otherwise the relationship can be calculated). This property is the same as the "during / includes" relationships of Allen’s temporal logic (Allen, 1983, pp. 832-843).
+This property is transitive.
+
+Examples of the inverse property:
+- Middle Saxon period (E4) occurs during Saxon period (E4).
+
+In First Order Logic of the inverse property:
+- AP25(x,y) ⇒ E2(x)
+- AP25(x,y) ⇒ E2(y)
+- AP25(x,y) ⇒ P176i(x,y)
+- AP25(x,y) ⇒ P185(x,y)
+</rdfs:comment>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="AP26_overlaps_in_time_with">
+    <rdfs:label xml:lang="en">AP26 overlaps in time with</rdfs:label>
+    <skos:notation>AP26</skos:notation>
+    <skos:prefLabel xml:lang="en">overlaps in time with</skos:prefLabel>
+    <rdfs:domain rdf:resource="http://www.cidoc-crm.org/cidoc-crm/E2_Temporal_Entity"/>
+    <rdfs:range rdf:resource="http://www.cidoc-crm.org/cidoc-crm/E2_Temporal_Entity"/>
+    <owl:inverseOf rdf:resource="AP26i_is_overlapped_in_time_by"/>
+    <rdfs:subPropertyOf rdf:resource="http://www.cidoc-crm.org/cidoc-crm/P174i_ends_after_the_start_of"/>
+    <rdfs:subPropertyOf rdf:resource="http://www.cidoc-crm.org/cidoc-crm/P176_starts_before_the_start_of"/>
+    <rdfs:subPropertyOf rdf:resource="http://www.cidoc-crm.org/cidoc-crm/P185_ends_before_the_end_of"/>
+    <rdfs:comment xml:lang="en">Quantification: many to many (0,n:0,n)
+
+Scope note:
+This property identifies a situation in which there is an overlap between the temporal extents of two instances of E2 Temporal Entity.
+It implies a temporal order between the two entities: if A overlaps in time B, then A must start before B, and B must end after A. This property is only necessary if the relevant time spans are unknown (otherwise the relationship can be calculated).
+This property is the same as the "overlaps / overlapped-by" relationships of Allen’s temporal logic (Allen, 1983, pp. 832-843).
+
+Examples:
+- The Iron Age (E4) overlaps in time with the Roman period (E4).
+
+In First Order Logic:
+- AP26(x,y) ⇒ E2(x)
+- AP26(x,y) ⇒ E2(y)
+- AP26(x,y) ⇒ P174i(x,y)
+- AP26(x,y) ⇒ P176(x,y)
+- AP26(x,y) ⇒ P185(x,y)
+</rdfs:comment>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="AP26i_is_overlapped_in_time_by">
+    <rdfs:label xml:lang="en">AP26i is overlapped in time by</rdfs:label>
+    <skos:notation>AP26i</skos:notation>
+    <skos:prefLabel xml:lang="en">is overlapped in time by</skos:prefLabel>
+    <rdfs:domain rdf:resource="http://www.cidoc-crm.org/cidoc-crm/E2_Temporal_Entity"/>
+    <rdfs:range rdf:resource="http://www.cidoc-crm.org/cidoc-crm/E2_Temporal_Entity"/>
+    <owl:inverseOf rdf:resource="AP26_overlaps_in_time_with"/>
+    <rdfs:subPropertyOf rdf:resource="http://www.cidoc-crm.org/cidoc-crm/P174_starts_before_the_end_of"/>
+    <rdfs:subPropertyOf rdf:resource="http://www.cidoc-crm.org/cidoc-crm/P176i_starts_after_the_start_of"/>
+    <rdfs:subPropertyOf rdf:resource="http://www.cidoc-crm.org/cidoc-crm/P185i_ends_after_the_end_of"/>
+    <rdfs:comment xml:lang="en">Quantification of the inverse property: many to many (0,n:0,n)
+
+Scope note of the inverse property:
+This property identifies a situation in which there is an overlap between the temporal extents of two instances of E2 Temporal Entity.
+It implies a temporal order between the two entities: if A overlaps in time B, then A must start before B, and B must end after A. This property is only necessary if the relevant time spans are unknown (otherwise the relationship can be calculated).
+This property is the same as the "overlaps / overlapped-by" relationships of Allen’s temporal logic (Allen, 1983, pp. 832-843).
+
+Examples of the inverse property:
+- The Iron Age (E4) overlaps in time with the Roman period (E4).
+
+In First Order Logic of the inverse property:
+- AP26(x,y) ⇒ E2(x)
+- AP26(x,y) ⇒ E2(y)
+- AP26(x,y) ⇒ P174i(x,y)
+- AP26(x,y) ⇒ P176(x,y)
+- AP26(x,y) ⇒ P185(x,y)
+</rdfs:comment>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="AP27_meets_in_time_with">
+    <rdfs:label xml:lang="en">AP27 meets in time with</rdfs:label>
+    <skos:notation>AP27</skos:notation>
+    <skos:prefLabel xml:lang="en">meets in time with</skos:prefLabel>
+    <rdfs:domain rdf:resource="http://www.cidoc-crm.org/cidoc-crm/E2_Temporal_Entity"/>
+    <rdfs:range rdf:resource="http://www.cidoc-crm.org/cidoc-crm/E2_Temporal_Entity"/>
+    <owl:inverseOf rdf:resource="AP27i_is_met_in_time_by"/>
+    <rdfs:subPropertyOf rdf:resource="http://www.cidoc-crm.org/cidoc-crm/P173i_ends_after_or_with_the_start_of"/>
+    <rdfs:subPropertyOf rdf:resource="http://www.cidoc-crm.org/cidoc-crm/P182_ends_before_or_with_the_start_of"/>
+    <rdfs:comment xml:lang="en">Quantification: many to many (0,n:0,n)
+
+Scope note:
+This property identifies a situation in which one instance of E2 Temporal Entity immediately follows another instance of E2 Temporal Entity.
+It implies a particular order between the two entities: if A meets in time with B, then A must precede B. This property is only necessary if the relevant time spans are unknown (otherwise the relationship can be calculated).
+This property is the same as the "meets / met-by" relationships of Allen’s temporal logic (Allen, 1983, pp. 832-843).
+
+Examples:
+- Early Saxon Period (E4) meets in time with Middle Saxon Period (E4).
+
+In First Order Logic:
+- AP27(x,y) ⇒ E2(x)
+- AP27(x,y) ⇒ E2(y)
+- AP27(x,y) ⇒ P173i(x,y)
+- AP27(x,y) ⇒ P182(x,y)
+</rdfs:comment>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="AP27i_is_met_in_time_by">
+    <rdfs:label xml:lang="en">AP27i is met in time by</rdfs:label>
+    <skos:notation>AP27i</skos:notation>
+    <skos:prefLabel xml:lang="en">is met in time by</skos:prefLabel>
+    <rdfs:domain rdf:resource="http://www.cidoc-crm.org/cidoc-crm/E2_Temporal_Entity"/>
+    <rdfs:range rdf:resource="http://www.cidoc-crm.org/cidoc-crm/E2_Temporal_Entity"/>
+    <owl:inverseOf rdf:resource="AP27_meets_in_time_with"/>
+    <rdfs:subPropertyOf rdf:resource="http://www.cidoc-crm.org/cidoc-crm/P173_starts_before_or_with_the_end_of"/>
+    <rdfs:subPropertyOf rdf:resource="http://www.cidoc-crm.org/cidoc-crm/P182i_starts_after_or_with_the_end_of"/>
+    <rdfs:comment xml:lang="en">Quantification of the inverse property: many to many (0,n:0,n)
+
+Scope note of the inverse property:
+This property identifies a situation in which one instance of E2 Temporal Entity immediately follows another instance of E2 Temporal Entity.
+It implies a particular order between the two entities: if A meets in time with B, then A must precede B. This property is only necessary if the relevant time spans are unknown (otherwise the relationship can be calculated).
+This property is the same as the "meets / met-by" relationships of Allen’s temporal logic (Allen, 1983, pp. 832-843).
+
+Examples of the inverse property:
+- Early Saxon Period (E4) meets in time with Middle Saxon Period (E4).
+
+In First Order Logic of the inverse property:
+- AP27(x,y) ⇒ E2(x)
+- AP27(x,y) ⇒ E2(y)
+- AP27(x,y) ⇒ P173i(x,y)
+- AP27(x,y) ⇒ P182(x,y)
+</rdfs:comment>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="AP28_occurs_before">
+    <rdfs:label xml:lang="en">AP28 occurs before</rdfs:label>
+    <skos:notation>AP28</skos:notation>
+    <skos:prefLabel xml:lang="en">occurs before</skos:prefLabel>
+    <rdfs:domain rdf:resource="http://www.cidoc-crm.org/cidoc-crm/E2_Temporal_Entity"/>
+    <rdfs:range rdf:resource="http://www.cidoc-crm.org/cidoc-crm/E2_Temporal_Entity"/>
+    <owl:inverseOf rdf:resource="AP28i_occurs_after"/>
+    <rdfs:subPropertyOf rdf:resource="http://www.cidoc-crm.org/cidoc-crm/P183_ends_before_the_start_of"/>
+    <rdfs:comment xml:lang="en">Quantification: many to many (0,n:0,n)
+
+Scope note:
+This property identifies the relative chronological sequence of two temporal entities.
+It implies that a temporal gap exists between the end of A and the start of B. This property is only necessary if the relevant time spans are unknown (otherwise the relationship can be calculated).
+This property is the same as the "before / after" relationships of Allen’s temporal logic(Allen, 1983).
+This property is transitive.
+
+Examples:
+- Early Bronze Age (E4) occurs before Late Bronze age (E4).
+
+In First Order Logic:
+- AP28(x,y) ⇒ E2(x)
+- AP28(x,y) ⇒ E2(y)
+- AP28(x,y) ⇒ P183(x,y)
+</rdfs:comment>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="AP28i_occurs_after">
+    <rdfs:label xml:lang="en">AP28i occurs after</rdfs:label>
+    <skos:notation>AP28i</skos:notation>
+    <skos:prefLabel xml:lang="en">occurs after</skos:prefLabel>
+    <rdfs:domain rdf:resource="http://www.cidoc-crm.org/cidoc-crm/E2_Temporal_Entity"/>
+    <rdfs:range rdf:resource="http://www.cidoc-crm.org/cidoc-crm/E2_Temporal_Entity"/>
+    <owl:inverseOf rdf:resource="AP28_occurs_before"/>
+    <rdfs:subPropertyOf rdf:resource="http://www.cidoc-crm.org/cidoc-crm/P183i_starts_after_the_end_of"/>
+    <rdfs:comment xml:lang="en">Quantification of the inverse property: many to many (0,n:0,n)
+
+Scope note of the inverse property:
+This property identifies the relative chronological sequence of two temporal entities.
+It implies that a temporal gap exists between the end of A and the start of B. This property is only necessary if the relevant time spans are unknown (otherwise the relationship can be calculated).
+This property is the same as the "before / after" relationships of Allen’s temporal logic(Allen, 1983).
+This property is transitive.
+
+Examples of the inverse property:
+- Early Bronze Age (E4) occurs before Late Bronze age (E4).
+
+In First Order Logic of the inverse property:
+- AP28(x,y) ⇒ E2(x)
+- AP28(x,y) ⇒ E2(y)
+- AP28(x,y) ⇒ P183(x,y)
+</rdfs:comment>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="AP29_appears_in">
+    <rdfs:label xml:lang="en">AP29 appears in</rdfs:label>
+    <skos:notation>AP29</skos:notation>
+    <skos:prefLabel xml:lang="en">appears in</skos:prefLabel>
+    <rdfs:domain rdf:resource="http://www.cidoc-crm.org/cidoc-crm/E55_Type"/>
+    <rdfs:range rdf:resource="http://www.cidoc-crm.org/cidoc-crm/E4_Period"/>
+    <owl:inverseOf rdf:resource="AP29i_has_appearing_type"/>
+    <rdfs:comment xml:lang="en">Quantification: many-to-many (0,n:0,n)
+
+Scope note:
+This property associates a kind of object (documented as an instance of E55 Type) with an instance of E4 Period indicating that objects of this kind have been brought into existence during this period. The genesis of such objects may be the result of human, biological, geological or other processes. This property makes a weak statement about the distribution of the associated object kind in the archaeological record: that is, if the genesis of an object of the type can plausibly be assumed to fall within the genesis of the context within which it was found, then this property supports reasoning, ceteris paribus, that the genesis period of the context forms part of, or overlaps with, one of the instances of E4 Period in which the respective object type has appeared. Such weak statements may also be useful in the context of geological or paleontological observations. Stronger claims can be made using the properties AP30 restricted to and AP31 typical for.
+
+Examples:
+- The “Cycladic” figurine type (E55) appears in the Early Cycladic period (E4). (Sotirakopoulou, 2005)
+
+In First Order Logic:
+- AP29(x,y) ⇒ E55(x)
+- AP29(x,y) ⇒ E4(y)
+</rdfs:comment>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="AP29i_has_appearing_type">
+    <rdfs:label xml:lang="en">AP29i has appearing type</rdfs:label>
+    <skos:notation>AP29i</skos:notation>
+    <skos:prefLabel xml:lang="en">has appearing type</skos:prefLabel>
+    <rdfs:domain rdf:resource="http://www.cidoc-crm.org/cidoc-crm/E4_Period"/>
+    <rdfs:range rdf:resource="http://www.cidoc-crm.org/cidoc-crm/E55_Type"/>
+    <owl:inverseOf rdf:resource="AP29_appears_in"/>
+    <rdfs:comment xml:lang="en">Quantification of the inverse property: many-to-many (0,n:0,n)
+
+Scope note of the inverse property:
+This property associates a kind of object (documented as an instance of E55 Type) with an instance of E4 Period indicating that objects of this kind have been brought into existence during this period. The genesis of such objects may be the result of human, biological, geological or other processes. This property makes a weak statement about the distribution of the associated object kind in the archaeological record: that is, if the genesis of an object of the type can plausibly be assumed to fall within the genesis of the context within which it was found, then this property supports reasoning, ceteris paribus, that the genesis period of the context forms part of, or overlaps with, one of the instances of E4 Period in which the respective object type has appeared. Such weak statements may also be useful in the context of geological or paleontological observations. Stronger claims can be made using the properties AP30 restricted to and AP31 typical for.
+
+Examples of the inverse property:
+- The “Cycladic” figurine type (E55) appears in the Early Cycladic period (E4). (Sotirakopoulou, 2005)
+
+In First Order Logic of the inverse property:
+- AP29(x,y) ⇒ E55(x)
+- AP29(x,y) ⇒ E4(y)
+</rdfs:comment>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="AP30_restricted_to">
+    <rdfs:label xml:lang="en">AP30 restricted to</rdfs:label>
+    <skos:notation>AP30</skos:notation>
+    <skos:prefLabel xml:lang="en">restricted to</skos:prefLabel>
+    <rdfs:domain rdf:resource="http://www.cidoc-crm.org/cidoc-crm/E55_Type"/>
+    <rdfs:range rdf:resource="http://www.cidoc-crm.org/cidoc-crm/E4_Period"/>
+    <owl:inverseOf rdf:resource="AP30i_restricts_appearance_of"/>
+    <rdfs:subPropertyOf rdf:resource="AP29_appears_in"/>
+    <rdfs:comment xml:lang="en">Quantification: many-to-many (0,n:0,n)
+
+Scope note:
+This property associates a kind of object (documented as an instance of E55 Type) with an instance of E4 Period indicating that objects of this kind have been generated exclusively in this period. This property makes a strong statement concerning the distribution of the associated object kind in the observed record: If the genesis of an object of this type can plausibly be assumed to fall within the genesis of the context in which it was found, then the statement made with this property would support reasoning, ceteris paribus, that the genesis period of the find context actually forms part of the related instance of E4 Period, or at least overlaps with it. In contrast, objects from previous periods may appear in a context because they are still in use, and objects from later periods may have been displaced into an older context. Weaker claims can be made using the properties AP29 appears in (gas appearing type) and AP31 typical for (has typical type).
+
+Examples:
+- The “Phylakopi I” and “Ayia Irini” (E55) types of Cycladic figurines are restricted to the Early Cycladic III period (E4). (Sotirakopoulou, 2005)
+
+In First Order Logic:
+- AP30(x,y) ∧ AP30(x,z) ⇒ P132(y,z)
+</rdfs:comment>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="AP30i_restricts_appearance_of">
+    <rdfs:label xml:lang="en">AP30i restricts appearance of</rdfs:label>
+    <skos:notation>AP30i</skos:notation>
+    <skos:prefLabel xml:lang="en">restricts appearance of</skos:prefLabel>
+    <rdfs:domain rdf:resource="http://www.cidoc-crm.org/cidoc-crm/E4_Period"/>
+    <rdfs:range rdf:resource="http://www.cidoc-crm.org/cidoc-crm/E55_Type"/>
+    <owl:inverseOf rdf:resource="AP30_restricted_to"/>
+    <rdfs:subPropertyOf rdf:resource="AP29i_has_appearing_type"/>
+    <rdfs:comment xml:lang="en">Quantification of the inverse property: many-to-many (0,n:0,n)
+
+Scope note of the inverse property:
+This property associates a kind of object (documented as an instance of E55 Type) with an instance of E4 Period indicating that objects of this kind have been generated exclusively in this period. This property makes a strong statement concerning the distribution of the associated object kind in the observed record: If the genesis of an object of this type can plausibly be assumed to fall within the genesis of the context in which it was found, then the statement made with this property would support reasoning, ceteris paribus, that the genesis period of the find context actually forms part of the related instance of E4 Period, or at least overlaps with it. In contrast, objects from previous periods may appear in a context because they are still in use, and objects from later periods may have been displaced into an older context. Weaker claims can be made using the properties AP29 appears in (gas appearing type) and AP31 typical for (has typical type).
+
+Examples of the inverse property:
+- The “Phylakopi I” and “Ayia Irini” (E55) types of Cycladic figurines are restricted to the Early Cycladic III period (E4). (Sotirakopoulou, 2005)
+
+In First Order Logic of the inverse property:
+- AP30(x,y) ∧ AP30(x,z) ⇒ P132(y,z)
+</rdfs:comment>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="AP31_typical_for">
+    <rdfs:label xml:lang="en">AP31 typical for</rdfs:label>
+    <skos:notation>AP31</skos:notation>
+    <skos:prefLabel xml:lang="en">typical for</skos:prefLabel>
+    <rdfs:domain rdf:resource="http://www.cidoc-crm.org/cidoc-crm/E55_Type"/>
+    <rdfs:range rdf:resource="http://www.cidoc-crm.org/cidoc-crm/E4_Period"/>
+    <owl:inverseOf rdf:resource="AP31i_has_typical_type"/>
+    <rdfs:subPropertyOf rdf:resource="AP29_appears_in"/>
+    <rdfs:comment xml:lang="en">Quantification: many-to-many (0,n:0,n)
+
+Scope note:
+This property associates a kind of object (documented as an instance of E55 Type) with an instance of E4 Period indicating that objects of this kind have been generated in this period in significantly greater numbers and in wider distributions, than in other periods. This property makes a moderate statement concerning the distribution of the associated object kind in the observed record: If a "sufficient number" of objects of this type are found in a context, and their genesis can plausibly be assumed to fall within the genesis of the find context, then the statement made with this property would support reasoning, ceteris paribus, that the genesis period of the find context is likely to form part of the related instance of E4 Period, or at least overlap with it. “Sufficient number” means that the density of objects of this kind in the find context is compatible with the general density that this kind of object had during the associated period in contexts of a comparable nature and deposition history. A stronger claim can be made using AP30 restricted to (restricts appearance of) while a weaker claim would use AP29 appears in (has appearing type).
+
+Examples:
+- The “violin-shaped” (E55) type of Cycladic figurines is typical for the Early Cycladic I period (E4). (Sotirakopoulou, 2005)
+
+In First Order Logic:
+- AP31(x,y) ⇒ E55(x)
+- AP31(x,y) ⇒ E4(y)
+</rdfs:comment>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="AP31i_has_typical_type">
+    <rdfs:label xml:lang="en">AP31i has typical type</rdfs:label>
+    <skos:notation>AP31i</skos:notation>
+    <skos:prefLabel xml:lang="en">has typical type</skos:prefLabel>
+    <rdfs:domain rdf:resource="http://www.cidoc-crm.org/cidoc-crm/E4_Period"/>
+    <rdfs:range rdf:resource="http://www.cidoc-crm.org/cidoc-crm/E55_Type"/>
+    <owl:inverseOf rdf:resource="AP31_typical_for"/>
+    <rdfs:subPropertyOf rdf:resource="AP29i_has_appearing_type"/>
+    <rdfs:comment xml:lang="en">Quantification of the inverse property: many-to-many (0,n:0,n)
+
+Scope note of the inverse property:
+This property associates a kind of object (documented as an instance of E55 Type) with an instance of E4 Period indicating that objects of this kind have been generated in this period in significantly greater numbers and in wider distributions, than in other periods. This property makes a moderate statement concerning the distribution of the associated object kind in the observed record: If a "sufficient number" of objects of this type are found in a context, and their genesis can plausibly be assumed to fall within the genesis of the find context, then the statement made with this property would support reasoning, ceteris paribus, that the genesis period of the find context is likely to form part of the related instance of E4 Period, or at least overlap with it. “Sufficient number” means that the density of objects of this kind in the find context is compatible with the general density that this kind of object had during the associated period in contexts of a comparable nature and deposition history. A stronger claim can be made using AP30 restricted to (restricts appearance of) while a weaker claim would use AP29 appears in (has appearing type).
+
+Examples of the inverse property:
+- The “violin-shaped” (E55) type of Cycladic figurines is typical for the Early Cycladic I period (E4). (Sotirakopoulou, 2005)
+
+In First Order Logic of the inverse property:
+- AP31(x,y) ⇒ E55(x)
+- AP31(x,y) ⇒ E4(y)
+</rdfs:comment>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="AP32_discarded_into">
+    <rdfs:label xml:lang="en">AP32 discarded into</rdfs:label>
+    <skos:notation>AP32</skos:notation>
+    <skos:prefLabel xml:lang="en">discarded into</skos:prefLabel>
+    <rdfs:domain rdf:resource="A1_Excavation_Processing_Unit"/>
+    <rdfs:range rdf:resource="http://www.cidoc-crm.org/extensions/crmsci/S11_Amount_of_Matter"/>
+    <owl:inverseOf rdf:resource="AP32i_was_discarded_by"/>
+    <rdfs:comment xml:lang="en">Quantification: many to many (0,n:0,n)
+
+Scope note:
+This property identifies the S11 Amount of Matter (e.g. a heap) into which material from an A1 Excavation Processing Unit is discarded.
+The same instance of A1 Excavation Processing Unit may discard matter into multiple heaps, but also simply throw away the excavated matter without any order or exported to be deposited elsewhere, thereby breaking any close correspondence between the excavation and the deposit.
+
+Examples:
+- The Excavation Processing Unit that excavated the Stratigraphic Volume Unit “(2)” (A1) discarded into the waste heap of the excavation (S11) –see Figure 4a.
+
+In First Order Logic:
+- AP32(x,y) ⇒ A1(x)
+- AP32(x,y) ⇒ S11(y)
+</rdfs:comment>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="AP32i_was_discarded_by">
+    <rdfs:label xml:lang="en">AP32i was discarded by</rdfs:label>
+    <skos:notation>AP32i</skos:notation>
+    <skos:prefLabel xml:lang="en">was discarded by</skos:prefLabel>
+    <rdfs:domain rdf:resource="http://www.cidoc-crm.org/extensions/crmsci/S11_Amount_of_Matter"/>
+    <rdfs:range rdf:resource="A1_Excavation_Processing_Unit"/>
+    <owl:inverseOf rdf:resource="AP32_discarded_into"/>
+    <rdfs:comment xml:lang="en">Quantification of the inverse property: many to many (0,n:0,n)
+
+Scope note of the inverse property:
+This property identifies the S11 Amount of Matter (e.g. a heap) into which material from an A1 Excavation Processing Unit is discarded.
+The same instance of A1 Excavation Processing Unit may discard matter into multiple heaps, but also simply throw away the excavated matter without any order or exported to be deposited elsewhere, thereby breaking any close correspondence between the excavation and the deposit.
+
+Examples of the inverse property:
+- The Excavation Processing Unit that excavated the Stratigraphic Volume Unit “(2)” (A1) discarded into the waste heap of the excavation (S11) –see Figure 4a.
+
+In First Order Logic of the inverse property:
+- AP32(x,y) ⇒ A1(x)
+- AP32(x,y) ⇒ S11(y)
+</rdfs:comment>
+  </owl:ObjectProperty>
+  <rdf:Description rdf:about="http://www.cidoc-crm.org/extensions/crmsci/O7_confines">
+    <rdfs:subPropertyOf rdf:resource="AP12_confines"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.cidoc-crm.org/extensions/crmsci/O7i_is_confined_by">
+    <rdfs:subPropertyOf rdf:resource="AP12i_is_confined_by"/>
+  </rdf:Description>
+</rdf:RDF>

@@ -1,0 +1,304 @@
+name: Lynx-US-relations
+source: relations
+default_prefix: lynx
+namespaces:
+  lynx: http://www.lynx.com/resource/
+  crm: http://www.cidoc-crm.org/cidoc-crm/
+  crmcsi: http://www.cidoc-crm.org/extensions/crmsci/
+  skos: http://www.w3.org/2004/02/skos/core#
+  crmarchaeo: http://www.cidoc-crm.org/extensions/crmarchaeo/
+generators:
+  URIwithType:
+    pattern: '{text}'
+    prefix: lynx
+  URIwithTypeAndId:
+    pattern: '{type}/{id}'
+    prefix: lynx
+rules:
+- domain: /scheda/row
+  entity:
+    types:
+    - crmarchaeo:A2_Stratigraphic_Volume_Unit
+    uri:
+      generator: URIwithTypeAndId
+      args:
+        type:
+          const: stratigraphic-unit
+        id: US_ID/text()
+  links:
+  - range: Sequenza_fisica_uguale_a_US_ID/value
+    predicate: crmarchaeo:AP11_has_physical_relation_to
+    when:
+      exists: text()
+    entity:
+      types:
+      - crmarchaeo:A2_Stratigraphic_Volume_Unit
+      uri:
+        generator: URIwithTypeAndId
+        args:
+          type:
+            const: stratigraphic-unit
+          id: text()
+      additional:
+      - predicate: crm:P2_has_type
+        entity:
+          types:
+          - crm:E55_Type
+          uri:
+            generator: URIwithType
+            args:
+              text:
+                const: uguale-a
+  - range: Sequenza_fisica_si_lega_a_US_ID/value
+    predicate: crmarchaeo:AP11_has_physical_relation_to
+    when:
+      exists: text()
+    entity:
+      types:
+      - crmarchaeo:A2_Stratigraphic_Volume_Unit
+      uri:
+        generator: URIwithTypeAndId
+        args:
+          type:
+            const: stratigraphic-unit
+          id: text()
+      additional:
+      - predicate: crm:P2_has_type
+        entity:
+          types:
+          - crm:E55_Type
+          uri:
+            generator: URIwithType
+            args:
+              text:
+                const: si-lega-a
+  - range: Sequenza_fisica_gli_si_appoggia_US_ID/value
+    predicate: crmarchaeo:AP11i_is_physical_relation_from
+    when:
+      exists: text()
+    entity:
+      types:
+      - crmarchaeo:A2_Stratigraphic_Volume_Unit
+      uri:
+        generator: URIwithTypeAndId
+        args:
+          type:
+            const: stratigraphic-unit
+          id: text()
+      additional:
+      - predicate: crm:P2_has_type
+        entity:
+          types:
+          - crm:E55_Type
+          uri:
+            generator: URIwithType
+            args:
+              text:
+                const: gli-si-appoggia
+  - range: Sequenza_fisica_si_appoggia_a_US_ID/value
+    predicate: crmarchaeo:AP11_has_physical_relation_to
+    when:
+      exists: text()
+    entity:
+      types:
+      - crmarchaeo:A2_Stratigraphic_Volume_Unit
+      uri:
+        generator: URIwithTypeAndId
+        args:
+          type:
+            const: stratigraphic-unit
+          id: text()
+      additional:
+      - predicate: crm:P2_has_type
+        entity:
+          types:
+          - crm:E55_Type
+          uri:
+            generator: URIwithType
+            args:
+              text:
+                const: si-appoggia-a
+  - range: Sequenza_fisica_coperto_da_US_ID/value
+    predicate: crmarchaeo:AP11i_is_physical_relation_from
+    when:
+      exists: text()
+    entity:
+      types:
+      - crmarchaeo:A2_Stratigraphic_Volume_Unit
+      uri:
+        generator: URIwithTypeAndId
+        args:
+          type:
+            const: stratigraphic-unit
+          id: text()
+      additional:
+      - predicate: crm:P2_has_type
+        entity:
+          types:
+          - crm:E55_Type
+          uri:
+            generator: URIwithType
+            args:
+              text:
+                const: coperto-da
+  - range: Sequenza_fisica_copre_US_ID/value
+    predicate: crmarchaeo:AP11_has_physical_relation_to
+    when:
+      exists: text()
+    entity:
+      types:
+      - crmarchaeo:A2_Stratigraphic_Volume_Unit
+      uri:
+        generator: URIwithTypeAndId
+        args:
+          type:
+            const: stratigraphic-unit
+          id: text()
+      additional:
+      - predicate: crm:P2_has_type
+        entity:
+          types:
+          - crm:E55_Type
+          uri:
+            generator: URIwithType
+            args:
+              text:
+                const: copre
+  - range: Sequenza_fisica_tagliato_da_US_ID/value
+    predicate: crmarchaeo:AP11i_is_physical_relation_from
+    when:
+      exists: text()
+    entity:
+      types:
+      - crmarchaeo:A8_Stratigraphic_Unit
+      uri:
+        generator: URIwithTypeAndId
+        args:
+          type:
+            const: stratigraphic-unit
+          id: text()
+      additional:
+      - predicate: crm:P2_has_type
+        entity:
+          types:
+          - crm:E55_Type
+          uri:
+            generator: URIwithType
+            args:
+              text:
+                const: tagliato-da
+  - range: Sequenza_fisica_taglia_US_ID/value
+    predicate: crmarchaeo:AP11_has_physical_relation_to
+    when:
+      exists: text()
+    entity:
+      types:
+      - crmarchaeo:A8_Stratigraphic_Unit
+      uri:
+        generator: URIwithTypeAndId
+        args:
+          type:
+            const: stratigraphic-unit
+          id: text()
+      additional:
+      - predicate: crm:P2_has_type
+        entity:
+          types:
+          - crm:E55_Type
+          uri:
+            generator: URIwithType
+            args:
+              text:
+                const: taglia
+  - range: Sequenza_fisica_riempito_da_US_ID/value
+    predicate: crmarchaeo:AP11i_is_physical_relation_from
+    when:
+      exists: text()
+    entity:
+      types:
+      - crmarchaeo:A2_Stratigraphic_Volume_Unit
+      uri:
+        generator: URIwithTypeAndId
+        args:
+          type:
+            const: stratigraphic-unit
+          id: text()
+      additional:
+      - predicate: crm:P2_has_type
+        entity:
+          types:
+          - crm:E55_Type
+          uri:
+            generator: URIwithType
+            args:
+              text:
+                const: riempito-da
+  - range: Sequenza_fisica_riempie_US_ID/value
+    predicate: crmarchaeo:AP11_has_physical_relation_to
+    when:
+      exists: text()
+    entity:
+      types:
+      - crmarchaeo:A8_Stratigraphic_Unit
+      uri:
+        generator: URIwithTypeAndId
+        args:
+          type:
+            const: stratigraphic-unit
+          id: text()
+      additional:
+      - predicate: crm:P2_has_type
+        entity:
+          types:
+          - crm:E55_Type
+          uri:
+            generator: URIwithType
+            args:
+              text:
+                const: riempie
+  - range: Sequenza_stratigrafica_posteriore_a_US_ID/value
+    predicate: crm:P120i_occurs_after
+    when:
+      exists: text()
+    entity:
+      types:
+      - crmarchaeo:A8_Stratigraphic_Unit
+      uri:
+        generator: URIwithTypeAndId
+        args:
+          type:
+            const: stratigraphic-unit
+          id: text()
+      additional:
+      - predicate: crm:P2_has_type
+        entity:
+          types:
+          - crm:E55_Type
+          uri:
+            generator: URIwithType
+            args:
+              text:
+                const: posteriore-a
+  - range: Sequenza_stratigrafica_anteriore_a_US_ID/value
+    predicate: crm:P120_occurs_before
+    when:
+      exists: text()
+    entity:
+      types:
+      - crmarchaeo:A8_Stratigraphic_Unit
+      uri:
+        generator: URIwithTypeAndId
+        args:
+          type:
+            const: stratigraphic-unit
+          id: text()
+      additional:
+      - predicate: crm:P2_has_type
+        entity:
+          types:
+          - crm:E55_Type
+          uri:
+            generator: URIwithType
+            args:
+              text:
+                const: anteriore-a

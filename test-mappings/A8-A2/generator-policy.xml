@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<generator_policy>
+   <generator name="URIorUUID" type="any">
+      <custom generatorClass="gr.forth.URIorUUID">
+         <set-arg name="text"/>
+      </custom>
+   </generator>
+   <generator name="URIwithTypeAndId" prefix="lynx" type="any">
+      <pattern>{type}/{id}</pattern>
+   </generator>
+   <generator name="URIwith2TypesAndId" prefix="sari" type="any">
+      <pattern>{type1}/{type2}/{id}</pattern>
+   </generator>
+   <generator name="URIwithGndId" prefix="gnd" type="any">
+      <pattern>{id}</pattern>
+   </generator>
+   <generator name="URIwithUlanId" prefix="ulan" type="any">
+      <pattern>{id}</pattern>
+   </generator>
+   <generator name="URIwithWikidataId" prefix="wikidata" type="any">
+      <pattern>{id}</pattern>
+   </generator>
+   <generator name="TypedLiteralGen" type="any">
+      <custom generatorClass="gr.forth.TypedLiteralGenerator">
+         <set-arg name="text"/>
+      </custom>
+   </generator>
+   <generator name="ArtistURI" prefix="artist" type="any">
+      <pattern>{type}/{id}</pattern>
+   </generator>
+   <generator name="CollectionURI" prefix="inst" type="any">
+      <pattern>{type}/{id}</pattern>
+   </generator>
+   <generator name="DrawingSideURI" prefix="pref" type="any">
+      <pattern>{side}/{id}</pattern>
+   </generator>
+   <generator name="DrawingVisualURI" prefix="pref" type="any">
+      <pattern>{side}/{visual}/{id}</pattern>
+   </generator>
+   <generator name="Identifier" prefix="pref" type="any">
+      <pattern>{type}/{id}/{identifier}</pattern>
+   </generator>
+   <generator name="DrawingSideIdentifier" prefix="pref" type="any">
+      <pattern>{side}/{type}/{id}/{identifier}/</pattern>
+   </generator>
+   <generator name="IntermediateURI" prefix="pref" type="any">
+      <pattern>{type}/{id}/{number}</pattern>
+   </generator>
+   <generator name="GenericURI" prefix="pref" type="any">
+      <pattern>{type}/{id}</pattern>
+   </generator>
+   <generator name="GenericEditionURI" prefix="pref" type="any">
+      <pattern>{year}/{type}/{id}</pattern>
+   </generator>
+   <generator name="LocalTermURI" prefix="pref" type="any">
+      <pattern>{hierarchy}/{term}</pattern>
+   </generator>
+   <generator name="DrawingSideIntermediateURI" prefix="pref" type="any">
+      <pattern>{side}/{type}/{id}/{number}</pattern>
+   </generator>
+   <generator name="DrawingSideIntermediateURI2" prefix="pref" type="any">
+      <pattern>{side}/{type}/{id}</pattern>
+   </generator>
+   <generator name="UriwithTye" prefix="lynx" type="any">
+      <pattern>{type}</pattern>
+   </generator>
+   <generator name="ID_lynx" prefix="lynx" type="any">
+      <pattern>stratigraphic-unit/{US_ID}/global-identifier/{Unique_ID}</pattern>
+   </generator>
+   <generator name="US_Typology" prefix="lynx" type="any">
+      <pattern>stratigraphic-unit/{US_ID}/tipologia/{text}</pattern>
+   </generator>
+   <generator name="lynx_place" prefix="lynx" type="any">
+      <pattern>place/{place_id}</pattern>
+   </generator>
+   <generator name="lynx_site" prefix="lynx" type="any">
+      <pattern>site/{site_id}</pattern>
+   </generator>
+   <generator name="anno_scavo" prefix="lynx" type="any">
+      <pattern>stratigraphic-unit/{US_ID}/anno-scavo/{text}</pattern>
+   </generator>
+   <generator name="lynx_ente_responsabile"
+              prefix="lynx"
+              type="any"
+              uuid="yes">
+      <pattern>stratigraphic-unit/{US_ID}/ente-responsabile/{ente}</pattern>
+   </generator>
+   <generator name="lynx-ente-competente" prefix="lynx" type="any">
+      <pattern>stratigraphic-unit/{US_ID}/ente-competente/{ente}</pattern>
+   </generator>
+   <generator name="lynx-area-struttura" prefix="lynx" type="any">
+      <pattern>stratigraphic-unit/{US_ID}/area-struttura/{area}</pattern>
+   </generator>
+   <generator name="lynx-saggio" prefix="lynx" type="any">
+      <pattern>stratigraphic-unit/{US_ID}/saggio/{saggio}</pattern>
+   </generator>
+   <generator name="lynx-ambiente" prefix="lynx" type="any">
+      <pattern>stratigraphic-unit/{US_ID}/ambiente-unita-funzionale/{ambiente}</pattern>
+   </generator>
+   <generator name="lynx-posizione" prefix="lynx" type="any">
+      <pattern>stratigraphic-unit/{US_ID}/posizione/{posizione}</pattern>
+   </generator>
+   <generator name="lynx-settore" prefix="lynx" type="any">
+      <pattern>stratigraphic-unit/{US_ID}/settore/{settore}</pattern>
+   </generator>
+   <generator name="lynx-quadrato" prefix="lynx" type="any">
+      <pattern>stratigraphic-unit/{US_ID}/quadrato/{quadrato}</pattern>
+   </generator>
+   <generator name="lynx-quote" prefix="lynx" type="any">
+      <pattern>stratigraphic-unit/{US_ID}/quote/{quote}</pattern>
+   </generator>
+   <generator name="lynx-piante" prefix="lynx" type="any">
+      <pattern>stratigraphic-unit/{US_ID}/quote/{quote}</pattern>
+   </generator>
+   <generator name="lynx-prospetti" prefix="lynx" type="any">
+      <pattern>stratigraphic-unit/{US_ID}/prospetti/{prospetti}</pattern>
+   </generator>
+   <generator name="lynx-anno-scavo" prefix="lynx" type="any">
+      <pattern>stratigraphic-unit/{US_ID}/anno-scavo/{anno}</pattern>
+   </generator>
+   <generator name="lynx-us-definizione" prefix="lynx" type="any">
+      <pattern>stratigraphic-unit/{US_ID}/definizione/{descrizione}</pattern>
+   </generator>
+   <generator name="lynx-criteri-distinzione" prefix="lynx" type="any">
+      <pattern>stratigraphic-unit/{US_ID}/criteri-distinzione/{criteri}</pattern>
+   </generator>
+   <generator name="lynx-modo-formazione" prefix="lynx" type="any">
+      <pattern>stratigraphic-unit/{US_ID}/modo-di-formazione/{formazione}</pattern>
+   </generator>
+   <generator name="lynx-componenti-inorganici" prefix="lynx" type="any">
+      <pattern>stratigraphic-unit/{US_ID}/componenti-inorganici/{componenti}</pattern>
+   </generator>
+   <generator name="lynx-componenti-organici" prefix="lynx" type="any">
+      <pattern>stratigraphic-unit/{US_ID}/componenti-organici/{componenti_organici}</pattern>
+   </generator>
+   <generator name="lynx-consistenza" prefix="lynx" type="any">
+      <pattern>stratigraphic-unit/{US_ID}/consistenza/{valore_consistenza}</pattern>
+   </generator>
+   <generator name="lynx-colore" prefix="lynx" type="any">
+      <pattern>stratigraphic-unit/{US_ID}/consistenza/{valore_colore}</pattern>
+   </generator>
+   <generator name="lynx-misure" prefix="lynx" type="any">
+      <pattern>stratigraphic-unit/{US_ID}/misure/{valore_misure}</pattern>
+   </generator>
+   <generator name="lynx-stato-conservazione" prefix="lynx" type="any">
+      <pattern>stratigraphic-unit/{US_ID}/stato-conservazione/{statoconservazione}</pattern>
+   </generator>
+   <generator name="lynx-datazione" prefix="lynx" type="any">
+      <pattern>stratigraphic-unit/{US_ID}/datazione/{date}</pattern>
+   </generator>
+   <generator name="lynx-periodizzazione-attività" prefix="lynx" type="any">
+      <pattern>stratigraphic-unit/{US_ID}/periodizzazione/attivita/{text}</pattern>
+   </generator>
+   <generator name="lynx-periodizzazione-periodo" prefix="lynx" type="any">
+      <pattern>stratigraphic-unit/{US_ID}/periodizzazione-periodo/{text}</pattern>
+   </generator>
+   <generator name="lynx-periodizzazione-fase" prefix="lynx" type="any">
+      <pattern>stratigraphic-unit/{US_ID}/periodizzazione-fase/{text}</pattern>
+   </generator>
+   <generator name="lynx-elementi-datanti" prefix="lynx" type="any">
+      <pattern>stratigraphic-unit/{US_ID}/elementi-datanti/{text}</pattern>
+   </generator>
+   <generator name="lynx-affidabilita-stratigrafica" prefix="lynx" type="any">
+      <pattern>stratigraphic-unit/{US_ID}/affidabilita-stratigrafica/{text}</pattern>
+   </generator>
+</generator_policy>

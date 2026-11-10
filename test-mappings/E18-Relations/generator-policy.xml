@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<generator_policy>
+   <generator name="URIorUUID" type="any">
+      <custom generatorClass="gr.forth.URIorUUID">
+         <set-arg name="text"/>
+      </custom>
+   </generator>
+   <generator name="URIwithTypeAndId" prefix="sari" type="any">
+      <pattern>{type}/{id}</pattern>
+   </generator>
+   <generator name="URIwith2TypesAndId" prefix="sari" type="any">
+      <pattern>{type1}/{type2}/{id}</pattern>
+   </generator>
+   <generator name="URIwithGndId" prefix="gnd" type="any">
+      <pattern>{id}</pattern>
+   </generator>
+   <generator name="URIwithUlanId" prefix="ulan" type="any">
+      <pattern>{id}</pattern>
+   </generator>
+   <generator name="URIwithWikidataId" prefix="wikidata" type="any">
+      <pattern>{id}</pattern>
+   </generator>
+   <generator name="TypedLiteralGen" type="any">
+      <custom generatorClass="gr.forth.TypedLiteralGenerator">
+         <set-arg name="text"/>
+      </custom>
+   </generator>
+   <generator name="ArtistURI" prefix="artist" type="any">
+      <pattern>{type}/{id}</pattern>
+   </generator>
+   <generator name="CollectionURI" prefix="inst" type="any">
+      <pattern>{type}/{id}</pattern>
+   </generator>
+   <generator name="DrawingSideURI" prefix="pref" type="any">
+      <pattern>{side}/{id}</pattern>
+   </generator>
+   <generator name="DrawingVisualURI" prefix="pref" type="any">
+      <pattern>{side}/{visual}/{id}</pattern>
+   </generator>
+   <generator name="Identifier" prefix="pref" type="any">
+      <pattern>{type}/{id}/{identifier}</pattern>
+   </generator>
+   <generator name="DrawingSideIdentifier" prefix="pref" type="any">
+      <pattern>{side}/{type}/{id}/{identifier}/</pattern>
+   </generator>
+   <generator name="IntermediateURI" prefix="pref" type="any">
+      <pattern>{type}/{id}/{number}</pattern>
+   </generator>
+   <generator name="GenericURI" prefix="pref" type="any">
+      <pattern>{type}/{id}</pattern>
+   </generator>
+   <generator name="GenericEditionURI" prefix="pref" type="any">
+      <pattern>{year}/{type}/{id}</pattern>
+   </generator>
+   <generator name="LocalTermURI" prefix="pref" type="any">
+      <pattern>{hierarchy}/{term}</pattern>
+   </generator>
+   <generator name="DrawingSideIntermediateURI" prefix="pref" type="any">
+      <pattern>{side}/{type}/{id}/{number}</pattern>
+   </generator>
+   <generator name="DrawingSideIntermediateURI2" prefix="pref" type="any">
+      <pattern>{side}/{type}/{id}</pattern>
+   </generator>
+</generator_policy>

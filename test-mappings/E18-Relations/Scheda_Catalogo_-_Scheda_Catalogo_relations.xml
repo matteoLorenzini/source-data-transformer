@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='utf-8'?>
+<scheda>
+    <row index="3">
+        <Unique_ID>http://www.lynx.com/resource/cultural-heritage-object/50233</Unique_ID>
+        <Attaches_to />
+        <Attaches_to_unique_id />
+        <Similar_to>SPE_237</Similar_to>
+        <Similar_to_unique_id>http://www.lynx.com/resource/cultural-heritage-object/50236</Similar_to_unique_id>
+    </row>
+    <row index="4">
+        <Unique_ID>http://www.lynx.com/resource/cultural-heritage-object/50234</Unique_ID>
+        <Attaches_to>SPE_236</Attaches_to>
+        <Attaches_to_unique_id>http://www.lynx.com/resource/cultural-heritage-object/50235</Attaches_to_unique_id>
+        <Similar_to />
+        <Similar_to_unique_id />
+    </row>
+</scheda>
