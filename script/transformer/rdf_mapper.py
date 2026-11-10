@@ -448,7 +448,7 @@ def export_rdf(mapping: Mapping, xml_path: Path, rdf_format: str) -> None:
         print(f"Skipping mapping {mapping.name}: {source_path.name} was not exported.")
         return
     output_path = rdf_output_path(source_path, mapping, rdf_format)
-    print(f"Writing RDF to {output_path}...")
+    print(f"Writing RDF to {output_path} ({serialization_format(rdf_format)[0]})...")
     write_rdf(mapping, source_path, output_path, rdf_format)
 
 
@@ -471,5 +471,5 @@ def main(argv: Iterable[str] | None = None) -> int:
         triple_count = write_rdf(mapping, args.xml, output_path, args.format)
     except (OSError, ValueError) as exc:
         parser.error(str(exc))
-    print(f"Wrote {triple_count} triples to {output_path}")
+    print(f"Wrote {triple_count} triples to {output_path} ({serialization_format(args.format)[0]})")
     return 0
