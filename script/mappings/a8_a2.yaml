@@ -1,5 +1,5 @@
 name: Lynx-US
-default_prefix: lynx
+source: main
 namespaces:
   lynx: http://www.lynx.com/resource/
   crm: http://www.cidoc-crm.org/cidoc-crm/

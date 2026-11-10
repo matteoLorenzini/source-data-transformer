@@ -8,7 +8,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from lxml import etree
-from rdflib import RDF, RDFS, Literal, URIRef
+from rdflib import RDF, RDFS, SKOS, Literal, URIRef
 
 from transformer.rdf_mapper import MappingError, load_mapping, new_graph, transform_tree
 
@@ -17,7 +17,6 @@ CRM = "http://www.cidoc-crm.org/cidoc-crm/"
 
 MAPPING = """
 name: test
-default_prefix: lynx
 namespaces: {lynx: "http://www.lynx.com/resource/", crm: "http://www.cidoc-crm.org/cidoc-crm/"}
 generators:
   person: {prefix: lynx, pattern: "person/{id}"}
@@ -39,6 +38,7 @@ rules:
           types: [crm:E41_Appellation]
           uri: {generator: name, args: {id: ../id/text(), name: text()}}
           label: text()
+          pref_label: text()
       - range: birth_place
         through:
           - predicate: crm:P98i_was_born
@@ -80,10 +80,11 @@ class RdfMapperTests(unittest.TestCase):
     def test_entities_labels_and_encoding(self):
         graph = self.run_mapping()
         person = URIRef(LYNX + "person/1")
-        appellation = URIRef(LYNX + "person/1/Ada_Lovelace")
+        appellation = URIRef(LYNX + "person/1/Ada%20Lovelace")
         self.assertIn((person, RDF.type, URIRef(CRM + "E21_Person")), graph)
         self.assertIn((person, URIRef(CRM + "P1_is_identified_by"), appellation), graph)
         self.assertIn((appellation, RDFS.label, Literal("Ada Lovelace")), graph)
+        self.assertIn((appellation, SKOS.prefLabel, Literal("Ada Lovelace")), graph)
 
     def test_condition_and_missing_range_skip_links(self):
         graph = self.run_mapping()
@@ -109,6 +110,7 @@ class RdfMapperTests(unittest.TestCase):
         again = set(self.run_mapping("a").objects(None, URIRef(CRM + "P67i_is_referred_to_by")))
         other = set(self.run_mapping("b").objects(None, URIRef(CRM + "P67i_is_referred_to_by")))
         self.assertEqual(2, len(first))
+        self.assertTrue(all(str(uri).startswith("urn:uuid:") for uri in first))
         self.assertEqual(first, again)
         self.assertTrue(first.isdisjoint(other))
 

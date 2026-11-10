@@ -10,7 +10,6 @@ Mapping format (see script/mappings/ for complete examples)::
 
     name: Person
     source: main                 # export it applies to: main, relations, or entities
-    default_prefix: lynx         # namespace used for UUID URIs
     namespaces: {crm: "http://www.cidoc-crm.org/cidoc-crm/", lynx: "http://www.lynx.com/resource/"}
     generators:
       lynx_place: {prefix: lynx, pattern: "place/{place_id}"}
@@ -22,7 +21,7 @@ Mapping format (see script/mappings/ for complete examples)::
         entity:
           types: [crm:E53_Place]                # rdf:type; rdfs:Literal yields a literal
           uri: {generator: lynx_place, args: {place_id: place_id/text(), kind: {const: place}}}
-          label: place_name/text()              # optional rdfs:label
+          label: place_name/text()              # optional rdfs:label (pref_label: skos:prefLabel)
           additional:                           # extra triples from this entity
             - {predicate: crm:P2_has_type, entity: {types: [crm:E55_Type], uri: {...}}}
         links:
@@ -51,19 +50,21 @@ from urllib.parse import quote
 
 from lxml import etree
 from rdflib import RDF, RDFS, XSD, BNode, Graph, Literal, Namespace, URIRef
-from rdflib.namespace import OWL
+from rdflib.namespace import OWL, SKOS
 
 LOGGER = logging.getLogger(__name__)
 
-BUILTIN_NAMESPACES = {"rdf": str(RDF), "rdfs": str(RDFS), "xsd": str(XSD), "owl": str(OWL)}
+BUILTIN_NAMESPACES = {"rdf": str(RDF), "rdfs": str(RDFS), "xsd": str(XSD), "owl": str(OWL), "skos": str(SKOS)}
 GENERATOR_KINDS = {"pattern", "uuid", "uri_or_uuid"}
 SOURCES = {"main", "relations", "entities"}
+NESTING_DEPTH = 50  # pretty-xml nests typed nodes up to this depth (rdflib default is 3)
+LABEL_PROPERTIES = {"label": RDFS.label, "pref_label": SKOS.prefLabel}
 PLACEHOLDER = re.compile(r"\{([^{}]+)\}")
 ABSOLUTE_URI = re.compile(r"^[A-Za-z][A-Za-z0-9+.-]*://\S+$")
 RDF_FORMATS = {
     "turtle": ("turtle", ".ttl"),
     "ttl": ("turtle", ".ttl"),
-    "xml": ("xml", ".rdf"),
+    "xml": ("pretty-xml", ".rdf"),
     "rdfxml": ("xml", ".rdf"),
     "nt": ("nt", ".nt"),
     "nquads": ("nquads", ".nq"),
@@ -92,7 +93,6 @@ class Generator:
 class Mapping:
     name: str
     source: str
-    default_prefix: str | None
     namespaces: dict[str, str]
     generators: dict[str, Generator]
     rules: list[dict[str, Any]]
@@ -138,7 +138,6 @@ def load_mapping(mapping_path: Path) -> Mapping:
     mapping = Mapping(
         name=str(document.get("name") or mapping_path.stem),
         source=source,
-        default_prefix=document.get("default_prefix"),
         namespaces=namespaces,
         generators=generators,
         rules=document["rules"],
@@ -213,12 +212,11 @@ def validate_mapping(mapping: Mapping) -> None:
                 raise MappingError(f"{where}: generator {generator.name!r} needs one argument.")
             if generator.prefix and generator.prefix not in mapping.namespaces:
                 raise MappingError(f"{where}: generator prefix {generator.prefix!r} has no namespace.")
-            if (generator.kind != "pattern" or generator.uuid) and mapping.default_prefix not in mapping.namespaces:
-                raise MappingError(f"{where}: 'default_prefix' is required for UUID generators.")
         elif "rdfs:Literal" in entity.get("types", []):
             raise MappingError(f"{where}: a literal entity needs a 'uri' generator for its value.")
-        if "label" in entity:
-            check_xpath(entity["label"], f"{where} label")
+        for label_key in LABEL_PROPERTIES:
+            if label_key in entity:
+                check_xpath(entity[label_key], f"{where} {label_key}")
         for extra in entity.get("additional", []):
             mapping.expand(extra["predicate"])
             check_entity(extra["entity"], f"{where} additional")
@@ -242,7 +240,7 @@ def validate_mapping(mapping: Mapping) -> None:
 
 
 def encode_segment(value: str) -> str:
-    return quote(re.sub(r"\s+", "_", value.strip()), safe="-._~")
+    return quote(value.strip(), safe="/-._~")
 
 
 class Transformer:
@@ -326,10 +324,10 @@ class Transformer:
         if not is_literal:
             for curie in types:
                 self.graph.add((term, RDF.type, self.mapping.expand(curie)))
-            if "label" in entity:
-                label = self.value(node, entity["label"])
+            for label_key, label_property in LABEL_PROPERTIES.items():
+                label = self.value(node, entity[label_key]) if label_key in entity else None
                 if label is not None:
-                    self.graph.add((term, RDFS.label, Literal(label)))
+                    self.graph.add((term, label_property, Literal(label)))
         for extra in entity.get("additional", []):
             related = self.build_entity(extra["entity"], node)
             if related is not None and not is_literal:
@@ -373,8 +371,7 @@ class Transformer:
         # Node-position UUIDs are salted per source file; content-derived ones are shared across files.
         if salted:
             key = f"{self.salt}|{key}"
-        namespace = self.mapping.namespaces[self.mapping.default_prefix]
-        return URIRef(f"{namespace}{uuid.uuid5(uuid.NAMESPACE_URL, key)}")
+        return URIRef(uuid.uuid5(uuid.NAMESPACE_URL, key).urn)
 
 
 def parse_xml(xml_path: Path) -> etree._ElementTree:
@@ -425,7 +422,8 @@ def write_rdf(
     format_name, _ = serialization_format(rdf_format)
     graph = transform_tree(mapping, parse_xml(xml_path), salt=xml_path.stem if salt is None else salt)
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    graph.serialize(destination=str(output_path), format=format_name, encoding="utf-8")
+    options = {"max_depth": NESTING_DEPTH} if format_name == "pretty-xml" else {}
+    graph.serialize(destination=str(output_path), format=format_name, encoding="utf-8", **options)
     return len(graph)
 
 

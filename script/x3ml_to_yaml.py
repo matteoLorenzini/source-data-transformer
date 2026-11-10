@@ -1,7 +1,7 @@
 """One-time migration of 3M/X3ML mappings and generator policies to the YAML rule format.
 
 Usage:
-    x3ml_to_yaml.py <mapping.x3ml> <generator-policy.xml> <output.yaml> [--default-prefix lynx]
+    x3ml_to_yaml.py <mapping.x3ml> <generator-policy.xml> <output.yaml>
 
 The YAML file is self-contained (namespaces, generators, and rules), so the 3M
 tool and its Java engine are no longer needed to produce RDF.
@@ -21,9 +21,8 @@ BUILTIN_GENERATORS = {
     "UUID": {"kind": "uuid"},
     "URIorUUID": {"kind": "uri_or_uuid"},
 }
-LABEL_GENERATORS = {"Literal", "prefLabel"}
+LABEL_PROPERTIES = {"Literal": "label", "prefLabel": "pref_label"}
 DROPPED_NAMESPACE_PREFIXES = {"", "rdf", "rdfs", "owl", "xsd"}
-DEFAULT_NAMESPACE = "http://www.lynx.com/resource/"
 
 
 class MigrationError(ValueError):
@@ -107,10 +106,10 @@ def convert_entity(entity: etree._Element, used_generators: set[str]) -> dict[st
 
     label_generator = entity.find("label_generator")
     if label_generator is not None:
-        if label_generator.get("name") not in LABEL_GENERATORS:
+        label_key = LABEL_PROPERTIES.get(label_generator.get("name"))
+        if label_key is None:
             raise MigrationError(f"Unsupported label generator {label_generator.get('name')!r}.")
-        args = convert_args(label_generator)
-        result["label"] = args["text"]
+        result[label_key] = convert_args(label_generator)["text"]
 
     additional = [
         {
@@ -163,7 +162,7 @@ def convert_link(link: etree._Element, used_generators: set[str]) -> dict[str, A
     return result
 
 
-def convert(x3ml_path: Path, policy_path: Path, default_prefix: str, source: str = "main") -> dict[str, Any]:
+def convert(x3ml_path: Path, policy_path: Path, source: str = "main") -> dict[str, Any]:
     root = etree.parse(str(x3ml_path)).getroot()
     policy = convert_policy(policy_path)
     used_generators: set[str] = set()
@@ -187,13 +186,10 @@ def convert(x3ml_path: Path, policy_path: Path, default_prefix: str, source: str
             print(f"warning: generator {name!r} is not defined in {policy_path.name}", file=sys.stderr)
             generators[name] = {"kind": "undefined"}
 
-    namespaces = convert_namespaces(root)
-    namespaces.setdefault(default_prefix, DEFAULT_NAMESPACE)
     return {
         "name": text(root, "info/title"),
         "source": source,
-        "default_prefix": default_prefix,
-        "namespaces": namespaces,
+        "namespaces": convert_namespaces(root),
         "generators": generators,
         "rules": rules,
     }
@@ -204,7 +200,6 @@ def main() -> int:
     parser.add_argument("x3ml", type=Path)
     parser.add_argument("policy", type=Path)
     parser.add_argument("output", type=Path)
-    parser.add_argument("--default-prefix", default="lynx", help="Namespace prefix used for UUID URIs.")
     parser.add_argument(
         "--source",
         choices=("main", "relations", "entities"),
@@ -214,7 +209,7 @@ def main() -> int:
     args = parser.parse_args()
 
     try:
-        document = convert(args.x3ml, args.policy, args.default_prefix, args.source)
+        document = convert(args.x3ml, args.policy, args.source)
     except (OSError, etree.XMLSyntaxError, MigrationError) as exc:
         parser.error(str(exc))
     args.output.parent.mkdir(parents=True, exist_ok=True)

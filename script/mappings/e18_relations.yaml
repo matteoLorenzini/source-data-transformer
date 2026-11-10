@@ -1,11 +1,9 @@
 name: SPE_E18_relation
 source: relations
-default_prefix: lynx
 namespaces:
   base: http://www.cidoc-crm.org/cidoc-crm/
   archeo: http://www.ics.forth.gr/isl/CRMarchaeo/
   dig: http://www.ics.forth.gr/isl/CRMdig/
-  lynx: http://www.lynx.com/resource/
 generators:
   URIorUUID:
     kind: uri_or_uuid

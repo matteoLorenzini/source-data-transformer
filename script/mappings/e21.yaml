@@ -1,5 +1,5 @@
 name: Person
-default_prefix: lynx
+source: main
 namespaces:
   geo: http://www.ics.forth.gr/isl/CRMgeo/
   crm: http://www.cidoc-crm.org/cidoc-crm/
@@ -75,7 +75,7 @@ rules:
         args:
           id: ../Unique_ID/text()
           name: text()
-      label: text()
+      pref_label: text()
   - range: Birth_place
     through:
     - predicate: crm:P98i_was_born

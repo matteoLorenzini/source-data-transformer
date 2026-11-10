@@ -1,5 +1,5 @@
 name: SPE_E18
-default_prefix: lynx
+source: main
 namespaces:
   lynx: http://www.lynx.com/resource/
   base: http://www.cidoc-crm.org/cidoc-crm/

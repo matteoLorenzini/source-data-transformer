@@ -1,5 +1,5 @@
 name: Lynx_places_sites
-default_prefix: lynx
+source: main
 namespaces:
   geo: http://www.ics.forth.gr/isl/CRMgeo/
   lynx: http://www.lynx.com/resource/
@@ -53,7 +53,7 @@ rules:
         args:
           place_id: ../place_id/text()
           place_name: text()
-      label: text()
+      pref_label: text()
   - range: coordinates
     predicate: crm:P168_place_is_defined_by
     entity:
