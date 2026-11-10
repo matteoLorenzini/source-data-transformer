@@ -125,7 +125,7 @@ cd script
 python download_drive_excel.py --file ..\Person.xlsx --stylesheet-map xslt\person.xsl --rdf-mapping mappings\e21.yaml
 ```
 
-`--rdf-mapping` can be repeated, and `--rdf-format` selects `turtle` (default), `xml` (nested RDF/XML with typed nodes, written as `.rdf`, like the 3M output), `rdfxml` (flat RDF/XML), `nt`, `nquads`, or `trig`. To transform an existing XML file on its own:
+`--rdf-mapping` can be repeated, and `--rdf-format` selects `turtle` (default), `xml` (also `rdf` or `rdfxml`: nested RDF/XML with typed nodes and all mapping namespaces declared, written as `.rdf`, like the 3M output), `nt`, `nquads`, or `trig`. To transform an existing XML file on its own:
 
 ```powershell
 python xml_to_rdf.py --mapping mappings\e53.yaml --xml places_and_sites.xml --out places.ttl

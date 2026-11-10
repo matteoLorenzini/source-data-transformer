@@ -65,7 +65,8 @@ RDF_FORMATS = {
     "turtle": ("turtle", ".ttl"),
     "ttl": ("turtle", ".ttl"),
     "xml": ("pretty-xml", ".rdf"),
-    "rdfxml": ("xml", ".rdf"),
+    "rdf": ("pretty-xml", ".rdf"),
+    "rdfxml": ("pretty-xml", ".rdf"),
     "nt": ("nt", ".nt"),
     "nquads": ("nquads", ".nq"),
     "trig": ("trig", ".trig"),
@@ -414,6 +415,19 @@ def serialization_format(name: str) -> tuple[str, str]:
         raise ValueError(f"Unsupported RDF format {name!r}; use one of {sorted(RDF_FORMATS)}.") from None
 
 
+RDF_ROOT = re.compile(r"<rdf:RDF\n(?:\s+xmlns:[^\n]+\n)+>")
+
+
+def declare_namespaces(document: str, mapping: Mapping) -> str:
+    """Declare every namespace of the mapping on <rdf:RDF>, as 3M does, not just the ones in use."""
+
+    namespaces = {"rdf": str(RDF), "owl": str(OWL)}
+    namespaces.update(mapping.namespaces)
+    namespaces.update({prefix: uri for prefix, uri in BUILTIN_NAMESPACES.items() if prefix not in namespaces})
+    declarations = "\n".join(f'    xmlns:{prefix}="{uri}"' for prefix, uri in namespaces.items())
+    return RDF_ROOT.sub(lambda _: f"<rdf:RDF\n{declarations}>", document, count=1)
+
+
 def write_rdf(
     mapping: Mapping, xml_path: Path, output_path: Path, rdf_format: str = "turtle", salt: str | None = None
 ) -> int:
@@ -422,8 +436,11 @@ def write_rdf(
     format_name, _ = serialization_format(rdf_format)
     graph = transform_tree(mapping, parse_xml(xml_path), salt=xml_path.stem if salt is None else salt)
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    options = {"max_depth": NESTING_DEPTH} if format_name == "pretty-xml" else {}
-    graph.serialize(destination=str(output_path), format=format_name, encoding="utf-8", **options)
+    if format_name == "pretty-xml":
+        document = graph.serialize(format=format_name, encoding="utf-8", max_depth=NESTING_DEPTH).decode("utf-8")
+        output_path.write_text(declare_namespaces(document, mapping), encoding="utf-8", newline="\n")
+    else:
+        graph.serialize(destination=str(output_path), format=format_name, encoding="utf-8")
     return len(graph)
 
 
