@@ -24,13 +24,15 @@ def _subject_id(row: Element) -> str:
     return ""
 
 
-def _named(registry: dict, prefix: str, name: str, mention: tuple) -> str:
+def _named(registry: dict, prefix: str, name: str, mention: tuple, relation: str = "") -> str:
     """Register a place, organization or person once and return its id."""
 
     record_id = f"{prefix}-{slugify(name)}"
-    record = registry.setdefault(record_id, {"name": name.strip(), "mentions": [], "place": "", "links": []})
+    record = registry.setdefault(record_id, {"name": name.strip(), "mentions": [], "place": "", "links": [], "relations": []})
     if mention not in record["mentions"]:
         record["mentions"].append(mention)
+    if relation and relation not in record["relations"]:
+        record["relations"].append(relation)
     return record_id
 
 
@@ -80,13 +82,14 @@ def _row_tables(row: Element, counters: dict) -> list[Element]:
             organization = (entity.findtext("organization") or "").strip()
             url = (entity.findtext("url") or "").strip()
             mention = (row_index, field, context)
+            relation = (entity.findtext("relation") or "").strip()
 
             if kind == "person":
-                _named(persons, "person", value, mention)
+                _named(persons, "person", value, mention, relation)
             elif kind == "place":
-                _named(places, "place", value, mention)
+                _named(places, "place", value, mention, relation)
             elif kind == "organization":
-                organization_id = _named(organizations, "org", value, mention)
+                organization_id = _named(organizations, "org", value, mention, relation)
                 if place:
                     organizations[organization_id]["place"] = _named(places, "place", place, mention)
             elif kind in ("role", "event"):
@@ -113,9 +116,11 @@ def _row_tables(row: Element, counters: dict) -> list[Element]:
                     counters["work"] += 1
                     record = works[slugify(value)] = {
                         "id": f"work-{counters['work']}", "name": value,
-                        "from": begin, "to": end, "url": url, "mentions": [],
+                        "from": begin, "to": end, "url": url, "mentions": [], "relations": [],
                     }
                 record["url"] = record["url"] or url
+                if relation and relation not in record["relations"]:
+                    record["relations"].append(relation)
                 if mention not in record["mentions"]:
                     record["mentions"].append(mention)
 
@@ -151,6 +156,8 @@ def _shared_table(root_tag: str, item_tag: str, registry: dict) -> Element:
         item = SubElement(root, item_tag, id=record_id)
         _text(item, "Name", record["name"])
         _ref(item, "Place", record["place"])
+        for relation in record["relations"]:
+            _text(item, "Relation", relation)
         for kind, link_id, label, begin, end in record["links"]:
             link = SubElement(item, kind.capitalize(), ref=link_id)
             _text(link, "Title" if kind == "role" else "Label", label)
@@ -183,6 +190,8 @@ def _works_table(registry: dict) -> Element:
         _text(item, "From", record["from"])
         _text(item, "To", record["to"])
         _text(item, "Url", record["url"])
+        for relation in record["relations"]:
+            _text(item, "Relation", relation)
         for mention in record["mentions"]:
             _mention(item, mention)
     return root

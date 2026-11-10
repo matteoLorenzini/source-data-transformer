@@ -22,13 +22,14 @@ Each entity has:
 - optional "from" / "to": ISO dates (YYYY, YYYY-MM or YYYY-MM-DD) bounding the entity in time. A decade such as "1970s" is 1970 to 1979. "from 1978" has only "from"; "until 1995" has only "to"; a single year sets both.
 - optional "place" / "organization": the place or organization tied to a role or event, as written in the text.
 - optional "url": only for a work, a URL the text gives for it.
+- optional "relation": only for a person, place, organization or work: how it relates to the subject of the record, read from the surrounding words. Always from the entity's side towards the subject, and omitted when the text does not say.
 
 Types:
-- person: other persons named in the text, not the subject.
-- place: cities, regions and sites, even when they follow "at" or "in" ("professor at Bochum" names a place).
-- organization: only named institutions such as universities, institutes and services.
+- person: other persons named in the text, not the subject. Always set "relation" when the text indicates it, using one of: teacher (the subject studied, graduated or trained under or with the person, or the person supervised the subject's thesis), student (the person studied or trained under the subject), colleague, collaborator, co-author, predecessor, successor, family, patron, other. Omit "relation" when the text does not say how the person is connected to the subject. The relation is always the person's role towards the subject, not the subject's towards the person: in "graduated under Friedrich Matz", Friedrich Matz is the teacher.
+- place: cities, regions and sites, even when they follow "at" or "in" ("professor at Bochum" names a place). "relation" is one of: birthplace, deathplace, residence, place of study, place of work, excavation site, other.
+- organization: only named institutions such as universities, institutes and services. "relation" is one of: studied at, employer, member of, founder of, funder, publisher, other.
 - role: a job title, position or occupation held by the subject; add organization, place, from and to when the text states them.
-- work: titled publications or works; "value" is the title, "from" the year of publication when given.
+- work: titled publications or works; "value" is the title, "from" the year of publication when given. "relation" is one of: author, editor, translator, thesis, excavation report, discussed, cited, other.
 - event: a discrete happening such as a graduation, appointment or excavation campaign.
 
 Rules: extract only what the text states and never add outside knowledge. Emit one entity per mention; do not merge mentions.
@@ -40,6 +41,12 @@ A text often lists several roles. Emit one separate role entity for each positio
 - "value" is only the role title; put the place or organization in "place" or "organization", never in "value".
 
 Example text: "Painter and lecturer at Padua (1950-1960) and Siena (1961-1970), then curator of the Uffizi Gallery in Florence (1971-1980)."
+Example person: for subject "Bernard Andreae" and text "Bernard Andreae graduated from Marburg in 1956 under Friedrich Matz, specializing in Roman sarcophagi.":
+{"type": "person", "value": "Friedrich Matz", "relation": "teacher", "context": "graduated from Marburg in 1956 under Friedrich Matz"}
+
+Example place, same text:
+{"type": "place", "value": "Marburg", "relation": "place of study", "context": "graduated from Marburg in 1956"}
+
 Example roles:
 {"type": "role", "value": "Painter", "context": "Painter and lecturer at Padua (1950-1960) and Siena (1961-1970), then curator of the Uffizi Gallery in Florence (1971-1980)."},
 {"type": "role", "value": "Lecturer", "place": "Padua", "from": "1950", "to": "1960", "context": "Painter and lecturer at Padua (1950-1960)"},

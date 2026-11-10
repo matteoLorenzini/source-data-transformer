@@ -9,10 +9,11 @@ from pathlib import Path
 from xml.etree.ElementTree import Element, SubElement
 
 # Bump when the extraction prompt changes so stale cache entries are not reused.
-PROMPT_VERSION = 3
+PROMPT_VERSION = 5
 
 ENTITY_TYPES = ("person", "place", "organization", "role", "work", "event")
-OPTIONAL_FIELDS = ("from", "to", "place", "organization", "url")
+OPTIONAL_FIELDS = ("from", "to", "place", "organization", "url", "relation")
+RELATION_TYPES = ("person", "place", "organization", "work")
 DATE_PATTERN = re.compile(r"^-?\d{1,4}(-\d{2}(-\d{2})?)?$")
 HTML_COMMENT_PATTERN = re.compile(r"<!--.*?-->", re.DOTALL)
 
@@ -98,6 +99,10 @@ def validate_entities(raw, text: str) -> tuple[list[dict], int]:
                 continue
             if name == "url" and not optional.lower().startswith(("http://", "https://")):
                 continue
+            if name == "relation":
+                if entity_type not in RELATION_TYPES:
+                    continue
+                optional = optional.lower()
             entity[name] = optional
 
         signature = tuple(entity.get(name) for name in ("type", "value", "context", "from", "to"))
