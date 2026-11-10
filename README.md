@@ -128,13 +128,12 @@ python download_drive_excel.py --file ..\Person.xlsx --stylesheet-map xslt\perso
 `--rdf-mapping` can be repeated, and `--rdf-format` selects `turtle` (default), `xml`, `nt`, `nquads`, or `trig`. To transform an existing XML file on its own:
 
 ```powershell
-python xml_to_rdf.py --mapping mappings\e53.yaml --xml ..\test-mappings\E53\places_and_sites.xml --out places.ttl
+python xml_to_rdf.py --mapping mappings\e53.yaml --xml places_and_sites.xml --out places.ttl
 ```
 
 - URIs follow the generator patterns; arguments are whitespace-normalized and percent-encoded. `uuid` generators are deterministic (derived from the source file name and node position), so re-running gives the same URIs. `uri_or_uuid` keeps an absolute URI as is and otherwise derives a UUID from the text.
 - An entity (and the link that needs it) is skipped when one of its generator arguments is empty.
 - `script/x3ml_to_yaml.py <mapping.x3ml> <generator-policy.xml> <out.yaml> [--source relations]` migrates further 3M mappings. Review the result: the engine rejects unknown generators and namespace prefixes when loading.
-- Tests: `cd script; python -m unittest discover -s tests`.
 
 ## Code layout
 
