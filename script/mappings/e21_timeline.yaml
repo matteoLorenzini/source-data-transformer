@@ -1,0 +1,660 @@
+# Person timeline -> CIDOC-CRM.
+# Input: the timeline XML written by extract_entities.py (<persons><person><timeline><entry ...>).
+# Run:   python xml_to_rdf.py --mapping mappings/person_timeline.yaml --xml Person_entities_timeline.xml --out person_timeline.ttl
+#
+# Person URIs are person/{Unique_ID}, as in e21.yaml; birth and death reuse its birth-event / death-event URIs.
+#   event  E7_Activity   person P11i_took_part_in; organization P14_carried_out_by; participants P11_had_participant
+#                        and PC14_carried_out_by + P14.1_in_the_role_of (teacher, mentor)
+#   role   E7_Activity   person P14i_performed; organization P11_had_participant
+#   work   E65_Creation  person P14i_performed; P94_has_created E73_Information_Object
+#   birth  E67_Birth / death E69_Death
+#   all    P2_has_type E55_Type, P4_has_time-span E52_Time-Span (P82a / P82b), P7_took_place_at E53_Place,
+#          P67i_is_referred_to_by E33_Linguistic_Object (the source sentence)
+name: Person_timeline
+source: main
+namespaces:
+  lynx: http://www.lynx.com/resource/
+  crm: http://www.cidoc-crm.org/cidoc-crm/
+generators:
+  URIwithType:
+    pattern: '{type}'
+    prefix: lynx
+  URIwithTypeAndId:
+    pattern: '{type}/{id}'
+    prefix: lynx
+  personAppellation:
+    pattern: person/{id}/{name}
+    prefix: lynx
+  mentionedPerson:
+    pattern: person/by-name/{id}
+    prefix: lynx
+  birth-event:
+    pattern: person/{uniqueid}/birth-event
+    prefix: lynx
+  death-event:
+    pattern: person/{uniqueid}/death-event
+    prefix: lynx
+  activity:
+    pattern: person/{person}/activity/{entry}
+    prefix: lynx
+  creation:
+    pattern: person/{person}/creation/{entry}
+    prefix: lynx
+  work:
+    pattern: work/{entry}
+    prefix: lynx
+  timeSpan:
+    pattern: person/{person}/timeline/{entry}/time-span
+    prefix: lynx
+  participation:
+    pattern: person/{person}/timeline/{entry}/participant/{participant}
+    prefix: lynx
+  sourceText:
+    pattern: person/{person}/timeline/{entry}/source-text
+    prefix: lynx
+  lynxType:
+    pattern: type/{kind}/{id}
+    prefix: lynx
+  lynxPlace:
+    pattern: place/{id}
+    prefix: lynx
+  lynxGroup:
+    pattern: group/{id}
+    prefix: lynx
+  literal:
+    pattern: '{value}'
+    prefix: lynx
+rules:
+- domain: /persons/person
+  entity:
+    types:
+    - crm:E21_Person
+    uri:
+      generator: URIwithTypeAndId
+      args:
+        type:
+          const: person
+        id: unique_id/text()
+    label: name/text()
+  links:
+  - range: name
+    predicate: crm:P1_is_identified_by
+    entity:
+      types:
+      - crm:E41_Appellation
+      uri:
+        generator: personAppellation
+        args:
+          id: ../unique_id/text()
+          name: text()
+      pref_label: text()
+  - range: occupation
+    predicate: crm:P2_has_type
+    entity:
+      types:
+      - crm:E55_Type
+      uri:
+        generator: lynxType
+        args:
+          kind:
+            const: occupation
+          id: '@id'
+      label: text()
+  - range: timeline/entry[@category='event']
+    predicate: crm:P11i_took_part_in
+    entity:
+      types:
+      - crm:E7_Activity
+      uri:
+        generator: activity
+        args:
+          person: ../../unique_id/text()
+          entry: '@id'
+  - range: timeline/entry[@category='role']
+    predicate: crm:P14i_performed
+    entity:
+      types:
+      - crm:E7_Activity
+      uri:
+        generator: activity
+        args:
+          person: ../../unique_id/text()
+          entry: '@id'
+  - range: timeline/entry[@category='work']
+    predicate: crm:P14i_performed
+    entity:
+      types:
+      - crm:E65_Creation
+      uri:
+        generator: creation
+        args:
+          person: ../../unique_id/text()
+          entry: '@id'
+  - range: timeline/entry[@category='birth']
+    predicate: crm:P98i_was_born
+    entity:
+      types:
+      - crm:E67_Birth
+      uri:
+        generator: birth-event
+        args:
+          uniqueid: ../../unique_id/text()
+  - range: timeline/entry[@category='death']
+    predicate: crm:P100i_died_in
+    entity:
+      types:
+      - crm:E69_Death
+      uri:
+        generator: death-event
+        args:
+          uniqueid: ../../unique_id/text()
+- domain: /persons/person/timeline/entry[@category='event']
+  entity:
+    types:
+    - crm:E7_Activity
+    uri:
+      generator: activity
+      args:
+        person: ../../unique_id/text()
+        entry: '@id'
+    label: label/text()
+  links:
+  - range: type
+    predicate: crm:P2_has_type
+    entity:
+      types:
+      - crm:E55_Type
+      uri:
+        generator: lynxType
+        args:
+          kind:
+            const: event
+          id: '@id'
+      label: text()
+  - range: date_label
+    predicate: crm:P4_has_time-span
+    entity:
+      types:
+      - crm:E52_Time-Span
+      uri:
+        generator: timeSpan
+        args:
+          person: ../../../unique_id/text()
+          entry: ../@id
+      label: text()
+      additional:
+      - predicate: crm:P82a_begin_of_the_begin
+        entity:
+          types:
+          - rdfs:Literal
+          uri:
+            generator: literal
+            args:
+              value: ../begin/text()
+          label: ../begin/text()
+      - predicate: crm:P82b_end_of_the_end
+        entity:
+          types:
+          - rdfs:Literal
+          uri:
+            generator: literal
+            args:
+              value: ../end/text()
+          label: ../end/text()
+  - range: place
+    predicate: crm:P7_took_place_at
+    entity:
+      types:
+      - crm:E53_Place
+      uri:
+        generator: lynxPlace
+        args:
+          id: '@id'
+      label: text()
+  - range: organization
+    predicate: crm:P14_carried_out_by
+    entity:
+      types:
+      - crm:E74_Group
+      uri:
+        generator: lynxGroup
+        args:
+          id: '@id'
+      label: text()
+  - range: participant
+    predicate: crm:P11_had_participant
+    entity:
+      types:
+      - crm:E21_Person
+      uri:
+        generator: mentionedPerson
+        args:
+          id: '@id'
+      label: text()
+  - range: participant
+    through:
+    - predicate: crm:P01i_is_domain_of
+      entity:
+        types:
+        - crm:PC14_carried_out_by
+        uri:
+          generator: participation
+          args:
+            person: ../../../unique_id/text()
+            entry: ../@id
+            participant: '@id'
+        additional:
+        - predicate: crm:P14.1_in_the_role_of
+          entity:
+            types:
+            - crm:E55_Type
+            uri:
+              generator: lynxType
+              args:
+                kind:
+                  const: participant-role
+                id: '@role'
+            label: '@role'
+    predicate: crm:P02_has_range
+    entity:
+      types:
+      - crm:E21_Person
+      uri:
+        generator: mentionedPerson
+        args:
+          id: '@id'
+      label: text()
+  - range: source_text
+    predicate: crm:P67i_is_referred_to_by
+    entity:
+      types:
+      - crm:E33_Linguistic_Object
+      uri:
+        generator: sourceText
+        args:
+          person: ../../../unique_id/text()
+          entry: ../@id
+      label: text()
+      additional:
+      - predicate: crm:P2_has_type
+        entity:
+          types:
+          - crm:E55_Type
+          uri:
+            generator: URIwithType
+            args:
+              type:
+                const: source-text
+- domain: /persons/person/timeline/entry[@category='role']
+  entity:
+    types:
+    - crm:E7_Activity
+    uri:
+      generator: activity
+      args:
+        person: ../../unique_id/text()
+        entry: '@id'
+    label: label/text()
+  links:
+  - range: type
+    predicate: crm:P2_has_type
+    entity:
+      types:
+      - crm:E55_Type
+      uri:
+        generator: lynxType
+        args:
+          kind:
+            const: role
+          id: '@id'
+      label: text()
+  - range: date_label
+    predicate: crm:P4_has_time-span
+    entity:
+      types:
+      - crm:E52_Time-Span
+      uri:
+        generator: timeSpan
+        args:
+          person: ../../../unique_id/text()
+          entry: ../@id
+      label: text()
+      additional:
+      - predicate: crm:P82a_begin_of_the_begin
+        entity:
+          types:
+          - rdfs:Literal
+          uri:
+            generator: literal
+            args:
+              value: ../begin/text()
+          label: ../begin/text()
+      - predicate: crm:P82b_end_of_the_end
+        entity:
+          types:
+          - rdfs:Literal
+          uri:
+            generator: literal
+            args:
+              value: ../end/text()
+          label: ../end/text()
+  - range: place
+    predicate: crm:P7_took_place_at
+    entity:
+      types:
+      - crm:E53_Place
+      uri:
+        generator: lynxPlace
+        args:
+          id: '@id'
+      label: text()
+  - range: organization
+    predicate: crm:P11_had_participant
+    entity:
+      types:
+      - crm:E74_Group
+      uri:
+        generator: lynxGroup
+        args:
+          id: '@id'
+      label: text()
+  - range: source_text
+    predicate: crm:P67i_is_referred_to_by
+    entity:
+      types:
+      - crm:E33_Linguistic_Object
+      uri:
+        generator: sourceText
+        args:
+          person: ../../../unique_id/text()
+          entry: ../@id
+      label: text()
+      additional:
+      - predicate: crm:P2_has_type
+        entity:
+          types:
+          - crm:E55_Type
+          uri:
+            generator: URIwithType
+            args:
+              type:
+                const: source-text
+- domain: /persons/person/timeline/entry[@category='work']
+  entity:
+    types:
+    - crm:E65_Creation
+    uri:
+      generator: creation
+      args:
+        person: ../../unique_id/text()
+        entry: '@id'
+    label: label/text()
+  links:
+  - range: label
+    predicate: crm:P94_has_created
+    entity:
+      types:
+      - crm:E73_Information_Object
+      uri:
+        generator: work
+        args:
+          entry: ../@id
+      label: text()
+      additional:
+      - predicate: crm:P2_has_type
+        entity:
+          types:
+          - crm:E55_Type
+          uri:
+            generator: lynxType
+            args:
+              kind:
+                const: work
+              id: ../type/@id
+          label: ../type/text()
+  - range: date_label
+    predicate: crm:P4_has_time-span
+    entity:
+      types:
+      - crm:E52_Time-Span
+      uri:
+        generator: timeSpan
+        args:
+          person: ../../../unique_id/text()
+          entry: ../@id
+      label: text()
+      additional:
+      - predicate: crm:P82a_begin_of_the_begin
+        entity:
+          types:
+          - rdfs:Literal
+          uri:
+            generator: literal
+            args:
+              value: ../begin/text()
+          label: ../begin/text()
+      - predicate: crm:P82b_end_of_the_end
+        entity:
+          types:
+          - rdfs:Literal
+          uri:
+            generator: literal
+            args:
+              value: ../end/text()
+          label: ../end/text()
+  - range: place
+    predicate: crm:P7_took_place_at
+    entity:
+      types:
+      - crm:E53_Place
+      uri:
+        generator: lynxPlace
+        args:
+          id: '@id'
+      label: text()
+  - range: participant
+    predicate: crm:P11_had_participant
+    entity:
+      types:
+      - crm:E21_Person
+      uri:
+        generator: mentionedPerson
+        args:
+          id: '@id'
+      label: text()
+  - range: participant
+    through:
+    - predicate: crm:P01i_is_domain_of
+      entity:
+        types:
+        - crm:PC14_carried_out_by
+        uri:
+          generator: participation
+          args:
+            person: ../../../unique_id/text()
+            entry: ../@id
+            participant: '@id'
+        additional:
+        - predicate: crm:P14.1_in_the_role_of
+          entity:
+            types:
+            - crm:E55_Type
+            uri:
+              generator: lynxType
+              args:
+                kind:
+                  const: participant-role
+                id: '@role'
+            label: '@role'
+    predicate: crm:P02_has_range
+    entity:
+      types:
+      - crm:E21_Person
+      uri:
+        generator: mentionedPerson
+        args:
+          id: '@id'
+      label: text()
+  - range: source_text
+    predicate: crm:P67i_is_referred_to_by
+    entity:
+      types:
+      - crm:E33_Linguistic_Object
+      uri:
+        generator: sourceText
+        args:
+          person: ../../../unique_id/text()
+          entry: ../@id
+      label: text()
+      additional:
+      - predicate: crm:P2_has_type
+        entity:
+          types:
+          - crm:E55_Type
+          uri:
+            generator: URIwithType
+            args:
+              type:
+                const: source-text
+- domain: /persons/person/timeline/entry[@category='birth']
+  entity:
+    types:
+    - crm:E67_Birth
+    uri:
+      generator: birth-event
+      args:
+        uniqueid: ../../unique_id/text()
+    label: label/text()
+  links:
+  - range: date_label
+    predicate: crm:P4_has_time-span
+    entity:
+      types:
+      - crm:E52_Time-Span
+      uri:
+        generator: timeSpan
+        args:
+          person: ../../../unique_id/text()
+          entry: ../@id
+      label: text()
+      additional:
+      - predicate: crm:P82a_begin_of_the_begin
+        entity:
+          types:
+          - rdfs:Literal
+          uri:
+            generator: literal
+            args:
+              value: ../begin/text()
+          label: ../begin/text()
+      - predicate: crm:P82b_end_of_the_end
+        entity:
+          types:
+          - rdfs:Literal
+          uri:
+            generator: literal
+            args:
+              value: ../end/text()
+          label: ../end/text()
+  - range: place
+    predicate: crm:P7_took_place_at
+    entity:
+      types:
+      - crm:E53_Place
+      uri:
+        generator: lynxPlace
+        args:
+          id: '@id'
+      label: text()
+  - range: source_text
+    predicate: crm:P67i_is_referred_to_by
+    entity:
+      types:
+      - crm:E33_Linguistic_Object
+      uri:
+        generator: sourceText
+        args:
+          person: ../../../unique_id/text()
+          entry: ../@id
+      label: text()
+      additional:
+      - predicate: crm:P2_has_type
+        entity:
+          types:
+          - crm:E55_Type
+          uri:
+            generator: URIwithType
+            args:
+              type:
+                const: source-text
+- domain: /persons/person/timeline/entry[@category='death']
+  entity:
+    types:
+    - crm:E69_Death
+    uri:
+      generator: death-event
+      args:
+        uniqueid: ../../unique_id/text()
+    label: label/text()
+  links:
+  - range: date_label
+    predicate: crm:P4_has_time-span
+    entity:
+      types:
+      - crm:E52_Time-Span
+      uri:
+        generator: timeSpan
+        args:
+          person: ../../../unique_id/text()
+          entry: ../@id
+      label: text()
+      additional:
+      - predicate: crm:P82a_begin_of_the_begin
+        entity:
+          types:
+          - rdfs:Literal
+          uri:
+            generator: literal
+            args:
+              value: ../begin/text()
+          label: ../begin/text()
+      - predicate: crm:P82b_end_of_the_end
+        entity:
+          types:
+          - rdfs:Literal
+          uri:
+            generator: literal
+            args:
+              value: ../end/text()
+          label: ../end/text()
+  - range: place
+    predicate: crm:P7_took_place_at
+    entity:
+      types:
+      - crm:E53_Place
+      uri:
+        generator: lynxPlace
+        args:
+          id: '@id'
+      label: text()
+  - range: source_text
+    predicate: crm:P67i_is_referred_to_by
+    entity:
+      types:
+      - crm:E33_Linguistic_Object
+      uri:
+        generator: sourceText
+        args:
+          person: ../../../unique_id/text()
+          entry: ../@id
+      label: text()
+      additional:
+      - predicate: crm:P2_has_type
+        entity:
+          types:
+          - crm:E55_Type
+          uri:
+            generator: URIwithType
+            args:
+              type:
+                const: source-text

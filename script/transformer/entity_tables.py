@@ -76,13 +76,14 @@ def _row_tables(row: Element, counters: dict) -> list[Element]:
             kind = entity.get("type")
             value = (entity.findtext("value") or "").strip()
             context = (entity.findtext("context") or "").strip()
-            begin = (entity.findtext("from") or "").strip()
-            end = (entity.findtext("to") or "").strip()
+            begin = (entity.findtext("from") or entity.findtext("date") or "").strip()
+            end = (entity.findtext("to") or entity.findtext("date") or "").strip()
             place = (entity.findtext("place") or "").strip()
             organization = (entity.findtext("organization") or "").strip()
             url = (entity.findtext("url") or "").strip()
             mention = (row_index, field, context)
             relation = (entity.findtext("relation") or "").strip()
+            participants = [(p.text or "").strip() for p in entity.findall("participant") if (p.text or "").strip()]
 
             if kind == "person":
                 _named(persons, "person", value, mention, relation)
@@ -95,6 +96,7 @@ def _row_tables(row: Element, counters: dict) -> list[Element]:
             elif kind in ("role", "event"):
                 place_id = _named(places, "place", place, mention) if place else ""
                 organization_id = _named(organizations, "org", organization, mention) if organization else ""
+                participant_ids = [_named(persons, "person", name, mention) for name in participants] if kind == "event" else []
                 registry = roles if kind == "role" else events
                 key = (slugify(value), organization_id, place_id, begin, end)
                 record = registry.get(key)
@@ -103,13 +105,17 @@ def _row_tables(row: Element, counters: dict) -> list[Element]:
                     record = registry[key] = {
                         "id": f"{kind}-{counters[kind]}", "name": value, "row": row_index,
                         "organization": organization_id, "place": place_id,
-                        "from": begin, "to": end, "sources": [],
+                        "from": begin, "to": end, "sources": [], "participants": [],
                     }
                 if (field, context) not in record["sources"]:
                     record["sources"].append((field, context))
                 link = (kind, record["id"], value, begin, end)
                 _link(places, place_id, link)
                 _link(organizations, organization_id, link)
+                for person_id in participant_ids:
+                    if person_id not in record["participants"]:
+                        record["participants"].append(person_id)
+                    _link(persons, person_id, link)
             elif kind == "work":
                 record = works.get(slugify(value))
                 if record is None:
@@ -175,6 +181,8 @@ def _activity_table(root_tag: str, item_tag: str, prefix: str, registry: dict) -
         _text(item, "Title" if prefix == "role" else "Label", record["name"])
         _ref(item, "Organization", record["organization"])
         _ref(item, "Place", record["place"])
+        for person_id in record["participants"]:
+            _ref(item, "Person", person_id)
         _text(item, "From", record["from"])
         _text(item, "To", record["to"])
         for field, context in record["sources"]:
