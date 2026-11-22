@@ -20,11 +20,14 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Callable
 from urllib.parse import quote
+from xml.sax.saxutils import quoteattr
 
 import yaml
 from lxml import etree
 from rdflib import Graph, Literal, Namespace, URIRef
 from rdflib.namespace import RDF, RDFS, SKOS
+
+from transformer.rdf_mapper import NESTING_DEPTH, RDF_ROOT
 
 CRM = Namespace("http://www.cidoc-crm.org/cidoc-crm/")
 LYNX = Namespace("http://www.lynx.com/resource/")
@@ -162,11 +165,25 @@ def add_appellation(graph: Graph, entity: URIRef, label: str, lang: str) -> None
     graph.add((appellation, SKOS.prefLabel, Literal(label, lang=lang)))
 
 
+PLACE_NUMBER = re.compile(r"/place/(\d+)$")
+
+
+def next_place_number(graph: Graph) -> int:
+    """Next free number in the existing place/N URIs, so new places continue the sequence."""
+    numbers = [
+        int(match.group(1))
+        for entity in graph.subjects(RDF.type, CRM.E53_Place)
+        if (match := PLACE_NUMBER.search(str(entity)))
+    ]
+    return max(numbers, default=0) + 1
+
+
 def resolve(
     graph: Graph,
     place: SourcePlace,
     reconciliation: dict[str, URIRef],
     translate: Callable[[str], str],
+    new_entity: URIRef,
 ) -> Resolution:
     italian = italian_name(translate, place.name)
     if place.place_id in reconciliation:
@@ -175,7 +192,7 @@ def resolve(
     for label in (place.name, italian):
         if normalize(label) in index:
             return Resolution(place, italian, index[normalize(label)], is_new=False)
-    return Resolution(place, italian, LYNX[f"place/{place.place_id}"], is_new=True)
+    return Resolution(place, italian, new_entity, is_new=True)
 
 
 def apply(graph: Graph, resolution: Resolution, geo: GeoMatch | None) -> str:
@@ -208,8 +225,14 @@ def add_places(
     reconciliation: Reconciliation,
     geonames_path: Path,
     translate: Callable[[str], str],
-) -> list[tuple[SourcePlace, str, GeoMatch | None]]:
-    resolutions = [resolve(graph, place, reconciliation.targets, translate) for place in places]
+) -> list[tuple[SourcePlace, str, GeoMatch | None, URIRef]]:
+    resolutions = []
+    number = next_place_number(graph)
+    for place in places:
+        res = resolve(graph, place, reconciliation.targets, translate, LYNX[f"place/{number}"])
+        if res.is_new:
+            number += 1
+        resolutions.append(res)
     needs_geo = [
         res for res in resolutions if (res.entity, CRM.P168_place_is_defined_by, None) not in graph
     ]
@@ -225,8 +248,38 @@ def add_places(
         if (res.entity, CRM.P168_place_is_defined_by, None) not in graph and geo is None:
             LOGGER.warning("No GeoNames match for %r", res.place.name)
         status = apply(graph, res, geo)
-        results.append((res.place, status, geo))
+        results.append((res.place, status, geo, res.entity))
     return results
+
+
+def normalize_timeline(
+    graph: Graph, results: list[tuple[SourcePlace, str, GeoMatch | None, URIRef]]
+) -> None:
+    targets: dict[URIRef, URIRef] = {}
+    for place, _, _, entity in results:
+        if not place.place_id:
+            raise ValueError(f"Source place {place.name!r} has no id")
+        source = LYNX[f"place/{quote(place.place_id.strip(), safe='/-._~')}"]
+        if source in targets and targets[source] != entity:
+            raise ValueError(f"Source place {source} resolves to multiple entities")
+        targets[source] = entity
+
+    resolved_entities = set(targets.values())
+    replacements = {}
+    for place in set(graph.objects(None, CRM.P7_took_place_at)):
+        if place in targets:
+            if place != targets[place]:
+                replacements[place] = targets[place]
+        elif place not in resolved_entities:
+            LOGGER.warning("No places pipeline match for timeline place %s", place)
+
+    triples = list(graph)
+    for subject, predicate, obj in triples:
+        if subject in replacements or obj in replacements:
+            graph.remove((subject, predicate, obj))
+    for subject, predicate, obj in triples:
+        if subject in replacements or obj in replacements:
+            graph.add((replacements.get(subject, subject), predicate, replacements.get(obj, obj)))
 
 
 class Translator:
@@ -248,16 +301,36 @@ class Translator:
         return self._tokenizer.decode(output[0], skip_special_tokens=True)
 
 
+def declare_root_namespaces(document: str, source_rdf: Path) -> str:
+    """Declare on <rdf:RDF> every namespace of the source file, as 3M does, not only those in use."""
+    namespaces = {prefix: uri for prefix, uri in etree.parse(str(source_rdf)).getroot().nsmap.items() if prefix}
+    namespaces.update({prefix: uri for prefix, uri in etree.fromstring(document.encode("utf-8")).nsmap.items() if prefix})
+    namespaces.setdefault("rdf", str(RDF))
+    declarations = "\n".join(f"    xmlns:{prefix}={quoteattr(uri)}" for prefix, uri in namespaces.items())
+    return RDF_ROOT.sub(lambda _: f"<rdf:RDF\n{declarations}>", document, count=1)
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--rdf", type=Path, required=True, help="Existing RDF/XML file to extend.")
     parser.add_argument("--places", type=Path, required=True, help="Source places XML.")
     parser.add_argument("--geonames", type=Path, required=True, help="GeoNames allCountries.txt.")
     parser.add_argument("--out", type=Path, required=True, help="Output RDF/XML file.")
+    parser.add_argument("--timeline", type=Path, help="Timeline RDF/XML file to normalize.")
+    parser.add_argument("--timeline-out", type=Path, help="Output path for normalized timeline RDF/XML.")
     parser.add_argument("--reconcile", type=Path, help="YAML mapping of source place id to existing entity URI.")
     parser.add_argument("--translation-model", default=DEFAULT_MODEL, help="Hugging Face EN-IT model.")
     parser.add_argument("-v", "--verbose", action="store_true")
     args = parser.parse_args(argv)
+    if bool(args.timeline) != bool(args.timeline_out):
+        parser.error("--timeline and --timeline-out must be supplied together")
+    inputs = [args.timeline, args.rdf, args.places, args.geonames, args.reconcile]
+    if args.timeline_out and args.timeline_out.resolve() in {
+        path.resolve() for path in [*inputs, args.out] if path is not None
+    }:
+        parser.error("--timeline-out must differ from the input files and --out")
+    if args.timeline and args.out.resolve() == args.timeline.resolve():
+        parser.error("--out must differ from --timeline")
 
     logging.basicConfig(level=logging.DEBUG if args.verbose else logging.INFO, format="%(levelname)s %(message)s")
 
@@ -267,8 +340,18 @@ def main(argv: list[str] | None = None) -> int:
     reconciliation = read_reconciliation(args.reconcile)
     results = add_places(graph, places, reconciliation, args.geonames, Translator(args.translation_model))
 
-    graph.serialize(destination=str(args.out), format="xml")
-    for place, status, geo in results:
+    if args.timeline:
+        timeline = Graph()
+        timeline.parse(str(args.timeline), format="xml")
+        normalize_timeline(timeline, results)
+        timeline_document = timeline.serialize(format="pretty-xml", max_depth=NESTING_DEPTH)
+
+    document = graph.serialize(format="pretty-xml", max_depth=NESTING_DEPTH)
+    args.out.write_text(declare_root_namespaces(document, args.rdf), encoding="utf-8", newline="\n")
+    if args.timeline:
+        args.timeline_out.write_text(timeline_document, encoding="utf-8", newline="\n")
+        print(f"Wrote {args.timeline_out}")
+    for place, status, geo, _ in results:
         detail = f"{geo.name} ({geo.country}, geonames {geo.geonames_id}) {geo.point}" if geo else "no coordinates"
         print(f"{status:10} {place.place_id:35} {place.name}: {detail}")
     print(f"Wrote {args.out}")
