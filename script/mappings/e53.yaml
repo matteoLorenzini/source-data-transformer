@@ -2,6 +2,7 @@ name: Lynx_places_sites
 source: main
 namespaces:
   geo: http://www.ics.forth.gr/isl/CRMgeo/
+  geosparql: http://www.opengis.net/ont/geosparql#
   lynx: http://www.lynx.com/resource/
   crm: http://www.cidoc-crm.org/cidoc-crm/
 generators:

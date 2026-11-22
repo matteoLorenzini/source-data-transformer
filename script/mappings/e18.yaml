@@ -380,7 +380,7 @@ rules:
       uri:
         generator: lynx_site
         args:
-          site_id: ../Unique_ID/text()
+          site_id: text()
       label: text()
       additional:
       - predicate: crm:P2_has_type
