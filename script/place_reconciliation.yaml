@@ -1,0 +1,8 @@
+# Source place id -> existing RDF entity it refers to.
+reconcile:
+  tiberius-s-villa-in-sperlonga: http://www.lynx.com/resource/site/1
+
+# Places whose name is ambiguous in GeoNames: GeoNames id of the intended place.
+geonames:
+  italy: 3175395
+  marburg: 2873759
