@@ -1,6 +1,6 @@
 # Person timeline -> CIDOC-CRM.
 # Input: the timeline XML written by extract_entities.py (<persons><person><timeline><entry ...>).
-# Run:   python xml_to_rdf.py --mapping mappings/person_timeline.yaml --xml Person_entities_timeline.xml --out person_timeline.ttl
+# Run:   python xml_to_rdf.py --mapping mappings/e21_timeline.yaml --xml Person_entities_timeline.xml --out person_timeline.ttl
 #
 # Person URIs are person/{Unique_ID}, as in e21.yaml; birth and death reuse its birth-event / death-event URIs.
 #   event  E7_Activity   person P11i_took_part_in; organization P14_carried_out_by; participants P11_had_participant

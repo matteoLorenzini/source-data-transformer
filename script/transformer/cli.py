@@ -86,7 +86,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--entities",
         type=Path,
-        help="Entity JSON produced by extract_entities.py; writes <name>_entities.xml with the entities of each row.",
+        help="JSON from the entity-extraction project; writes <name>_entities.xml with the entities of each row.",
     )
     parser.add_argument(
         "--rdf-mapping",
