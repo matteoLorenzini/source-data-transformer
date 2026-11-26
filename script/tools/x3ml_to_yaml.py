@@ -1,7 +1,7 @@
 """One-time migration of 3M/X3ML mappings and generator policies to the YAML rule format.
 
 Usage:
-    x3ml_to_yaml.py <mapping.x3ml> <generator-policy.xml> <output.yaml>
+    python tools/x3ml_to_yaml.py <mapping.x3ml> <generator-policy.xml> <output.yaml>
 
 The YAML file is self-contained (namespaces, generators, and rules), so the 3M
 tool and its Java engine are no longer needed to produce RDF.

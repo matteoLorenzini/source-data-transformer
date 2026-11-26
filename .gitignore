@@ -203,6 +203,9 @@ cython_debug/
 # Temporary file for partial code execution
 tempCodeRunnerFile.py
 
+# Generated exports (default output directory of download_drive_excel.py)
+script/output_data/
+
 # Ruff stuff:
 .ruff_cache/
 

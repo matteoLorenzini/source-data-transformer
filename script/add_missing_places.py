@@ -6,8 +6,8 @@ that are not found are added as new E53_Place entities, with English and Italian
 appellations and coordinates from a local GeoNames dump.
 
 Usage:
-    add_missing_places.py --rdf E53_new.rdf --places places.xml --geonames allCountries.txt \
-        --reconcile place_reconciliation.yaml --out E53_new_with_places.rdf
+    add_missing_places.py --rdf E53_new.rdf --places places.xml --geonames allCountries.txt
+        --reconcile config/place_reconciliation.yaml --out E53_new_with_places.rdf
 """
 
 from __future__ import annotations
